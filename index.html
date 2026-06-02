@@ -2415,20 +2415,20 @@ function procTech(file){
     try{
       var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
       var ws=wb.Sheets[wb.SheetNames[0]];
-      var rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
-      // Se primeira linha for filtros (não tem coluna Integração), tenta a linha 2
-      if(rows.length>0){
-        var keys=Object.keys(rows[0]);
-        var hasInteg=keys.some(function(k){return /integra/i.test(k);});
-        if(!hasInteg){
-          // Tenta range 1 (pula linha 0)
-          rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:1});
-          // Se ainda não achar, tenta range 2
-          if(rows.length>0&&!Object.keys(rows[0]).some(function(k){return /integra/i.test(k);})){
-            rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:2});
+      // Busca a linha do header varrendo as primeiras 10 linhas
+      var headerRow=-1;
+      for(var ri=0;ri<10;ri++){
+        var testRows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:ri,header:1});
+        if(testRows.length>0){
+          var firstRow=testRows[0];
+          if(firstRow.some(function(c){return /integra/i.test(String(c));})){
+            headerRow=ri;
+            break;
           }
         }
       }
+      if(headerRow<0){document.getElementById('tech-fn').textContent+=' — Coluna Integração não encontrada nas primeiras 10 linhas';return;}
+      var rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:headerRow});
       document.getElementById('tech-fn').textContent='OK: '+file.name+' ('+rows.length+' linhas)';
       calcTech(rows,file.name);
     }catch(err){document.getElementById('tech-fn').textContent='Erro: '+err.message;}
