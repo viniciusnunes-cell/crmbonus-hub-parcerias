@@ -251,10 +251,13 @@ tr:hover td{background:var(--o50);}
   <div class="card" style="margin-bottom:16px">
     <div class="ct" style="display:flex;align-items:center;justify-content:space-between">
       <span>Comissão de Integração — Histórico</span>
-      <select class="sel" id="ano-bonus-tech" onchange="rBonusTech()" style="font-size:11px;padding:5px 10px">
-        <option value="2026">2026</option>
-        <option value="2025">2025</option>
-      </select>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select class="sel" id="ano-bonus-tech" onchange="rBonusTech()" style="font-size:11px;padding:5px 10px">
+          <option value="2026">2026</option>
+          <option value="2025">2025</option>
+        </select>
+        <button class="btn btn-p" onclick="openTechUploadModal()">↑ Upload Bônus</button>
+      </div>
     </div>
     <div class="toolbar" style="margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <input class="sb" id="src-bt" placeholder="Buscar parceiro..." oninput="rBonusTech()" style="max-width:200px">
@@ -343,6 +346,39 @@ tr:hover td{background:var(--o50);}
   </div>
 </div>
 
+
+<!-- MODAL UPLOAD TECH BÔNUS -->
+<div id="modal-tech-upload" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)closeTechUploadModal()">
+  <div style="background:#fff;border-radius:12px;padding:24px;width:100%;max-width:680px;border-top:4px solid var(--orange);max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
+    <div class="mh"><div class="mt">Upload — Relatório de Bônus (Integrações)</div><button class="xb" onclick="closeTechUploadModal()">&#215;</button></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div>
+        <div class="upload-zone" onclick="document.getElementById('fi-tech-up').click()" ondragover="event.preventDefault()" ondrop="event.preventDefault();hTechDrop(event)">
+          <div style="font-size:30px;margin-bottom:8px">📊</div>
+          <div style="font-size:13px;font-weight:700;color:var(--n700);margin-bottom:4px">Arraste ou clique para selecionar</div>
+          <div style="font-size:11px;color:var(--n300)">.xlsx — Relatório de bônus com coluna Integração</div>
+        </div>
+        <input type="file" id="fi-tech-up" style="display:none" accept=".xlsx,.xls" onchange="hTechFile(event)">
+        <div id="tech-fn" style="font-size:11px;color:var(--od);margin-top:8px;font-weight:600"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Como funciona</div>
+        <div style="font-size:12px;color:var(--n700);line-height:1.8">Lê a coluna <strong>Integração</strong> para identificar o parceiro, soma a coluna <strong>Quantidade</strong> por mês e aplica <strong>R$0,05/bônus</strong>.</div>
+        <div style="padding:10px;background:var(--n50);border-radius:var(--r);font-size:11px;color:var(--n500);margin-top:12px"><strong>Parceiros reconhecidos:</strong><br>CIGAM · TRINKS · MAQPLAN · PRESENCE · SHOPPUB · WIZOS · LASERCHIP · LINX (todas variantes) · VTEX · TOTVS · DATA SYSTEM · NUVEMSHOP · WAKE · SAFRAPAY</div>
+      </div>
+    </div>
+    <div id="tech-preview" style="display:none">
+      <div style="font-size:11px;font-weight:700;color:var(--n900);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Prévia</div>
+      <div class="tw" style="max-height:260px;overflow-y:auto">
+        <table><thead><tr><th>Parceiro</th><th>Política</th><th style="text-align:center">Bônus</th><th style="text-align:right">Comissão</th></tr></thead><tbody id="tech-preview-tbody"></tbody></table>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:var(--ol);border-radius:var(--r);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div><div style="font-size:10px;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;font-weight:600">Total</div><div style="font-size:20px;font-weight:700;color:var(--od)" id="tech-total-preview"></div></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-g" onclick="closeTechUploadModal()">Cancelar</button><button class="btn btn-p" onclick="registrarTech()">&#10003; Registrar</button></div>
+      </div>
+    </div>
+  </div>
+</div>
 </div><!-- /content -->
 
 <!-- MODAL DETALHE APURAÇÃO -->
@@ -2311,7 +2347,7 @@ async function carregarTechSupabase(){
         TECH_DETAIL[key].push({loja:r.cliente||'',comissao:r.comissao||0,qtd:r.comissao>0?Math.round(r.comissao/0.05):0});
       });
     }
-    rBonusTech();
+    rBonusTech(); // re-renderiza com detalhes já carregados
     showSync('✓ Comissões de integração carregadas do banco');
   }catch(e){console.warn('Supabase tech:',e.message);}
 }
@@ -2341,6 +2377,142 @@ window.addEventListener('DOMContentLoaded', function(){
   carregarDetalhesBusinessSupabase();
   carregarTechSupabase();
 });
+</script>
+
+<script>
+var techDadosPendentes=null;
+var TECH_POL_MAP={
+  'cigam':'CIGAM','trinks':'Trinks','maqplan':'MAQPLAN','presence':'Presence',
+  'shoppub':'Shoppub','wizos':'Wizos','laserchip':'LaserChip',
+  'linx microvix':'LINX + Seta','linx microvix v2':'LINX + Seta','linx pos':'LINX + Seta',
+  'linx pos v2':'LINX + Seta','linx omni pos':'LINX + Seta','linx seta digital':'LINX + Seta',
+  'linx seta digital v2':'LINX + Seta','linx millenium v2':'LINX + Seta','linx degust':'LINX + Seta',
+  'linx degust v2':'LINX + Seta','linx commerce':'LINX + Seta','linx store x':'LINX + Seta',
+  'vtex v1':'VTEX - V2','vtex v2':'VTEX - V2','vtex':'VTEX - V2',
+  'totvs moda':'TOTVS','totvs protheus':'TOTVS',
+  'data system':'DataSystem','varejonline':'Varejonline',
+  'nuvemshop':'NuvemShop','wake':'Wake','safrapay':'Safrapay',
+  'jetcommerce':'JetCommerce','jet e-commerce':'JetCommerce',
+  'shop control 9':'Shoppub'
+};
+function openTechUploadModal(){document.getElementById('modal-tech-upload').style.display='flex';}
+function closeTechUploadModal(){document.getElementById('modal-tech-upload').style.display='none';document.getElementById('tech-fn').textContent='';document.getElementById('tech-preview').style.display='none';techDadosPendentes=null;}
+function hTechDrop(e){var f=e.dataTransfer.files[0];if(f)procTech(f);}
+function hTechFile(e){var f=e.target.files[0];if(f)procTech(f);}
+function parseMesTech(v){
+  v=String(v||'').trim();
+  var mpt={jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
+  var lower=v.toLowerCase();
+  for(var m in mpt){if(lower.includes(m))return{mes:mpt[m],ano:2026};}
+  var d=new Date(v);
+  if(!isNaN(d))return{mes:d.getMonth()+1,ano:d.getFullYear()};
+  return null;
+}
+function procTech(file){
+  document.getElementById('tech-fn').textContent='Lendo '+file.name+'...';
+  var rd=new FileReader();
+  rd.onload=function(e){
+    try{
+      var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
+      // Tenta header na linha 2 se linha 1 for filtros
+      if(rows.length>0){
+        var keys=Object.keys(rows[0]);
+        var hasInteg=keys.some(function(k){return /integra/i.test(k);});
+        if(!hasInteg){
+          rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:1});
+        }
+      }
+      document.getElementById('tech-fn').textContent='OK: '+file.name+' ('+rows.length+' linhas)';
+      calcTech(rows,file.name);
+    }catch(err){document.getElementById('tech-fn').textContent='Erro: '+err.message;}
+  };
+  rd.readAsArrayBuffer(file);
+}
+function calcTech(rows,arq){
+  var sample=rows[0]||{};
+  var cols=Object.keys(sample);
+  var cInteg=cols.find(function(c){return /integra/i.test(c);});
+  var cQtd=cols.find(function(c){return /quantidade|qtd/i.test(c);});
+  var cData=cols.find(function(c){return /^data$/i.test(c.trim());});
+  var cLoja=cols.find(function(c){return /^loja$/i.test(c.trim());});
+  if(!cInteg||!cQtd){document.getElementById('tech-fn').textContent+=' — Colunas Integração/Quantidade não encontradas';return;}
+
+  var porParc={};
+  var detalhe={};
+  rows.forEach(function(r){
+    var integ=(r[cInteg]||'').trim().toLowerCase();
+    var parc=TECH_POL_MAP[integ];
+    if(!parc)return;
+    var dt=cData?parseMesTech(r[cData]):null;
+    if(!dt)return;
+    var qtd=parseInt(r[cQtd])||0;
+    if(qtd<=0)return;
+    var loja=cLoja?String(r[cLoja]||''):'';
+    var k=parc+'__'+(dt.mes-1)+'__'+dt.ano;
+    if(!porParc[k])porParc[k]={parceiro:parc,mes:dt.mes,ano:dt.ano,qtd:0,lojas:{}};
+    porParc[k].qtd+=qtd;
+    porParc[k].lojas[loja]=(porParc[k].lojas[loja]||0)+qtd;
+  });
+
+  var resultado=Object.values(porParc);
+  if(!resultado.length){document.getElementById('tech-fn').textContent+=' — Nenhum parceiro identificado';return;}
+
+  // Agrupa por parceiro para prévia
+  var porNome={};
+  resultado.forEach(function(r){
+    if(!porNome[r.parceiro])porNome[r.parceiro]={qtd:0,com:0};
+    porNome[r.parceiro].qtd+=r.qtd;
+    porNome[r.parceiro].com+=r.qtd*0.05;
+  });
+
+  var totalCom=resultado.reduce(function(s,r){return s+r.qtd*0.05;},0);
+  document.getElementById('tech-total-preview').textContent='R$ '+totalCom.toLocaleString('pt-BR',{minimumFractionDigits:2});
+  document.getElementById('tech-preview-tbody').innerHTML=Object.keys(porNome).map(function(p){
+    var v=porNome[p];
+    return '<tr><td><strong>'+p+'</strong></td><td style="font-size:11px;color:var(--n500)">R$0,05/bônus</td>'
+      +'<td style="text-align:center">'+v.qtd.toLocaleString('pt-BR')+'</td>'
+      +'<td style="text-align:right;font-weight:700;color:var(--od)">R$ '+v.com.toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td></tr>';
+  }).join('');
+  document.getElementById('tech-preview').style.display='block';
+  techDadosPendentes={resultado:resultado,arq:arq};
+}
+async function registrarTech(){
+  if(!techDadosPendentes)return;
+  var resultado=techDadosPendentes.resultado;
+  var arq=techDadosPendentes.arq;
+  var inserts=[];
+  var detalhes=[];
+  resultado.forEach(function(r){
+    var total=r.qtd*0.05;
+    inserts.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,total:total,politica:'R$0,05/bônus',qtd_bonus:r.qtd,base_receita:0,arquivo:arq});
+    Object.keys(r.lojas).forEach(function(loja){
+      var q=r.lojas[loja];
+      detalhes.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,arquivo:arq,cliente:loja,cnpj:'',base_receita:0,comissao:q*0.05});
+      // Atualiza memória
+      var key=r.parceiro+'__'+(r.mes-1);
+      if(!TECH_DETAIL[key])TECH_DETAIL[key]=[];
+      TECH_DETAIL[key].push({loja:loja,comissao:q*0.05,qtd:q});
+    });
+    // Atualiza CT26/CT25
+    var target=r.ano===2026?CT26:CT25;
+    var entry=target.find(function(c){return c.nome.toLowerCase()===r.parceiro.toLowerCase();});
+    if(!entry){entry={nome:r.parceiro,pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]};target.push(entry);}
+    entry.vals[r.mes-1]=(entry.vals[r.mes-1]||0)+r.qtd*0.05;
+  });
+  try{
+    await sb.from('comissoes').delete().eq('tipo','tech').eq('arquivo',arq);
+    await sb.from('comissoes_detalhe').delete().eq('tipo','tech').eq('arquivo',arq);
+    await sb.from('comissoes').insert(inserts);
+    for(var i=0;i<detalhes.length;i+=500){
+      await sb.from('comissoes_detalhe').insert(detalhes.slice(i,i+500));
+    }
+    showSync('✓ '+inserts.length+' registros tech salvos no banco');
+  }catch(e){showSync('⚠ Erro ao salvar: '+e.message,false);}
+  rBonusTech();
+  closeTechUploadModal();
+}
 </script>
 <div id="modal-biz-det" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)document.getElementById('modal-biz-det').style.display='none'">
   <div style="background:#fff;border-radius:12px;padding:24px;width:100%;max-width:700px;border-top:4px solid var(--orange);max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
