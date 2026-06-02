@@ -703,35 +703,14 @@ const CT25=[ // Tech 2025 — bônus gerado
   {nome:'JetCommerce',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
   {nome:'Presence',pol:'R$0,05/bônus (a partir nov/25)',vals:[0,0,0,0,0,0,0,0,0,0,1819.48,2469.03]},
 ];
-const CB25=[ // Business 2025 — % receita
-  {nome:'Presence',pol:'10% adimplência',vals:[3468.1,0,2401.97,0,2500.11,3108.14,0,0,2757.46,1919.17,0,0]},
-  {nome:'DataSystem',pol:'5% TPV',vals:[5406,2500,3176.24,2630.01,1043.47,1247.75,0,1196.28,2538.3,1912.85,4095.37,2494.7]},
-  {nome:'NuvemShop',pol:'10% receita',vals:[0,0,0,0,0,0,0,0,1703.5,1998.37,795.12,280.5]},
-  {nome:'Wake',pol:'10-15% receita',vals:[0,0,0,0,0,0,0,0,6491.02,787.22,10075.17,531.47]},
-  {nome:'VTEX - V2',pol:'10% receita V2',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {nome:'Retail Manager',pol:'20% receita',vals:[5855.77,6026.83,5527,5277.26,4874.32,4636.46,4040.17,3578.88,4209.16,1163.7,3561.75,4983.61]},
-  {nome:'Bruno Bueno',pol:'10% receita',vals:[1397.06,1703.68,1627.39,1474.21,1797.28,1290.4,1494.72,1184.13,1389.67,1925.17,2607.9,1486.56]},
-  {nome:'GBR Digital',pol:'Escalonado',vals:[0,0,0,0,0,234,234,144,0,0,272.44,203.44]},
-  {nome:'Frank Azulay',pol:'10% / 24 meses',vals:[0,0,0,0,0,0,0,0,0,0,2000,52000]},
-  {nome:'Varejonline',pol:'5% receita',vals:[4613.4,2309.7,4183.81,0,7563.62,0,0,0,0,0,0,0]},
-];
+const CB25=[]; // populado pelo Supabase
 const CT26=[
   {nome:'CIGAM',pol:'R$0,05/bônus',vals:[4333.45,3883.45,0,0,0,0,0,0,0,0,0,0]},
   {nome:'Trinks',pol:'R$0,05/bônus',vals:[536.05,560.45,0,0,0,0,0,0,0,0,0,0]},
   {nome:'MAQPLAN',pol:'R$0,05/bônus',vals:[1175.1,1450.3,0,0,0,0,0,0,0,0,0,0]},
   {nome:'Presence',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
 ];
-const CB26=[
-  {nome:'Presence',pol:'10% adimplência',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {nome:'DataSystem',pol:'5% TPV',vals:[2896.77,2047.48,0,0,0,0,0,0,0,0,0,0]},
-  {nome:'NuvemShop',pol:'10% receita',vals:[333.9,689.01,0,0,0,0,0,0,0,0,0,0]},
-  {nome:'Wake',pol:'10-15% receita',vals:[2308.73,2129.63,0,0,0,0,0,0,0,0,0,0]},
-  {nome:'Retail Manager',pol:'20% receita',vals:[3112.56,3230.24,2136.93,0,0,0,0,0,0,0,0,0]},
-  {nome:'Bruno Bueno',pol:'10% receita',vals:[1511.34,1779.25,1281.63,0,0,0,0,0,0,0,0,0]},
-  {nome:'GBR Digital',pol:'Escalonado',vals:[137.04,114.58,56.05,0,0,0,0,0,0,0,0,0]},
-  {nome:'Frank Azulay',pol:'10% receita',vals:[0,30000,0,0,0,0,0,0,0,0,0,0]},
-  {nome:'Dama 33',pol:'20% receita',vals:[972.91,929.17,660.39,0,0,0,0,0,0,0,0,0]},
-];
+const CB26=[]; // populado pelo Supabase
 
 // Políticas para cálculo automático
 // POL — mapa de políticas por integração/parceiro
@@ -2014,26 +1993,26 @@ function closeAdimModal(){document.getElementById('modal-adim').style.display='n
 function hAdimDrop(e){var f=e.dataTransfer.files[0];if(f)procAdim(f);}
 function hAdimFile(e){var f=e.target.files[0];if(f)procAdim(f);}
 function normCNPJ(v){return String(v||'').replace(/[^0-9]/g,'').padStart(14,'0');}
-var POL_BIZ={
-  'alexandre cintra':{pol:'20% receita',fn:function(b){return b*0.20;}},
-  'retail manager':{pol:'20% receita',fn:function(b){return b*0.20;}},
-  'bruno bueno':{pol:'10% receita',fn:function(b){return b*0.10;}},
-  'dama 33':{pol:'20% receita',fn:function(b){return b*0.20;}},
-  'dama33':{pol:'20% receita',fn:function(b){return b*0.20;}},
-  'gbr digital':{pol:'Escalonado',fn:function(b){return b<=50000?b*0.05:b<=125000?b*0.075:b<=300000?b*0.085:b*0.10;}},
-  'frank azulay':{pol:'10% receita',fn:function(b){return b*0.10;}},
-  'presence':{pol:'10% adimpl.',fn:function(b){return b*0.10;}},
-  'datasystem':{pol:'5% TPV',fn:function(b){return b*0.05;}},
-  'nuvemshop':{pol:'10% receita',fn:function(b){return b*0.10;}},
-  'wake':{pol:'10% receita',fn:function(b){return b*0.10;}},
-  'wizos':{pol:'10% receita',fn:function(b){return b*0.10;}},
-  'merithu':{pol:'10% receita',fn:function(b){return b*0.10;}},
-  'agencia toff':{pol:'10% receita',fn:function(b){return b*0.10;}},
-  'agência toff':{pol:'10% receita',fn:function(b){return b*0.10;}},
-  'safrapay':{pol:'10% receita',fn:function(b){return b*0.10;}}
-};
+// POL_BIZ é construído dinamicamente dos parceiros cadastrados no banco
+var POL_BIZ={};
+function buildPolBiz(){
+  POL_BIZ={};
+  P.forEach(function(p){
+    if(!p.biz)return;
+    var key=p.nome.toLowerCase().trim();
+    var pct=(p.biz.pct||0.10);
+    POL_BIZ[key]={pol:Math.round(pct*100)+'% receita',pct:pct,fn:function(pctV){return function(b){return b*pctV;};}(pct)};
+    // aliases comuns
+    if(p.nome.toLowerCase().includes('retail manager')){
+      POL_BIZ['alexandre cintra']={pol:Math.round(pct*100)+'% receita',pct:pct,fn:function(pctV){return function(b){return b*pctV;};}(pct)};
+    }
+  });
+  // GBR Digital escalonado
+  POL_BIZ['gbr digital']={pol:'Escalonado',pct:0,fn:function(b){return b<=50000?b*0.05:b<=125000?b*0.075:b<=300000?b*0.085:b*0.10;}};
+}
 function procAdim(file){
   document.getElementById('adim-fn').textContent='Lendo '+file.name+'...';
+  buildPolBiz();
   var rd=new FileReader();
   rd.onload=function(e){
     try{
@@ -2073,17 +2052,33 @@ function parseDataPgto(raw){
 function calcAdim(rows,arq){
   var sample=rows[0]||{};
   var cols=Object.keys(sample);
-  var cCNPJ=cols.find(function(c){return /cd.?cliente/i.test(c);});
+  // CNPJ: coluna "Unnamed: 12" (CNPJ formatado) ou fallback Cd.Cliente
+  var cCNPJ=cols.find(function(c){return /unnamed.*12/i.test(c)||/cd.?cliente/i.test(c);});
   if(!cCNPJ)cCNPJ=cols.find(function(c){return /cliente/i.test(c);});
-  var cLiq=cols.find(function(c){return /l.?quido/i.test(c);});
-  // Coluna J = índice 9 (0-based) — usamos a chave pelo índice posicional
-  var cData=cols[9]||null; // coluna J
+  // Coluna base: Pago (filtrar Pago > 0)
+  var cPago=cols.find(function(c){return /^pago$/i.test(c.trim());});
+  var cLiq=cPago||cols.find(function(c){return /l.?quido/i.test(c);});
+  // Coluna J (índice 9) = Pagamento = data de competência
+  var cData=cols[9]||null;
 
-  // Mapa: cnpj -> {ano_mesIdx -> valor}
+  // Detecta CNPJs com múltiplos parceiros indicadores
+  var cnpjParceiroMap={};
+  IND.forEach(function(i){
+    if(!i.cnpjCli)return;
+    var cnpj=normCNPJ(i.cnpjCli);
+    if(!cnpjParceiroMap[cnpj])cnpjParceiroMap[cnpj]=[];
+    if(!cnpjParceiroMap[cnpj].includes(i.parceiro))cnpjParceiroMap[cnpj].push(i.parceiro);
+  });
+  var cnpjsDuplicados=Object.keys(cnpjParceiroMap).filter(function(c){return cnpjParceiroMap[c].length>1;});
+
+  // Mapa: cnpj -> {ano_mesIdx -> valor} — só onde Pago > 0
   var mapaAdimPorMes={};
   rows.forEach(function(r){
     var cnpj=normCNPJ(r[cCNPJ]);
     if(!cnpj||cnpj==='00000000000000')return;
+    var rawPago=r[cPago||''];
+    var pago=typeof rawPago==='number'?rawPago:parseFloat(String(rawPago||'').replace(/[^0-9.,]/g,'').replace(',','.'))||0;
+    if(cPago&&pago<=0)return; // filtro: só Pago > 0
     var raw=r[cLiq];
     var val=typeof raw==='number'?raw:parseFloat(String(raw||'').replace(/[^0-9.,]/g,'').replace(',','.'))||0;
     if(val<=0)return;
@@ -2120,7 +2115,14 @@ function calcAdim(rows,arq){
     if(base>0)resultado.push({parceiro:parceiro,pol:polBiz.pol,encontrados:encontrados,base:base,comissao:polBiz.fn(base),polFn:polBiz.fn,cnpjsGrupo:group.cnpjs});
   });
   if(!resultado.length){document.getElementById('adim-fn').textContent+=' — Nenhum CNPJ indicado encontrado no relatório';return;}
-  adimDadosPendentes={resultado:resultado,arq:arq,mapaAdimPorMes:mapaAdimPorMes};
+  // Alerta de CNPJs duplicados encontrados no relatório
+  var dupEncontrados=cnpjsDuplicados.filter(function(c){return mapaAdimTotal[c]>0;});
+  if(dupEncontrados.length){
+    var dupMsg='⚠ '+dupEncontrados.length+' CNPJ(s) com múltiplos parceiros indicadores — verifique: ';
+    dupMsg+=dupEncontrados.map(function(c){return c+' ('+cnpjParceiroMap[c].join(' / ')+')';}).join('; ');
+    document.getElementById('adim-fn').textContent=dupMsg;
+  }
+  adimDadosPendentes={resultado:resultado,arq:arq,mapaAdimPorMes:mapaAdimPorMes,cnpjsDuplicados:dupEncontrados,cnpjParceiroMap:cnpjParceiroMap};
   var totalCom=resultado.reduce(function(s,r){return s+r.comissao;},0);
   document.getElementById('adim-total-preview').textContent=brl(totalCom);
   document.getElementById('adim-preview-tbody').innerHTML=resultado.map(function(r){
@@ -2186,6 +2188,18 @@ function registrarAdim(){
   });
 
   rB();
+  // Salva comissões Business no Supabase
+  (async function(){
+    try{
+      var inserts=resultado.map(function(r){
+        var polKey=r.parceiro.toLowerCase().trim();
+        var polBiz=POL_BIZ[polKey]||{pol:'10% receita',pct:0.10};
+        return{parceiro:r.parceiro,tipo:'business',mes:0,ano:0,total:r.comissao,politica:polBiz.pol,qtd_bonus:0,base_receita:r.base,arquivo:arq};
+      });
+      await sb.from('comissoes').insert(inserts);
+      showSync('✓ Comissões de indicação salvas no banco');
+    }catch(e){showSync('⚠ Comissões salvas localmente apenas',false);}
+  })();
   closeAdimModal();
   var mesesStr=Array.from(mesesRegistrados).sort().join(', ');
   var banner=document.getElementById('adim-resultado');
@@ -2194,12 +2208,32 @@ function registrarAdim(){
   setTimeout(function(){banner.style.display='none';},8000);
 }
 
+async function carregarComissoesBusinessSupabase(){
+  try{
+    const {data,error}=await sb.from('comissoes').select('*').eq('tipo','business').order('ano').order('mes');
+    if(error)throw error;
+    if(!data||!data.length)return;
+    CB25.splice(0,CB25.length);
+    CB26.splice(0,CB26.length);
+    data.forEach(function(r){
+      if(!r.parceiro||r.mes===0)return;
+      var target=r.ano===2026?CB26:CB25;
+      var entry=target.find(function(c){return c.nome.toLowerCase()===r.parceiro.toLowerCase();});
+      if(!entry){entry={nome:r.parceiro,pol:r.politica||'% receita',vals:[0,0,0,0,0,0,0,0,0,0,0,0]};target.push(entry);}
+      entry.vals[(r.mes-1)]=(entry.vals[(r.mes-1)]||0)+(r.total||0);
+    });
+    rB();
+    showSync('✓ Comissões de indicação carregadas do banco');
+  }catch(e){console.warn('Supabase biz:',e.message);}
+}
+
 // Inicializa: carrega parceiros do Supabase ao abrir o app
 window.addEventListener('DOMContentLoaded', function(){
   rC(); // renderiza dados locais imediatamente
   carregarParceirosSupabase(); // depois sincroniza com banco
   migrarHistoricoSupabase(); // migra histórico 2025/2026 se ainda não fez
   carregarIndicacoesSupabase(); // carrega indicações do banco
+  carregarComissoesBusinessSupabase(); // carrega comissões de indicação do banco
 });
 </script>
 <div id="modal-biz-det" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)document.getElementById('modal-biz-det').style.display='none'">
