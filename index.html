@@ -2181,11 +2181,6 @@ function registrarAdim(){
       Object.values(porMes[chave].cnpjs).forEach(function(c){
         ADIM_DETAIL[key].push({cliente:c.nome,cnpj:c.cnpj||'',val:c.val,comissao:c.val*pct});
       });
-      // Acumula detalhes para salvar no banco
-      if(!detalheInserts[key])detalheInserts[key]={parceiro:r.parceiro,mes:mesIdx+1,ano:ano,arquivo:arq,itens:[]};
-      Object.values(porMes[chave].cnpjs).forEach(function(c){
-        detalheInserts[key].itens.push({cliente:c.nome,cnpj:c.cnpj||'',base_receita:c.val,comissao:c.val*pct});
-      });
     });
 
     // Fallback: linhas sem data vão para o mês mais recente encontrado ou ignoram
