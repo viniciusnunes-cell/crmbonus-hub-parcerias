@@ -1,0 +1,2258 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --orange:#FFA500;--od:#B37400;--ol:#FFF3D6;--o50:#FFFBF0;
+  --crayola:#FD7A36;--tart:#FC4645;
+  --n900:#111111;--n700:#383838;--n500:#5B5B5B;--n300:#A8A8A8;--n100:#EEEEEE;--n50:#F7F7F7;
+  --white:#FFFFFF;--bdr:#E8E8E8;--r:8px;--f:'Montserrat',sans-serif;
+}
+body{font-family:var(--f);background:var(--n50);}
+.app{min-height:640px;}
+.header{background:var(--n900);padding:16px 24px 0;}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.logo{width:36px;height:36px;background:var(--orange);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--n900);}
+.bname{font-size:17px;font-weight:700;color:var(--white);}
+.barrow{color:var(--orange);}
+.bsub{font-size:10px;color:var(--n300);letter-spacing:1px;text-transform:uppercase;margin-top:1px;}
+.tabs{display:flex;gap:1px;}
+.tab{padding:10px 18px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:0.4px;border-radius:6px 6px 0 0;color:var(--n300);border:none;background:transparent;transition:all .15s;font-family:var(--f);text-transform:uppercase;}
+.tab.active{background:var(--white);color:var(--n900);}
+.tab:hover:not(.active){background:rgba(255,255,255,.1);color:var(--white);}
+.content{padding:24px;background:var(--white);min-height:560px;}
+.panel{display:none;}.panel.active{display:block;}
+.toolbar{display:flex;gap:10px;margin-bottom:18px;align-items:center;flex-wrap:wrap;}
+.sb{flex:1;min-width:180px;padding:9px 13px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;background:var(--white);color:var(--n900);outline:none;font-family:var(--f);}
+.sb:focus{border-color:var(--orange);}
+.sel{padding:9px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--white);color:var(--n700);outline:none;cursor:pointer;font-family:var(--f);font-weight:500;}
+.sel:focus{border-color:var(--orange);}
+.btn{padding:9px 18px;border-radius:var(--r);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .15s;font-family:var(--f);letter-spacing:0.5px;text-transform:uppercase;}
+.btn-p{background:var(--orange);color:var(--n900);}.btn-p:hover{background:#e09400;}
+.btn-g{background:var(--white);border:1.5px solid var(--bdr);color:var(--n700);}.btn-g:hover{border-color:var(--orange);}
+.tw{overflow-x:auto;border-radius:var(--r);border:1.5px solid var(--bdr);}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+thead{background:var(--n900);}
+th{padding:10px 13px;text-align:center;font-weight:700;color:var(--white);white-space:nowrap;font-size:10px;letter-spacing:0.6px;text-transform:uppercase;}
+td{padding:9px 13px;border-bottom:1px solid var(--n100);color:var(--n700);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--o50);}
+.sum-row td{font-weight:700;background:var(--ol)!important;color:var(--n900);}
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;letter-spacing:0.2px;}
+.b-tech{background:var(--n900);color:var(--white);}
+.b-biz{background:var(--ol);color:var(--od);}
+.b-signed{background:#D4EDDA;color:#1A6B35;}
+.b-pending{background:#FFF3CD;color:#856404;}
+.b-neg{background:#FCE8E8;color:#922;}
+.b-sent{background:#E8F4FD;color:#1565C0;}
+/* TIPO TAGS — para parceiros com múltiplos tipos */
+.tipo-stack{display:flex;flex-direction:column;gap:3px;}
+.contrato-item{display:flex;align-items:flex-start;gap:6px;padding:5px 8px;border-radius:6px;background:var(--n50);border:1px solid var(--bdr);margin-top:3px;}
+.contrato-item.tech{border-left:3px solid var(--n900);}
+.contrato-item.biz{border-left:3px solid var(--orange);}
+.ci-label{font-size:10px;font-weight:700;color:var(--n500);text-transform:uppercase;letter-spacing:0.5px;min-width:50px;}
+.ci-val{font-size:11px;color:var(--n700);}
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:22px;}
+.sc{background:var(--n50);border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px;}
+.sl{font-size:10px;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;font-weight:600;margin-bottom:6px;}
+.sv{font-size:20px;font-weight:700;color:var(--n900);}
+.sv.ac{color:var(--od);}
+.sv.sm{font-size:14px;}
+/* FORM/MODAL */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fgrp{display:flex;flex-direction:column;gap:5px;}
+.fgrp.full{grid-column:1/-1;}
+.fl{font-size:10px;font-weight:700;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;}
+.fi{padding:9px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:13px;color:var(--n900);background:var(--white);outline:none;font-family:var(--f);}
+.fi:focus{border-color:var(--orange);}
+.mo{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-start;justify-content:center;padding:30px 16px;}
+.mo.open{display:flex;}
+.modal{background:var(--white);border-radius:12px;padding:24px;width:100%;max-width:620px;border-top:4px solid var(--orange);max-height:90vh;overflow-y:auto;}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.mt{font-size:15px;font-weight:700;color:var(--n900);}
+.xb{background:none;border:none;font-size:22px;cursor:pointer;color:var(--n500);}
+.card{background:var(--white);border:1.5px solid var(--bdr);border-radius:var(--r);padding:20px;margin-bottom:16px;}
+.ct{font-size:11px;font-weight:700;color:var(--n900);margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--n100);text-transform:uppercase;letter-spacing:0.6px;}
+.upload-zone{border:2px dashed var(--n300);border-radius:var(--r);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;}
+.upload-zone:hover{border-color:var(--orange);background:var(--o50);}
+.ab{background:none;border:none;cursor:pointer;color:var(--n300);font-size:14px;padding:4px 7px;border-radius:6px;font-family:var(--f);}
+.ab:hover{background:var(--ol);color:var(--od);}
+.em{padding:36px;text-align:center;color:var(--n300);font-size:13px;}
+.hr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.pt{font-size:15px;font-weight:700;color:var(--n900);}
+.ps{font-size:11px;color:var(--n500);margin-top:3px;}
+.rel{position:relative;}
+.pt{font-size:15px;font-weight:700;color:var(--n900);}
+/* Contrato section in modal */
+.contrato-section{background:var(--n50);border:1.5px solid var(--bdr);border-radius:var(--r);padding:14px;margin-bottom:10px;}
+.cs-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.cs-title.tech{color:var(--n900);}
+.cs-title.biz{color:var(--od);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.toggle{position:relative;width:36px;height:20px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--n300);border-radius:20px;transition:.2s;}
+.slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.2s;}
+.toggle input:checked + .slider{background:var(--orange);}
+.toggle input:checked + .slider:before{transform:translateX(16px);}
+.pg-group{margin-bottom:20px;}
+.pgh{display:flex;align-items:center;gap:10px;background:var(--n900);color:var(--white);padding:8px 13px;border-radius:6px 6px 0 0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;cursor:pointer;user-select:none;}
+.pgh:hover{background:#222;}
+.pgf{background:var(--ol);display:flex;justify-content:space-between;padding:8px 13px;border-radius:0 0 6px 6px;border:1px solid var(--bdr);}
+.pg-body{overflow:hidden;transition:none;}
+.pg-body.collapsed{display:none;}
+.pg-chevron{margin-left:auto;font-size:14px;transition:transform .2s;display:inline-block;}
+.pg-chevron.collapsed{transform:rotate(-90deg);}
+.com-link{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;}
+.com-link:hover{color:var(--orange)!important;}
+.mo-det{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:200;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
+.mo-det.open{display:flex;}
+.modal-det{background:var(--white);border-radius:12px;padding:24px;width:100%;max-width:700px;border-top:4px solid var(--orange);max-height:85vh;overflow-y:auto;}
+.pgh .pg-total-preview{font-size:12px;font-weight:700;color:var(--orange);margin-left:4px;display:none;}
+.pgh .pg-total-preview.show{display:inline;}
+.tag-o{background:var(--orange);color:var(--n900);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;}
+.rc{background:var(--o50);border:1.5px solid var(--orange);border-radius:var(--r);padding:16px;margin-bottom:16px;}
+.si{display:flex;gap:8px;margin-bottom:20px;align-items:center;}
+.step{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--n300);text-transform:uppercase;letter-spacing:0.5px;}
+.step.active{color:var(--n900);}
+.step.done{color:var(--od);}
+.sn{width:22px;height:22px;border-radius:50%;background:var(--n100);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--n500);}
+.step.active .sn{background:var(--orange);color:var(--n900);}
+.step.done .sn{background:var(--od);color:var(--white);}
+.ssep{flex:1;height:1px;background:var(--bdr);}
+.pt-none{font-size:11px;color:var(--n300);font-style:italic;}
+/* PARTNER CARDS */
+.pcard{background:var(--white);border:1.5px solid var(--bdr);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s;outline:none;}
+.pcard:hover{border-color:var(--orange);box-shadow:0 4px 16px rgba(255,165,0,.12);transform:translateY(-1px);}
+.pcard:focus-visible{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,165,0,.25);}
+
+.ind-group{border:1.5px solid var(--bdr);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+.ind-group-header{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--n50);border-bottom:1.5px solid var(--bdr);cursor:pointer;user-select:none;transition:background .15s;}
+.ind-group-header:hover{background:var(--ol);}
+.ind-group-chevron{color:var(--orange);font-size:13px;transition:transform .2s;display:inline-block;min-width:14px;}
+.ind-group-chevron.open{transform:rotate(90deg);}
+.ind-group-name{font-size:12px;font-weight:700;color:var(--n900);flex:1;}
+.ind-group-razao{font-size:10px;color:var(--n500);font-weight:400;}
+.ind-group-meta{display:flex;gap:6px;align-items:center;}
+.ind-group-count{background:var(--orange);color:var(--n900);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.ind-group-ativos{background:#D4EDDA;color:#1A6B35;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;}
+.ind-group-body{display:none;}
+.ind-group-body.open{display:block;}
+.ind-group table{border-radius:0;border:none;}
+.ind-group thead{background:var(--ol);}
+.ind-group th{color:var(--od);font-size:10px;}
+.ind-group tr:hover td{background:var(--o50);}
+.ind-group-footer{display:flex;justify-content:space-between;align-items:center;padding:7px 14px;background:var(--o50);border-top:1px solid var(--bdr);font-size:11px;}
+.ind-group-footer strong{color:var(--od);}
+</style>
+
+<div class="app rel" id="app">
+<div class="header">
+  <div class="brand">
+    <div class="logo">cb</div>
+    <div><div class="bname">crmbonus<span class="barrow">↗</span></div><div class="bsub">Hub de Parceiros</div></div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="sw('cadastro')">Parceiros</button>
+    <button class="tab" onclick="sw('business')">Comissão de Indicação</button>
+    <button class="tab" onclick="sw('bonus')">Comissão de Integração</button>
+    <button class="tab" onclick="sw('indicacoes')">Controle de Indicações</button>
+  </div>
+</div>
+<div class="content">
+
+<!-- PARCEIROS -->
+<div class="panel active" id="tab-cadastro">
+  <div class="sg" id="stats-c"></div>
+  <div class="toolbar">
+    <input class="sb" id="src-c" placeholder="Buscar parceiro, CNPJ..." oninput="rC()">
+    <select class="sel" id="ft-tipo" onchange="rC()">
+      <option value="">Todos os tipos</option>
+      <option value="Tech">Integrações (bônus)</option>
+      <option value="Business">Indicações (% receita)</option>
+      <option value="Ambos">Ambos</option>
+    </select>
+    <select class="sel" id="ft-status" onchange="rC()">
+      <option value="">Todos os status</option>
+      <option value="Assinado">Assinado</option>
+      <option value="Em negociação">Em negociação</option>
+      <option value="Contrato enviado">Contrato enviado</option>
+    </select>
+
+  </div>
+  <div style="display:flex;gap:16px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+    <span style="font-size:10px;font-weight:700;color:var(--n300);text-transform:uppercase;letter-spacing:0.8px">Status:</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--n500)"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0"></span>Assinado</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--n500)"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block;flex-shrink:0"></span>Em negociação</span>
+    <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--n500)"><span style="width:8px;height:8px;border-radius:50%;background:#60a5fa;display:inline-block;flex-shrink:0"></span>Contrato enviado</span>
+  </div>
+  <div id="cards-c"></div>
+</div>
+
+<!-- DRAWER PARCEIRO -->
+<div id="drawer-overlay" onclick="closeDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200"></div>
+<div id="drawer" style="display:none;position:fixed;top:0;right:0;bottom:0;width:420px;background:var(--white);z-index:201;box-shadow:-4px 0 32px rgba(0,0,0,.12);overflow-y:auto;font-family:var(--f)">
+  <div id="drawer-content"></div>
+</div>
+
+
+<!-- BUSINESS -->
+<div class="panel" id="tab-business">
+  <div class="hr">
+    <div><div class="pt">Comissão Indicações — % sobre Receita</div><div class="ps">Base de cálculo: % do valor pago pelos clientes indicados, enquanto ativos e adimplentes.</div></div>
+    <select class="sel" id="ano-biz" onchange="rB()"><option value="2026">2026</option><option value="2025">2025</option></select>
+  </div>
+  <div class="sg" id="stats-b"></div>
+  <div class="toolbar" style="justify-content:space-between;flex-wrap:wrap">
+    <input class="sb" id="src-b" placeholder="Buscar parceiro..." oninput="rB()" style="max-width:260px">
+    <button class="btn btn-p" onclick="openAdimModal()">&#8593; Upload Adimpl&#234;ncia</button>
+  </div>
+  <div id="adim-resultado" style="display:none;margin-bottom:16px"><div class="rc" id="adim-res-banner"></div></div>
+  <div class="tw"><table><thead><tr><th>Parceiro</th><th>Política</th>
+    <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th>
+    <th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th><th>Total</th>
+  </tr></thead><tbody id="tb-b"></tbody></table></div>
+</div>
+
+<!-- BÔNUS -->
+<div class="panel" id="tab-bonus">
+  <div class="hr">
+    <div><div class="pt">Relatório de Bônus</div><div class="ps">Upload com múltiplos parceiros — identificação automática e cálculo por política contratual</div></div>
+    <button class="btn btn-p" onclick="openUploadModal()">↑ Novo Upload</button>
+  </div>
+  <div class="si">
+    <div class="step active" id="step1"><div class="sn">1</div>Upload</div><div class="ssep"></div>
+    <div class="step" id="step2"><div class="sn">2</div>Identificação</div><div class="ssep"></div>
+    <div class="step" id="step3"><div class="sn">3</div>Cálculo</div><div class="ssep"></div>
+    <div class="step" id="step4"><div class="sn">4</div>Registro</div>
+  </div>
+  <div id="pnl-res" style="display:none">
+    <div class="rc" id="res-geral"></div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
+      <div style="font-size:13px;font-weight:700;color:var(--n900)">Detalhamento por parceiro</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-g" onclick="voltarUp()">← Novo upload</button>
+        <button class="btn btn-g" onclick="document.querySelectorAll('.pg-body').forEach(b=>b.classList.remove('collapsed'));document.querySelectorAll('.pg-chevron').forEach(c=>c.classList.remove('collapsed'));document.querySelectorAll('.pg-total-preview').forEach(p=>p.classList.remove('show'))">⊞ Expandir todos</button>
+        <button class="btn btn-g" onclick="document.querySelectorAll('.pg-body').forEach(b=>b.classList.add('collapsed'));document.querySelectorAll('.pg-chevron').forEach(c=>c.classList.add('collapsed'));document.querySelectorAll('.pg-total-preview').forEach(p=>p.classList.add('show'))">⊟ Recolher todos</button>
+        <button class="btn btn-p" onclick="regTodos()">Registrar todas</button>
+      </div>
+    </div>
+    <div id="prc-res"></div>
+    <div id="nid-div" style="display:none">
+      <div class="card" style="border-color:#FCE8E8">
+        <div class="ct" style="color:#922">Registros não identificados</div>
+        <div id="nid-lista" style="font-size:12px;color:var(--n500)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTÓRICO COMISSÃO DE INTEGRAÇÃO -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="ct" style="display:flex;align-items:center;justify-content:space-between">
+      <span>Comissão de Integração — Histórico</span>
+      <select class="sel" id="ano-bonus-tech" onchange="rBonusTech()" style="font-size:11px;padding:5px 10px">
+        <option value="2026">2026</option>
+        <option value="2025">2025</option>
+      </select>
+    </div>
+    <div class="toolbar" style="margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <input class="sb" id="src-bt" placeholder="Buscar parceiro..." oninput="rBonusTech()" style="max-width:200px">
+      <select class="sel" id="ft-bt-pol" onchange="rBonusTech()">
+        <option value="">Todas as políticas</option>
+        <option value="R$0,05/bônus">R$0,05/bônus</option>
+        <option value="PDV Linx">R$0,05 PDV Linx</option>
+        <option value="nov/25">A partir nov/25</option>
+      </select>
+      <button class="btn btn-g" onclick="limparFiltrosBT()" style="padding:8px 12px;font-size:11px">✕ Limpar</button>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Parceiro</th><th>Política</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th><th>Total</th></tr></thead>
+        <tbody id="tb-bonus-tech"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- HISTÓRICO DE APURAÇÕES -->
+  <div class="card">
+    <div class="ct" style="display:flex;align-items:center;justify-content:space-between">
+      <span>Histórico de Apurações</span>
+      <span id="hist-count" style="font-size:11px;font-weight:600;color:var(--n500)"></span>
+    </div>
+    <div class="toolbar" style="margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <input class="sb" id="src-hist" placeholder="Buscar parceiro..." oninput="rHistFiltro()" style="max-width:200px">
+      <select class="sel" id="ft-hist-tipo" onchange="rHistFiltro()">
+        <option value="">Todos os tipos</option>
+        <option value="tech">Integrações</option>
+        <option value="biz">Indicações</option>
+      </select>
+      <select class="sel" id="ft-hist-status" onchange="rHistFiltro()">
+        <option value="">Todos os status</option>
+        <option value="Ag. NF">Ag. NF</option>
+        <option value="Pago">Pago</option>
+        <option value="Cancelado">Cancelado</option>
+      </select>
+      <select class="sel" id="ft-hist-mes-de" onchange="rHistFiltro()" style="min-width:130px">
+        <option value="">De (mês)...</option>
+      </select>
+      <select class="sel" id="ft-hist-mes-ate" onchange="rHistFiltro()" style="min-width:130px">
+        <option value="">Até (mês)...</option>
+      </select>
+      <button class="btn btn-g" onclick="limparFiltrosHist()" style="padding:8px 12px;font-size:11px">✕ Limpar</button>
+    </div>
+    <div class="tw"><table><thead><tr><th>Parceiro</th><th>Referência</th><th>Tipo</th><th>Modelo</th><th>Lojas</th><th>Bônus</th><th>Comissão</th><th>Status</th></tr></thead>
+    <tbody id="tb-hist"><tr><td colspan="8"><div class="em">Nenhuma apuração registrada</div></td></tr></tbody></table>
+  </div>
+</div>
+
+<!-- MODAL UPLOAD BÔNUS -->
+<div class="mo" id="modal-upload" onclick="if(event.target===this)closeUploadModal()">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:660px">
+    <div class="mh">
+      <div class="mt">Upload — Relatório de Bônus</div>
+      <button class="xb" onclick="closeUploadModal()">×</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div class="fgrp" style="margin-bottom:14px"><label class="fl">Mês de referência</label><input class="fi" type="month" id="bon-mes" value="2026-05"></div>
+        <div class="upload-zone" onclick="document.getElementById('fi-up').click()"
+          ondragover="event.preventDefault();this.classList.add('bdr-o')"
+          ondragleave="this.classList.remove('bdr-o')"
+          ondrop="event.preventDefault();hDrop(event)">
+          <div style="font-size:30px;margin-bottom:8px">📊</div>
+          <div style="font-size:13px;font-weight:700;color:var(--n700);margin-bottom:4px">Arraste ou clique para selecionar</div>
+          <div style="font-size:11px;color:var(--n300)">.xlsx — pode conter múltiplos parceiros</div>
+        </div>
+        <input type="file" id="fi-up" style="display:none" accept=".xlsx,.xls" onchange="hFile(event)">
+        <div id="fn" style="font-size:11px;color:var(--od);margin-top:8px;font-weight:600"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Formato esperado</div>
+        <div style="font-size:12px;color:var(--n700);line-height:1.8;margin-bottom:12px">
+          <strong>Bônus (Integrações):</strong> colunas <em>Integração</em>, <em>Loja</em>, <em>CNPJ</em> e <em>Quantidade</em>.<br><br>
+          <strong>Indicações (% receita):</strong> coluna com <em>Valor</em> ou <em>Faturamento</em> por cliente.<br><br>
+          A coluna <strong>Integração</strong> identifica o parceiro automaticamente.
+        </div>
+        <div style="padding:10px;background:var(--n50);border-radius:var(--r);font-size:11px;color:var(--n500)">
+          <strong>84 integrações reconhecidas:</strong><br>
+          LINX · VTEX V1/V2 · TOTVS · CAPTA · UPDI · PRESENCE · CIGAM · TRINKS · WAKE · NUVEMSHOP · SHOPIFY · CONECTO · VAREJONLINE · DATA SYSTEM · SAFRAPAY · WIZOS · e mais...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- MODAL DETALHE APURAÇÃO -->
+<div class="mo-det" id="modal-det" onclick="if(event.target===this)fecharDetalhes()">
+  <div class="modal-det">
+    <div class="mh">
+      <div>
+        <div class="mt" id="det-title"></div>
+        <div style="font-size:11px;color:var(--n500);margin-top:3px" id="det-sub"></div>
+      </div>
+      <button class="xb" onclick="fecharDetalhes()">×</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <span id="det-badge"></span>
+      <div style="text-align:right">
+        <div style="font-size:10px;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;font-weight:600">Comissão Total</div>
+        <div style="font-size:22px;font-weight:700;color:var(--od)" id="det-total"></div>
+      </div>
+    </div>
+    <div class="tw">
+      <table>
+        <thead id="det-thead"></thead>
+        <tbody id="det-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- INDICAÇÕES -->
+<div class="panel" id="tab-indicacoes">
+  <div class="hr">
+    <div>
+      <div class="pt">Controle de Indicações</div>
+      <div class="ps">Clientes agrupados por parceiro — clique no grupo para expandir ou retrair</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-g" onclick="collapseAllGroups()">⊟ Recolher todos</button>
+      <button class="btn btn-g" onclick="expandAllGroups()">⊞ Expandir todos</button>
+      <button class="btn btn-g" onclick="exportInd()">↓ Exportar</button>
+      <button class="btn btn-p" onclick="openIndM()">+ Nova Indicação</button>
+    </div>
+  </div>
+  <div class="sg" id="stats-ind"></div>
+  <div class="toolbar">
+    <input class="sb" id="src-ind" placeholder="Buscar parceiro, cliente, CNPJ..." oninput="rInd()">
+    <select class="sel" id="ft-ind-parc" onchange="rInd()">
+      <option value="">Todos os parceiros</option>
+    </select>
+    <select class="sel" id="ft-ind-status" onchange="rInd()">
+      <option value="">Todos os status</option>
+      <option value="Ativo">Ativo</option>
+      <option value="Inativo">Inativo</option>
+      <option value="Pendente">Pendente</option>
+    </select>
+  </div>
+  <div id="ind-groups-cont"></div>
+</div>
+
+<!-- MODAL INDICAÇÕES -->
+<div class="mo" id="modal-ind">
+  <div class="modal">
+    <div class="mh">
+      <div class="mt" id="mind-title">Nova Indicação</div>
+      <button class="xb" onclick="closeIndM()">×</button>
+    </div>
+    <div class="fg">
+      <div class="fgrp">
+        <label class="fl">Parceiro *</label>
+        <select class="fi" id="mind-parc" onchange="autoFillParceiro()" style="padding:9px 12px">
+          <option value="">Selecione o parceiro...</option>
+        </select>
+      </div>
+      <div class="fgrp">
+        <label class="fl">Razão Social do Parceiro</label>
+        <input class="fi" id="mind-razao" placeholder="Preenchido automaticamente">
+      </div>
+      <div class="fgrp">
+        <label class="fl">CNPJ do Parceiro</label>
+        <input class="fi" id="mind-cnpj-parc" placeholder="Preenchido automaticamente">
+      </div>
+      <div class="fgrp">
+        <label class="fl">Data da Indicação</label>
+        <input class="fi" id="mind-data" type="date">
+      </div>
+      <div class="fgrp full">
+        <label class="fl">Cliente Indicado *</label>
+        <input class="fi" id="mind-cliente" placeholder="Nome do cliente / empresa indicada">
+      </div>
+      <div class="fgrp full">
+        <label class="fl">CNPJ do Cliente</label>
+        <input class="fi" id="mind-cnpj-cli" placeholder="00.000.000/0000-00">
+      </div>
+      <div class="fgrp">
+        <label class="fl">Status</label>
+        <select class="fi" id="mind-status" style="padding:9px 12px">
+          <option value="Ativo">Ativo</option>
+          <option value="Pendente">Pendente</option>
+          <option value="Inativo">Inativo</option>
+        </select>
+      </div>
+      <div class="fgrp full">
+        <label class="fl">Observações</label>
+        <input class="fi" id="mind-obs" placeholder="Observações adicionais">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-g" onclick="closeIndM()">Cancelar</button>
+      <button class="btn btn-p" onclick="salvarInd()">Salvar Indicação</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="mo" id="modal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh"><span class="mt" id="m-title">Novo Parceiro</span><button class="xb" onclick="closeM()">×</button></div>
+    <div class="fg">
+      <div class="fgrp full"><label class="fl">Nome da empresa</label><input class="fi" id="m-nome" placeholder="Ex: Presence Tecnologia"></div>
+      <div class="fgrp"><label class="fl">CNPJ</label><input class="fi" id="m-cnpj" placeholder="00.000.000/0001-00"></div>
+      <div class="fgrp"><label class="fl">Status do contrato</label><select class="fi" id="m-status"><option>Assinado</option><option>Em negociação</option><option>Contrato enviado</option></select></div>
+      <div class="fgrp"><label class="fl">Produtos</label><input class="fi" id="m-prod" placeholder="GIFTBACK · CRM360 · TODOS"></div>
+      <div class="fgrp"><label class="fl">Contato comercial</label><input class="fi" id="m-cont" placeholder="Nome e telefone"></div>
+      <div class="fgrp"><label class="fl">Email financeiro</label><input class="fi" id="m-email" placeholder="financeiro@empresa.com"></div>
+      <div class="fgrp full"><label class="fl">Observações</label><input class="fi" id="m-obs" placeholder="Observações gerais..."></div>
+    </div>
+    <!-- Contratos -->
+    <div style="margin-top:16px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--n500);margin-bottom:10px">Contratos ativos</div>
+      <div class="contrato-section">
+        <div class="cs-title tech">
+          <span class="badge b-tech">Integrações</span>
+          <span>Comissão por bônus gerado</span>
+          <label class="toggle" style="margin-left:auto"><input type="checkbox" id="m-tech-on" onchange="toggleContrato('tech')"><span class="slider"></span></label>
+        </div>
+        <div id="m-tech-fields" style="display:none">
+          <div class="fg" style="margin-top:8px">
+            <div class="fgrp full"><label class="fl">Política (ex: R$0,05 por bônus gerado)</label><input class="fi" id="m-tech-pol" placeholder="R$0,05 por bônus gerado via integração"></div>
+            <div class="fgrp"><label class="fl">Valor por bônus (R$)</label><input class="fi" id="m-tech-val" type="number" step="0.001" placeholder="0.05"></div>
+            <div class="fgrp"><label class="fl">Vigência</label><input class="fi" id="m-tech-vig" placeholder="Se renova automaticamente"></div>
+          </div>
+        </div>
+      </div>
+      <div class="contrato-section">
+        <div class="cs-title biz">
+          <span class="badge b-biz">Indicações</span>
+          <span>Comissão % sobre receita</span>
+          <label class="toggle" style="margin-left:auto"><input type="checkbox" id="m-biz-on" onchange="toggleContrato('biz')"><span class="slider"></span></label>
+        </div>
+        <div id="m-biz-fields" style="display:none">
+          <div class="fg" style="margin-top:8px">
+            <div class="fgrp full"><label class="fl">Política (ex: 10% sobre receita líquida dos clientes indicados)</label><input class="fi" id="m-biz-pol" placeholder="10% sobre receita dos clientes indicados, adimplentes"></div>
+            <div class="fgrp"><label class="fl">Percentual (%)</label><input class="fi" id="m-biz-pct" type="number" step="0.1" placeholder="10"></div>
+            <div class="fgrp"><label class="fl">Vigência</label><input class="fi" id="m-biz-vig" placeholder="Ex: 24 meses / se renova automaticamente"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+      <button class="btn btn-g" onclick="closeM()">Cancelar</button>
+      <button class="btn btn-p" onclick="salvar()">Salvar Parceiro</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+const M=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+// PARCEIROS — cada um tem arrays de contratos tech e/ou business
+const P=[
+  {id:1,nome:'Presence',cnpj:'64.048.192/0001-99',status:'Assinado',prod:'GIFTBACK',cont:'Rico 11 94273-8752',email:'paulo.palmerio@presence.com.br',obs:'Se renova automaticamente',
+    tech:{pol:'R$0,05 por bônus de fidelidade gerado (a partir de nov/2025)',val:0.05,vig:'Se renova automaticamente'},
+    biz:{pol:'10% sobre receita líquida dos clientes indicados, adimplentes',pct:10,vig:'Se renova automaticamente'}},
+
+  {id:2,nome:'CIGAM',cnpj:'04.861.460/0001-65',status:'Em negociação',prod:'GIFTBACK',cont:'Gustavo 53 8124-7617',email:'financeiro@cigamgestor.com.br',obs:'Aguardando devolutiva',
+    tech:{pol:'R$0,05 por bônus gerado nos clientes integrados',val:0.05,vig:'Aguardando assinatura'},
+    biz:null},
+
+  {id:3,nome:'DataSystem',cnpj:'00.541.642/0001-06',status:'Contrato enviado',prod:'GIFTBACK + CRM360',cont:'Rodrigo 19 98145-9717',email:'rodrigo@datasystem.com.br',obs:'Aguardando assinatura',
+    tech:null,
+    biz:{pol:'5% sobre o TPV (Total por Vendas) dos clientes indicados que aderirem ao módulo fidelidade',pct:5,vig:'30 dias após fechamento do mês'}},
+
+  {id:4,nome:'Trinks',cnpj:'73.499.238/0001-87',status:'Assinado',prod:'GIFTBACK',cont:'Anna Clara 21 96978-5822',email:'',obs:'Se renova automaticamente',
+    tech:{pol:'R$0,05 por bônus gerado para cada loja integrada ativa',val:0.05,vig:'Se renova automaticamente'},
+    biz:null},
+
+  {id:5,nome:'NuvemShop',cnpj:'16.932.748/0001-62',status:'Assinado',prod:'GIFTBACK',cont:'Heloisa 11 99892-6771',email:'heloisa.gomes@nuvemshop.com.br',obs:'Se renova automaticamente',
+    tech:null,
+    biz:{pol:'10% sobre o valor faturado em contas de clientes NuvemShop (após dedução de impostos)',pct:10,vig:'Se renova automaticamente'}},
+
+  {id:6,nome:'Wake',cnpj:'02.351.877/0001-52',status:'Assinado',prod:'GIFTBACK',cont:'Gabriel Codrim 11 96925-1769',email:'',obs:'Se renova automaticamente',
+    tech:null,
+    biz:{pol:'10% para todos os clientes; 15% no que ultrapassar baseline de R$300k por cliente (R$2M para Icomm Group)',pct:10,vig:'Se renova automaticamente'}},
+
+  {id:7,nome:'MAQPLAN',cnpj:'05.605.430/0001-50',status:'Assinado',prod:'GIFTBACK',cont:'Thiago 61 8306-0708',email:'thiago.lima@maqplan.com.br',obs:'Pagar retroativo',
+    tech:{pol:'R$0,05 por bônus gerado via integração GIFTBACK',val:0.05,vig:'Contrato'},
+    biz:null},
+
+  {id:8,nome:'LINX + Seta',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Crédito R$5M a partir jan/24',
+    tech:{pol:'R$0,05/bônus via PDV Linx; R$0,016/bônus via PDV não-Linx. Crédito de R$5M acumulado.',val:0.05,vig:'Contrato'},
+    biz:null},
+
+  {id:9,nome:'VTEX - V2',cnpj:'05.314.972/0003-36',status:'Assinado',prod:'GIFTBACK',cont:'Ingra 11 99787-0814',email:'',obs:'Mín R$2.000/mês',
+    tech:null,
+    biz:{pol:'10% sobre o lucro obtido pelos clientes via integração V2 (Tech Solutions). Mínimo R$2.000/mês.',pct:10,vig:'Se renova automaticamente'}},
+
+  {id:10,nome:'JetCommerce',cnpj:'04.029.884/0001-68',status:'Assinado',prod:'GIFTBACK',cont:'Mayara 14 99636-9957',email:'taiane.matos@presence.com.br',obs:'Pagar desde janeiro',
+    tech:{pol:'R$0,05 por bônus de fidelidade gerado pela integração, por loja ativa',val:0.05,vig:'Se renova automaticamente'},
+    biz:null},
+
+  {id:11,nome:'Wizos',cnpj:'51.288.138/0001-79',status:'Assinado',prod:'GIFTBACK',cont:'Nelson 11 98593-0742',email:'felippe@wizos.com.br',obs:'Se renova automaticamente',
+    tech:{pol:'R$0,05 por bônus gerado pela integração (a partir de nov/2025)',val:0.05,vig:'Se renova automaticamente'},
+    biz:{pol:'10% sobre receita dos clientes indicados pelo parceiro, pelo período de 12 meses',pct:10,vig:'12 meses'}},
+
+  {id:12,nome:'Shoppub',cnpj:'28.670.205/0001-01',status:'Assinado',prod:'GIFTBACK',cont:'Rogerio 16 98150-3393',email:'',obs:'',
+    tech:{pol:'R$0,05 por bônus gerado para cada loja integrada ativa',val:0.05,vig:'Se renova automaticamente'},
+    biz:null},
+
+  {id:13,nome:'TOTVS',cnpj:'53.113.791/0001-22',status:'Assinado',prod:'GIFTBACK',cont:'Lucas 11 97252-7484',email:'',obs:'Crédito R$200k',
+    tech:null,
+    biz:{pol:'10% sobre todas as receitas líquidas dos clientes TOTVS + R$200/loja ativada (único)',pct:10,vig:'Contrato'}},
+
+  {id:14,nome:'Retail Manager (Alexandre)',cnpj:'12.432.137/0001-02',status:'Assinado',prod:'CRM360',cont:'11 95244-2804',email:'alexandrencintra@gmail.com',obs:'',
+    tech:null,
+    biz:{pol:'20% sobre receita líquida dos clientes indicados, adimplentes',pct:20,vig:'Contrato'}},
+
+  {id:15,nome:'Bruno Bueno - Varejonline',cnpj:'24.585.527/0001-93',status:'Assinado',prod:'CRM360',cont:'51 9655-8394',email:'servicostri@gmail.com',obs:'5% até 30 lojas',
+    tech:null,
+    biz:{pol:'10% sobre receita dos clientes indicados; 5% enquanto carteira ≤ 30 lojas',pct:10,vig:'Contrato'}},
+
+  {id:16,nome:'GBR Digital',cnpj:'50.568.215/0001-81',status:'Assinado',prod:'TODOS PRODUTOS',cont:'11 97294-3518',email:'grosolia90@gmail.com',obs:'Por faturamento escalonado',
+    tech:null,
+    biz:{pol:'Por faturamento escalonado: 5% até 50k / 7,5% 50k-125k / 8,5% 125k-300k / 10% acima de 300k',pct:5,vig:'Contrato'}},
+
+  {id:17,nome:'Frank Azulay (S.A.Dezoito)',cnpj:'41.862.979/0001-94',status:'Assinado',prod:'TODOS PRODUTOS',cont:'Frank 11 99122-6386',email:'',obs:'Mudança de razão social',
+    tech:null,
+    biz:{pol:'10% sobre receita dos clientes indicados por 24 meses',pct:10,vig:'24 meses'}},
+
+  {id:18,nome:'Dama 33 (Everaldo)',cnpj:'26.033.722/0001-36',status:'Em negociação',prod:'CRM360',cont:'Everaldo 45 9958-4888',email:'',obs:'Antigo 10%, migrando para 20%',
+    tech:null,
+    biz:{pol:'20% sobre receita líquida dos clientes indicados (antigo contrato era 10%)',pct:20,vig:'Em negociação'}},
+
+  {id:19,nome:'Safrapay',cnpj:'58.160.789/0001-28',status:'Assinado',prod:'TODOS PRODUTOS',cont:'Sarah 11 96492-2164',email:'sarah.bernardes@safra.com.br',obs:'',
+    tech:null,
+    biz:{pol:'10% sobre todas as receitas líquidas dos clientes indicados + R$200/loja ativada (único)',pct:10,vig:'Contrato'}},
+
+  {id:20,nome:'Varejonline',cnpj:'23.479.438/0001-08',status:'Em negociação',prod:'GIFTBACK',cont:'William 47 9216-5931',email:'',obs:'',
+    tech:null,
+    biz:{pol:'5% sobre receitas líquidas dos clientes indicados que utilizem a tecnologia Varejonline',pct:5,vig:'Contrato'}},
+];
+
+// COMISSÕES — separadas por tipo
+const CT25=[ // Tech 2025 — bônus gerado
+  {nome:'CIGAM',pol:'R$0,05/bônus',vals:[3420,3679.95,3633.15,0,0,0,17469.85,5179.8,5043.85,11299.2,6785.25,7050]},
+  {nome:'Trinks',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,3374.9,726.95,659.1,698.8,691.55,778.75]},
+  {nome:'MAQPLAN',pol:'R$0,05/bônus',vals:[0,0,0,0,25.57,186.97,220.97,200.82,155.12,153.22,152.65,208.67]},
+  {nome:'LINX + Seta',pol:'R$0,05/bônus (PDV Linx)',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'JetCommerce',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Presence',pol:'R$0,05/bônus (a partir nov/25)',vals:[0,0,0,0,0,0,0,0,0,0,1819.48,2469.03]},
+];
+const CB25=[ // Business 2025 — % receita
+  {nome:'Presence',pol:'10% adimplência',vals:[3468.1,0,2401.97,0,2500.11,3108.14,0,0,2757.46,1919.17,0,0]},
+  {nome:'DataSystem',pol:'5% TPV',vals:[5406,2500,3176.24,2630.01,1043.47,1247.75,0,1196.28,2538.3,1912.85,4095.37,2494.7]},
+  {nome:'NuvemShop',pol:'10% receita',vals:[0,0,0,0,0,0,0,0,1703.5,1998.37,795.12,280.5]},
+  {nome:'Wake',pol:'10-15% receita',vals:[0,0,0,0,0,0,0,0,6491.02,787.22,10075.17,531.47]},
+  {nome:'VTEX - V2',pol:'10% receita V2',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Retail Manager',pol:'20% receita',vals:[5855.77,6026.83,5527,5277.26,4874.32,4636.46,4040.17,3578.88,4209.16,1163.7,3561.75,4983.61]},
+  {nome:'Bruno Bueno',pol:'10% receita',vals:[1397.06,1703.68,1627.39,1474.21,1797.28,1290.4,1494.72,1184.13,1389.67,1925.17,2607.9,1486.56]},
+  {nome:'GBR Digital',pol:'Escalonado',vals:[0,0,0,0,0,234,234,144,0,0,272.44,203.44]},
+  {nome:'Frank Azulay',pol:'10% / 24 meses',vals:[0,0,0,0,0,0,0,0,0,0,2000,52000]},
+  {nome:'Varejonline',pol:'5% receita',vals:[4613.4,2309.7,4183.81,0,7563.62,0,0,0,0,0,0,0]},
+];
+const CT26=[
+  {nome:'CIGAM',pol:'R$0,05/bônus',vals:[4333.45,3883.45,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Trinks',pol:'R$0,05/bônus',vals:[536.05,560.45,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'MAQPLAN',pol:'R$0,05/bônus',vals:[1175.1,1450.3,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Presence',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+];
+const CB26=[
+  {nome:'Presence',pol:'10% adimplência',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'DataSystem',pol:'5% TPV',vals:[2896.77,2047.48,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'NuvemShop',pol:'10% receita',vals:[333.9,689.01,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Wake',pol:'10-15% receita',vals:[2308.73,2129.63,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Retail Manager',pol:'20% receita',vals:[3112.56,3230.24,2136.93,0,0,0,0,0,0,0,0,0]},
+  {nome:'Bruno Bueno',pol:'10% receita',vals:[1511.34,1779.25,1281.63,0,0,0,0,0,0,0,0,0]},
+  {nome:'GBR Digital',pol:'Escalonado',vals:[137.04,114.58,56.05,0,0,0,0,0,0,0,0,0]},
+  {nome:'Frank Azulay',pol:'10% receita',vals:[0,30000,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Dama 33',pol:'20% receita',vals:[972.91,929.17,660.39,0,0,0,0,0,0,0,0,0]},
+];
+
+// Políticas para cálculo automático
+// POL — mapa de políticas por integração/parceiro
+// Chave = nome EXATO da coluna Integração do relatório (lowercase)
+// Para relatório de bônus: match exato. Para input manual: fuzzy.
+const POL={
+  // ── LINX (todas as variantes do relatório)
+  'linx microvix'      :{nome:'LINX MICROVIX',      tech:{val:0.05},biz:null},
+  'linx microvix v2'   :{nome:'LINX MICROVIX V2',   tech:{val:0.05},biz:null},
+  'linx pos'           :{nome:'LINX POS',            tech:{val:0.05},biz:null},
+  'linx pos v2'        :{nome:'LINX POS V2',         tech:{val:0.05},biz:null},
+  'linx omni pos'      :{nome:'LINX OMNI POS',       tech:{val:0.05},biz:null},
+  'linx seta digital'  :{nome:'LINX SETA DIGITAL',   tech:{val:0.05},biz:null},
+  'linx seta digital v2':{nome:'LINX SETA DIGITAL V2',tech:{val:0.05},biz:null},
+  'linx millenium v2'  :{nome:'LINX MILLENIUM V2',   tech:{val:0.05},biz:null},
+  'linx degust'        :{nome:'LINX DEGUST',         tech:{val:0.05},biz:null},
+  'linx degust v2'     :{nome:'LINX DEGUST V2',      tech:{val:0.05},biz:null},
+  'linx commerce'      :{nome:'LINX COMMERCE',       tech:{val:0.05},biz:null},
+  'linx store x'       :{nome:'LINX STORE X',        tech:{val:0.05},biz:null},
+  'linx + seta'        :{nome:'LINX + Seta',         tech:{val:0.05},biz:null},
+  // ── VTEX
+  'vtex v1'            :{nome:'VTEX V1',             tech:{val:0.05},biz:null},
+  'vtex v2'            :{nome:'VTEX V2',             tech:{val:0.05},biz:null},
+  'vtex'               :{nome:'VTEX V2',             tech:{val:0.05},biz:null},
+  // ── TOTVS
+  'totvs moda'         :{nome:'TOTVS MODA',          tech:{val:0.05},biz:null},
+  'totvs protheus'     :{nome:'TOTVS PROTHEUS',      tech:{val:0.05},biz:null},
+  // ── Demais integrações com contrato Tech
+  'presence'           :{nome:'PRESENCE',            tech:{val:0.05},biz:{pct:0.1}},
+  'cigam'              :{nome:'CIGAM',               tech:{val:0.05},biz:null},
+  'trinks'             :{nome:'TRINKS',              tech:{val:0.05},biz:null},
+  'maqplan'            :{nome:'MAQPLAN',             tech:{val:0.05},biz:null},
+  'capta'              :{nome:'CAPTA',               tech:{val:0.05},biz:null},
+  'updi'               :{nome:'UPDI',                tech:{val:0.05},biz:null},
+  'link web'           :{nome:'LINK WEB',            tech:{val:0.05},biz:null},
+  'agile pdv'          :{nome:'AGILE PDV',           tech:{val:0.05},biz:null},
+  'wake'               :{nome:'WAKE',                tech:{val:0.05},biz:null},
+  'nuvemshop'          :{nome:'NUVEMSHOP',           tech:{val:0.05},biz:null},
+  'nuvem shop'         :{nome:'NUVEMSHOP',           tech:{val:0.05},biz:null},
+  'wizos'              :{nome:'WIZOS',               tech:{val:0.05},biz:{pct:0.1}},
+  'shoppub'            :{nome:'SHOPPUB',             tech:{val:0.05},biz:null},
+  'data system'        :{nome:'DATA SYSTEM',         tech:{val:0.05},biz:null},
+  'datasystem'         :{nome:'DATA SYSTEM',         tech:{val:0.05},biz:null},
+  'safrapay'           :{nome:'SAFRAPAY',            tech:{val:0.05},biz:null},
+  'conecto'            :{nome:'CONECTO',             tech:{val:0.05},biz:null},
+  'varejonline'        :{nome:'VAREJONLINE',         tech:{val:0.05},biz:null},
+  'e-commerce desintegrado':{nome:'E-COMMERCE DESINTEGRADO',tech:{val:0.05},biz:null},
+  'desintegrado'       :{nome:'DESINTEGRADO',        tech:{val:0.05},biz:null},
+  'shop control 9'     :{nome:'SHOP CONTROL 9',      tech:{val:0.05},biz:null},
+  'sankhya'            :{nome:'SANKHYA',             tech:{val:0.05},biz:null},
+  'shopify'            :{nome:'SHOPIFY',             tech:{val:0.05},biz:null},
+  'shopify ( novo)'    :{nome:'SHOPIFY (NOVO)',      tech:{val:0.05},biz:null},
+  'woocommerce'        :{nome:'WOOCOMMERCE',         tech:{val:0.05},biz:null},
+  'yampi'              :{nome:'YAMPI',               tech:{val:0.05},biz:null},
+  'loja integrada'     :{nome:'LOJA INTEGRADA',      tech:{val:0.05},biz:null},
+  'irroba e-commerce'  :{nome:'IRROBA E-COMMERCE',  tech:{val:0.05},biz:null},
+  'jet e-commerce'     :{nome:'JET E-COMMERCE',      tech:{val:0.05},biz:null},
+  'jetcommerce'        :{nome:'JET E-COMMERCE',      tech:{val:0.05},biz:null},
+  'adsomos'            :{nome:'ADSOMOS',             tech:{val:0.05},biz:null},
+  'allegro.net'        :{nome:'ALLEGRO.NET',         tech:{val:0.05},biz:null},
+  'almode'             :{nome:'ALMODE',              tech:{val:0.05},biz:null},
+  'alpha sistemas'     :{nome:'ALPHA SISTEMAS',      tech:{val:0.05},biz:null},
+  'angulo sistemas'    :{nome:'ANGULO SISTEMAS',     tech:{val:0.05},biz:null},
+  'automazione'        :{nome:'AUTOMAZIONE',         tech:{val:0.05},biz:null},
+  'avant 5'            :{nome:'AVANT 5',             tech:{val:0.05},biz:null},
+  'braavo'             :{nome:'BRAAVO',              tech:{val:0.05},biz:null},
+  'cds sistemas'       :{nome:'CDS SISTEMAS',        tech:{val:0.05},biz:null},
+  'cielo'              :{nome:'CIELO',               tech:{val:0.05},biz:null},
+  'ciss'               :{nome:'CISS',                tech:{val:0.05},biz:null},
+  'connectplug'        :{nome:'CONNECTPLUG',         tech:{val:0.05},biz:null},
+  'convertr'           :{nome:'CONVERTR',            tech:{val:0.05},biz:null},
+  'dataweb'            :{nome:'DATAWEB',             tech:{val:0.05},biz:null},
+  'excia'              :{nome:'EXCIA',               tech:{val:0.05},biz:null},
+  'gerentec pdv'       :{nome:'GERENTEC PDV',        tech:{val:0.05},biz:null},
+  'getnet'             :{nome:'GETNET',              tech:{val:0.05},biz:null},
+  'ifood + devapi'     :{nome:'IFOOD + DEVAPI',      tech:{val:0.05},biz:null},
+  'ilimitar'           :{nome:'ILIMITAR',            tech:{val:0.05},biz:null},
+  'laserchip'          :{nome:'LASERCHIP',           tech:{val:0.05},biz:null},
+  'nexaas'             :{nome:'NEXAAS',              tech:{val:0.05},biz:null},
+  'nexgen otica'       :{nome:'NEXGEN OTICA',        tech:{val:0.05},biz:null},
+  'nextsoft'           :{nome:'NEXTSOFT',            tech:{val:0.05},biz:null},
+  'niu'                :{nome:'NIU',                 tech:{val:0.05},biz:null},
+  'pagseguro'          :{nome:'PAGSEGURO',           tech:{val:0.05},biz:null},
+  'pdv net'            :{nome:'PDV NET',             tech:{val:0.05},biz:null},
+  'pex brasil'         :{nome:'PEX BRASIL',          tech:{val:0.05},biz:null},
+  'poligonosistema'    :{nome:'POLIGONOSISTEMA',     tech:{val:0.05},biz:null},
+  'promob'             :{nome:'PROMOB',              tech:{val:0.05},biz:null},
+  'pw'                 :{nome:'PW',                  tech:{val:0.05},biz:null},
+  'rede'               :{nome:'REDE',                tech:{val:0.05},biz:null},
+  'sage100'            :{nome:'SAGE100',             tech:{val:0.05},biz:null},
+  'server software'    :{nome:'SERVER SOFTWARE',     tech:{val:0.05},biz:null},
+  'sistema proprio'    :{nome:'SISTEMA PROPRIO',     tech:{val:0.05},biz:null},
+  'sistema proprio v2' :{nome:'SISTEMA PROPRIO V2',  tech:{val:0.05},biz:null},
+  'stone'              :{nome:'STONE',               tech:{val:0.05},biz:null},
+  'teknisa'            :{nome:'TEKNISA',             tech:{val:0.05},biz:null},
+  'ts pdv'             :{nome:'TS PDV',              tech:{val:0.05},biz:null},
+  'vip system'         :{nome:'VIP SYSTEM',          tech:{val:0.05},biz:null},
+  'winsae/tecnodata'   :{nome:'WINSAE/TECNODATA',    tech:{val:0.05},biz:null},
+  'zanthus'            :{nome:'ZANTHUS',             tech:{val:0.05},biz:null},
+  // ── Parceiros Business (indicação)
+  'retail manager'     :{nome:'Retail Manager',      tech:null,biz:{pct:0.2}},
+  'alexandre'          :{nome:'Retail Manager',      tech:null,biz:{pct:0.2}},
+  'bruno bueno'        :{nome:'Bruno Bueno',         tech:null,biz:{pct:0.1}},
+  'gbr'                :{nome:'GBR Digital',         tech:null,biz:{pct:0.05}},
+  'gbr digital'        :{nome:'GBR Digital',         tech:null,biz:{pct:0.05}},
+  'frank azulay'       :{nome:'Frank Azulay',        tech:null,biz:{pct:0.1}},
+  'dama'               :{nome:'Dama 33',             tech:null,biz:{pct:0.2}},
+  'dama 33'            :{nome:'Dama 33',             tech:null,biz:{pct:0.2}},
+};
+
+// matchPol — match EXATO primeiro (sem substring), depois fuzzy só para input manual
+function matchPol(raw){
+  if(!raw)return null;
+  const k=String(raw).toLowerCase().trim();
+  // 1. match exato
+  if(POL[k])return POL[k];
+  // 2. fuzzy só para chaves de parceiros Business (não-integração)
+  const bizKeys=['retail manager','alexandre','bruno bueno','gbr','gbr digital',
+    'frank azulay','dama','dama 33','wizos','presence'];
+  for(const key of bizKeys){if(k.includes(key)||key.includes(k))return POL[key]||null;}
+  return null;
+}
+
+let eid=null,dadosApuracao=null;
+
+function brl(v){if(!v||v===0)return'—';return'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function sm(a){return a.reduce((s,v)=>s+(Number(v)||0),0);}
+// matchPol definido acima junto com POL
+function getTipo(p){
+  if(p.tech&&p.biz)return'Ambos';
+  if(p.tech)return'Tech';
+  return'Business';
+}
+
+function sw(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['cadastro','business','bonus','indicacoes'][i]===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='cadastro')rC();if(t==='business')rB();if(t==='indicacoes')rInd();
+}
+
+function tipoBadges(p){
+  let b='';
+  if(p.tech)b+=`<span class="badge b-tech" style="margin-bottom:2px">Integrações</span> `;
+  if(p.biz)b+=`<span class="badge b-biz">Indicações</span>`;
+  return`<div style="display:flex;flex-direction:column;gap:3px">${b}</div>`;
+}
+function contratoCell(c,tipo){
+  if(!c)return`<td><span class="pt-none">—</span></td>`;
+  const cls=tipo==='tech'?'tech':'biz';
+  const pol=tipo==='tech'?c.pol:`${c.pct}% — ${c.pol}`;
+  return`<td><div class="contrato-item ${cls}"><span class="ci-val" title="${pol}" style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${pol}</span></div></td>`;
+}
+function sBadge(s){
+  if(s==='Assinado')return`<span class="badge b-signed">Assinado</span>`;
+  if(s==='Em negociação')return`<span class="badge b-neg">Em negociação</span>`;
+  return`<span class="badge b-sent">${s}</span>`;
+}
+
+function getInitials(nome){
+  const w=nome.trim().split(/\s+/);
+  if(w.length>=2)return(w[0][0]+w[1][0]).toUpperCase();
+  return nome.slice(0,2).toUpperCase();
+}
+function avatarColor(nome){
+  const colors=[
+    ['#FFF3D6','#B37400'],['#D4EDDA','#1A6B35'],['#E8F4FD','#1565C0'],
+    ['#FCE8E8','#922222'],['#F0E6FF','#6B21A8'],['#E6F7FF','#0369A1'],
+    ['#FFF0E6','#C2410C'],['#E6FFEF','#166534']
+  ];
+  let h=0;for(const c of nome)h=(h*31+c.charCodeAt(0))&0xFFFFFFFF;
+  const [bg,fg]=colors[Math.abs(h)%colors.length];
+  return{bg,fg};
+}
+
+function rC(){
+  const q=(document.getElementById('src-c').value||'').toLowerCase();
+  const ft=document.getElementById('ft-tipo').value;
+  const fs=document.getElementById('ft-status').value;
+  const f=P.filter(p=>{
+    const tipo=getTipo(p);
+    return(!q||(p.nome+p.cnpj+p.email+p.cont).toLowerCase().includes(q))&&
+      (!ft||(ft==='Ambos'?tipo==='Ambos':tipo===ft||tipo==='Ambos'))&&
+      (!fs||p.status===fs);
+  });
+  const cont=document.getElementById('cards-c');
+  if(!f.length){cont.innerHTML='<div class="em">Nenhum parceiro encontrado</div>';return;}
+
+  cont.innerHTML=`<div style="border:1.5px solid var(--bdr);border-radius:var(--r);overflow:hidden">
+    ${f.map((p,i)=>{
+      const {bg,fg}=avatarColor(p.nome);
+      const statusDot=p.status==='Assinado'?'#22c55e':p.status==='Em negociação'?'#f59e0b':'#60a5fa';
+      const borderTop=i>0?'border-top:1px solid var(--n100);':'';
+      return`<div class="pcard" onclick="openDrawer(${p.id})" tabindex="0" onkeydown="if(event.key==='Enter')openDrawer(${p.id})"
+        style="border:none;border-radius:0;padding:12px 16px;${borderTop}display:grid;grid-template-columns:2fr 1.2fr 1.2fr auto;align-items:center;gap:12px;margin-bottom:0">
+        <div style="min-width:0">
+          <div style="font-weight:700;font-size:13px;color:var(--n900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.nome}</div>
+          <div style="font-size:10px;color:var(--n300);margin-top:2px">${p.cnpj||'—'}</div>
+        </div>
+        <div>
+          ${p.tech&&p.tech.val?`<div style="margin-bottom:4px"><span class="badge b-tech">Integrações</span></div>
+          <div style="font-size:12px;font-weight:700;color:var(--n900)">R$ ${p.tech.val.toLocaleString('pt-BR',{minimumFractionDigits:2})}<span style="font-weight:400;color:var(--n300);font-size:10px">/bônus</span></div>`
+          :`<div style="font-size:10px;color:var(--n300)">—</div>`}
+        </div>
+        <div>
+          ${p.biz&&p.biz.pct?`<div style="margin-bottom:4px"><span class="badge b-biz">Indicações</span></div>
+          <div style="font-size:12px;font-weight:700;color:var(--od)">${p.biz.pct}%<span style="font-weight:400;color:var(--n300);font-size:10px"> sobre receita</span></div>`
+          :`<div style="font-size:10px;color:var(--n300)">—</div>`}
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+          <div style="width:8px;height:8px;border-radius:50%;background:${statusDot};flex-shrink:0" title="${p.status}"></div>
+          <span style="font-size:10px;color:var(--n300)">Ver →</span>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  const tot=P.length,tech=P.filter(p=>p.tech).length,biz=P.filter(p=>p.biz).length,
+    amb=P.filter(p=>p.tech&&p.biz).length,ativ=P.filter(p=>p.status==='Assinado').length;
+  document.getElementById('stats-c').innerHTML=`
+    <div class="sc"><div class="sl">Total</div><div class="sv ac">${tot}</div></div>
+    <div class="sc"><div class="sl">Têm Integrações</div><div class="sv">${tech}</div></div>
+    <div class="sc"><div class="sl">Têm Indicações</div><div class="sv">${biz}</div></div>
+    <div class="sc"><div class="sl">Ambos</div><div class="sv ac">${amb}</div></div>
+    <div class="sc"><div class="sl">Ativos</div><div class="sv ac">${ativ}</div></div>`;
+}
+
+function openDrawer(id){
+  const p=P.find(x=>x.id===id);if(!p)return;
+  const {bg,fg}=avatarColor(p.nome);
+  const statusColor=p.status==='Assinado'?'#D4EDDA':p.status==='Em negociação'?'#FFF3CD':'#E8F4FD';
+  const statusTextColor=p.status==='Assinado'?'#1A6B35':p.status==='Em negociação'?'#856404':'#1565C0';
+
+  const infoRow=(label,val,isLink=false)=>{
+    if(!val)return'';
+    const display=isLink?`<a href="${isLink}:${val}" style="color:var(--od);text-decoration:none">${val}</a>`:val;
+    return`<div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--n100)">
+      <span style="font-size:10px;font-weight:700;color:var(--n300);text-transform:uppercase;letter-spacing:0.5px;min-width:90px;padding-top:1px">${label}</span>
+      <span style="font-size:12px;color:var(--n700);flex:1">${display}</span>
+    </div>`;
+  };
+
+  let contratoHtml='';
+  if(p.tech){
+    contratoHtml+=`<div style="background:var(--n50);border:1.5px solid var(--bdr);border-left:3px solid var(--n900);border-radius:var(--r);padding:12px;margin-bottom:8px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--n900);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span class="badge b-tech">Integrações</span> Comissão por Bônus</div>
+      <div style="font-size:12px;color:var(--n700);margin-bottom:4px">${p.tech.pol||'—'}</div>
+      ${p.tech.val?`<div style="font-size:11px;color:var(--n500)">Valor: <strong style="color:var(--n900)">R$ ${p.tech.val}/bônus</strong></div>`:''}
+      ${p.tech.vig?`<div style="font-size:11px;color:var(--n500);margin-top:2px">Vigência: ${p.tech.vig}</div>`:''}
+    </div>`;
+  }
+  if(p.biz){
+    contratoHtml+=`<div style="background:var(--o50);border:1.5px solid var(--bdr);border-left:3px solid var(--orange);border-radius:var(--r);padding:12px;margin-bottom:8px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--od);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span class="badge b-biz">Indicações</span> Comissão % Receita</div>
+      <div style="font-size:12px;color:var(--n700);margin-bottom:4px">${p.biz.pol||'—'}</div>
+      ${p.biz.pct?`<div style="font-size:11px;color:var(--n500)">Percentual: <strong style="color:var(--od)">${p.biz.pct}%</strong></div>`:''}
+      ${p.biz.vig?`<div style="font-size:11px;color:var(--n500);margin-top:2px">Vigência: ${p.biz.vig}</div>`:''}
+    </div>`;
+  }
+
+  // parse contact: name + phone
+  const contParts=(p.cont||'').split(/\s+(\d{2}\s[\d\s\-]+)$/);
+  const contNome=contParts.length>1?contParts[0].trim():p.cont;
+  const contTel=contParts.length>1?contParts[1].trim():'';
+
+  document.getElementById('drawer-content').innerHTML=`
+    <div style="padding:0">
+      <!-- Header -->
+      <div style="background:var(--n900);padding:20px 20px 24px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:48px;height:48px;border-radius:12px;background:${bg};color:${fg};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px">${getInitials(p.nome)}</div>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:var(--white)">${p.nome}</div>
+              <div style="font-size:11px;color:var(--n300);margin-top:2px">${p.cnpj||'—'}</div>
+            </div>
+          </div>
+          <button onclick="closeDrawer()" style="background:rgba(255,255,255,.1);border:none;color:var(--n300);width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--f)">×</button>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${p.tech?`<span class="badge b-tech">Integrações</span>`:''}
+          ${p.biz?`<span class="badge b-biz">Indicações</span>`:''}
+          <span style="background:${statusColor};color:${statusTextColor};padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700">${p.status}</span>
+        </div>
+      </div>
+
+      <div style="padding:20px">
+        <!-- Contato -->
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--n300);margin-bottom:8px">Informações de Contato</div>
+        ${infoRow('Contato',contNome)}
+        ${contTel?infoRow('Telefone',contTel,'tel'):''}
+        ${infoRow('Email fin.',p.email,'mailto')}
+        ${infoRow('Produtos',p.prod)}
+        ${p.obs?`<div style="background:var(--n50);border-radius:var(--r);padding:10px 12px;margin-top:4px;font-size:11px;color:var(--n500)"><span style="font-weight:700;color:var(--n300);font-size:10px;text-transform:uppercase;letter-spacing:0.5px">Obs: </span>${p.obs}</div>`:''}
+
+        <!-- Contratos -->
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--n300);margin:16px 0 8px">Contratos Ativos</div>
+        ${contratoHtml||`<div style="font-size:12px;color:var(--n300);font-style:italic">Nenhum contrato ativo</div>`}
+
+        <!-- Ações -->
+        <div style="display:flex;gap:8px;margin-top:20px">
+          <button class="btn btn-p" style="flex:1" onclick="closeDrawer();openM('edit',${p.id})">✎ Editar</button>
+          <button class="btn btn-g" onclick="exportParceiro(${p.id})" title="Exportar histórico de comissões">↓ Excel</button>
+          <button class="btn btn-g" onclick="closeDrawer()">Fechar</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('drawer').style.display='block';
+  document.getElementById('drawer-overlay').style.display='block';
+  // animate in
+  const d=document.getElementById('drawer');
+  d.style.transform='translateX(100%)';
+  d.style.transition='transform .25s cubic-bezier(.4,0,.2,1)';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>d.style.transform='translateX(0)'));
+}
+
+function closeDrawer(){
+  const d=document.getElementById('drawer');
+  d.style.transform='translateX(100%)';
+  setTimeout(()=>{d.style.display='none';document.getElementById('drawer-overlay').style.display='none';},220);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
+
+// ADIM_DETAIL: parceiro -> mes -> [{cliente, cnpj, val, comissao}]
+const ADIM_DETAIL={};
+
+function rComTable(dados,q,tbId,statsId,label){
+  const f=dados.filter(c=>!q||c.nome.toLowerCase().includes(q));
+  const tb=document.getElementById(tbId);
+  if(!f.length){tb.innerHTML='<tr><td colspan="16"><div class="em">Nenhum dado</div></td></tr>';return;}
+  const isBiz=(tbId==='tb-b');
+  const MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const rows=f.map(c=>{
+    const t=sm(c.vals);
+    const cells=c.vals.map((v,mi)=>{
+      if(v<=0)return`<td style="text-align:right;font-size:11px"><span style="color:var(--n100)">—</span></td>`;
+      const valFmt='R$'+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+      if(isBiz){
+        const key=c.nome+'__'+mi;
+        const temDetalhe=ADIM_DETAIL[key]&&ADIM_DETAIL[key].length>0;
+        if(temDetalhe){
+          return`<td style="text-align:right;font-size:11px"><span class="com-link" style="color:var(--od);font-weight:700;cursor:pointer" onclick="abrirDetalheAdim('${c.nome.replace(/'/g,"\'")}',${mi})">${valFmt}</span></td>`;
+        }
+      }
+      return`<td style="text-align:right;font-size:11px">${valFmt}</td>`;
+    }).join('');
+    const clientes=IND.filter(i=>i.parceiro.toLowerCase()===c.nome.toLowerCase()&&i.status==='Ativo');
+    const total=clientes.length;
+    const nomeCell=isBiz?`<td>
+      <div style="display:flex;align-items:center;gap:6px">
+        <strong style="color:var(--n900)">${c.nome}</strong>
+        ${total>0?`<span style="background:var(--ol);color:var(--od);padding:1px 7px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer" title="Ver clientes indicados" onclick="abrirClientesIndicados('${c.nome.replace(/'/g,"\'")}',event)">${total}</span>`:''}
+      </div>
+    </td>`:`<td><strong style="color:var(--n900)">${c.nome}</strong></td>`;
+    return`<tr>${nomeCell}<td style="font-size:10px;color:var(--n300)">${c.pol}</td>${cells}<td style="text-align:right;font-weight:700;color:var(--od)">${brl(t)}</td></tr>`;
+  });
+  const tots=M.map((_,i)=>sm(f.map(c=>c.vals[i]||0)));
+  tb.innerHTML=rows.join('')+`<tr class="sum-row"><td colspan="2">Total</td>${tots.map(v=>`<td style="text-align:right;font-size:11px">${v>0?'R$'+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}</td>`).join('')}<td style="text-align:right">${brl(sm(tots))}</td></tr>`;
+  const tot=sm(f.flatMap(c=>c.vals)),ativ=f.filter(c=>sm(c.vals)>0).length;
+  document.getElementById(statsId).innerHTML=`
+    <div class="sc"><div class="sl">Parceiros</div><div class="sv">${f.length}</div></div>
+    <div class="sc"><div class="sl">Com apuração</div><div class="sv ac">${ativ}</div></div>
+    <div class="sc"><div class="sl">Total pago</div><div class="sv ac sm">${brl(tot)}</div></div>`;
+}
+
+const MESES_LABEL=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function abrirDetalheAdim(parceiro, mesIdx){
+  const key=parceiro+'__'+mesIdx;
+  const itens=ADIM_DETAIL[key]||[];
+  const totalCom=itens.reduce((s,i)=>s+i.comissao,0);
+  const totalBase=itens.reduce((s,i)=>s+i.val,0);
+  document.getElementById('biz-det-title').textContent=parceiro+' — '+MESES_LABEL[mesIdx];
+  document.getElementById('biz-det-sub').textContent=itens.length+' cliente'+(itens.length!==1?'s encontrados':'encontrado')+' no relatório de adimplência';
+  document.getElementById('biz-det-total').textContent=brl(totalCom);
+  document.getElementById('biz-det-tbody').innerHTML=itens.map(i=>`<tr>
+    <td><strong style="color:var(--n900)">${i.cliente}</strong></td>
+    <td style="font-size:11px;color:var(--n500);font-family:monospace">${i.cnpj}</td>
+    <td style="text-align:right;font-size:12px">${brl(i.val)}</td>
+    <td style="text-align:right;font-weight:700;color:var(--od)">${brl(i.comissao)}</td>
+  </tr>`).join('')+`<tr style="background:var(--ol)">
+    <td colspan="2"><strong>Total</strong></td>
+    <td style="text-align:right;font-weight:700">${brl(totalBase)}</td>
+    <td style="text-align:right;font-weight:700;color:var(--od)">${brl(totalCom)}</td>
+  </tr>`;
+  document.getElementById('modal-biz-det').style.display='flex';
+}
+
+function abrirClientesIndicados(parceiro, evt){
+  evt.stopPropagation();
+  const clientes=IND.filter(i=>i.parceiro.toLowerCase()===parceiro.toLowerCase()&&i.status==='Ativo');
+  document.getElementById('biz-det-title').textContent=parceiro+' — Clientes Indicados';
+  document.getElementById('biz-det-sub').textContent=clientes.length+' cliente'+(clientes.length!==1?'s ativos':'ativo');
+  document.getElementById('biz-det-total').textContent='';
+  document.getElementById('biz-det-tbody').innerHTML=clientes.map(i=>`<tr>
+    <td><strong style="color:var(--n900)">${i.cliente}</strong></td>
+    <td style="font-size:11px;color:var(--n500);font-family:monospace" colspan="3">${i.cnpjCli||'—'}</td>
+  </tr>`).join('');
+  document.getElementById('modal-biz-det').style.display='flex';
+}
+
+function rB(){
+  const ano=document.getElementById('ano-biz').value;
+  const q=(document.getElementById('src-b').value||'').toLowerCase();
+  rComTable(ano==='2025'?CB25:CB26,q,'tb-b','stats-b','Business');
+}
+
+// UPLOAD BÔNUS
+function setStep(n){[1,2,3,4].forEach(i=>{const el=document.getElementById('step'+i);el.classList.remove('active','done');if(i<n)el.classList.add('done');else if(i===n)el.classList.add('active');});}
+function hDrop(e){const f=e.dataTransfer.files[0];if(f)procFile(f);}
+function hFile(e){const f=e.target.files[0];if(f)procFile(f);}
+function procFile(file){
+  document.getElementById('fn').textContent='Lendo: '+file.name+' …';
+  const rd=new FileReader();
+  rd.onload=e=>{
+    try{
+      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      // Tenta ler normalmente; se 1ª coluna parece metadado, pula linha de filtros
+      let rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      // Detecta relatório com linha de metadados (ex: "Filtros aplicados: ...")
+      if(rows.length>0){
+        const firstKey=Object.keys(rows[0])[0]||'';
+        const firstVal=String(Object.values(rows[0])[0]||'');
+        if(/filtros aplicados/i.test(firstVal)||/filtros aplicados/i.test(firstKey)){
+          // Relê forçando cabeçalho a partir da linha 3 (índice 2)
+          rows=XLSX.utils.sheet_to_json(ws,{defval:'',range:2});
+        }
+      }
+      document.getElementById('fn').textContent='✓ '+file.name+' — '+rows.length+' linhas';
+      calcMulti(rows,file.name);
+    }catch(err){document.getElementById('fn').textContent='Erro: '+err.message;}
+  };
+  rd.readAsArrayBuffer(file);
+}
+function normNum(v){
+  if(typeof v==='number')return v;
+  return parseFloat(String(v).replace(/[R$\s.]/g,'').replace(',','.'))||0;
+}
+function calcMulti(rows,arq){
+  // Pula linhas de metadados (ex: "Filtros aplicados: ...")
+  const dataRows=rows.filter(r=>{
+    const vals=Object.values(r).map(v=>String(v||'').trim());
+    return vals.some(v=>v&&!/^filtros aplicados/i.test(v));
+  });
+  const sample=dataRows[0]||{},cols=Object.keys(sample);
+
+  // Detecta formato do relatório de bônus CRMBonus
+  // colunas: Data, Código Loja, Loja, Segmento, CNPJ, Integração, Versão, Tipo Bônus Gerado, Quantidade
+  const isBonusReport=cols.some(c=>/^integra/i.test(c))&&cols.some(c=>/^loja$/i.test(c))&&cols.some(c=>/quantidade/i.test(c));
+
+  let cEmp,cNome,cCNPJ,cVal,cQtd,cData;
+  if(isBonusReport){
+    cEmp=cols.find(c=>/^integra/i.test(c));
+    cNome=cols.find(c=>/^loja$/i.test(c))||cols.find(c=>/loja/i.test(c));
+    cCNPJ=cols.find(c=>/cnpj/i.test(c));
+    cQtd=cols.find(c=>/quantidade/i.test(c));
+    cData=cols.find(c=>/^data$/i.test(c));
+    cVal=null;
+  } else {
+    cEmp=cols.find(c=>/empresa|integra/i.test(c))||cols[0];
+    cNome=cols.find(c=>/nome|cliente|loja/i.test(c));
+    cCNPJ=cols.find(c=>/cnpj/i.test(c));
+    cVal=cols.find(c=>/valor|faturamento|receita|fat/i.test(c));
+    cQtd=cols.find(c=>/contagem|bonus|qtd|quantidade/i.test(c));
+  }
+
+  const grupos={},nid=[];
+  dataRows.forEach(row=>{
+    const raw=String(row[cEmp]||'').trim();
+    if(!raw)return;
+    const pol=matchPol(raw);
+    if(!pol){if(!nid.includes(raw))nid.push(raw);return;}
+    const k=pol.nome;
+    if(!grupos[k])grupos[k]={pol,techLinhas:[],bizLinhas:[],techTotal:0,bizTotal:0};
+    const val=cVal?normNum(row[cVal]||0):0;
+    const qtd=normNum(row[cQtd]||0);
+    const loja=String(row[cNome]||row[cEmp]||'').trim();
+    const cnpj=String(row[cCNPJ]||'').trim();
+    const data=cData?String(row[cData]||'').trim():'';
+    if(pol.tech){
+      const q=qtd>0?qtd:(val>0?Math.round(val/10):0);
+      if(q>0){
+        const com=q*pol.tech.val;
+        grupos[k].techLinhas.push({cliente:loja,cnpj,qtd:q,com,data});
+        grupos[k].techTotal+=com;
+      }
+    }
+    if(pol.biz&&val>0){
+      const com=val*pol.biz.pct;
+      grupos[k].bizLinhas.push({cliente:loja,cnpj,val,com,data});
+      grupos[k].bizTotal+=com;
+    }
+  });
+  dadosApuracao={grupos,nid,arq,mes:document.getElementById('bon-mes').value};
+  mostrarRes(dadosApuracao);
+}
+const bonOpenGroups=new Set();
+const HIST_DATA={};  // key = índice da linha, value = {k, tipo, linhas, total, pol, mes, arq}
+let histIdx=0;
+function toggleBonGroup(safe){
+  const body=document.getElementById('pgb-'+safe);
+  const chev=document.getElementById('pgc-'+safe);
+  const prev=document.getElementById('pgp-'+safe);
+  if(!body)return;
+  const collapsed=body.classList.contains('collapsed');
+  if(collapsed){body.classList.remove('collapsed');chev.classList.remove('collapsed');prev.classList.remove('show');bonOpenGroups.delete(safe);}
+  else{body.classList.add('collapsed');chev.classList.add('collapsed');prev.classList.add('show');bonOpenGroups.add(safe);}
+}
+function mostrarRes({grupos,nid,arq,mes}){
+  setStep(3);
+  closeUploadModal();
+  document.getElementById('pnl-res').style.display='block';
+  const keys=Object.keys(grupos).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+  const totalTech=keys.reduce((a,k)=>a+grupos[k].techTotal,0);
+  const totalBiz=keys.reduce((a,k)=>a+grupos[k].bizTotal,0);
+  document.getElementById('res-geral').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px">
+      <div><div class="sl">Parceiros</div><div class="sv">${keys.length}</div></div>
+      <div><div class="sl">Comissão de Integração</div><div style="font-size:20px;font-weight:700;color:var(--n900)">${brl(totalTech)}</div></div>
+      <div><div class="sl">Comissão de Indicação</div><div style="font-size:20px;font-weight:700;color:var(--od)">${brl(totalBiz)}</div></div>
+      <div><div class="sl">Total Geral</div><div style="font-size:22px;font-weight:700;color:var(--od)">${brl(totalTech+totalBiz)}</div></div>
+      <div><div class="sl">Referência</div><div style="font-size:14px;font-weight:700;color:var(--n900)">${mes}</div></div>
+    </div>`;
+  const cont=document.getElementById('prc-res');
+  cont.innerHTML=keys.map(k=>{
+    const {pol,techLinhas,bizLinhas,techTotal,bizTotal}=grupos[k];
+    const safe=k.replace(/[^a-zA-Z0-9]/g,'_');
+    let html=`<div class="pg-group">`;
+    html+=`<div class="pgh" onclick="toggleBonGroup('${safe}')">`;
+    html+=`<span>${k}</span>`;
+    if(techTotal>0)html+=`<span class="badge b-tech">R$${pol.tech?.val}/bônus</span>`;
+    if(bizTotal>0)html+=`<span class="badge b-biz">${Math.round(pol.biz?.pct*100||0)}% receita</span>`;
+    html+=`<span style="font-weight:400;color:var(--n300);font-size:10px">${(techLinhas.length+bizLinhas.length)} loja(s)</span>`;
+    html+=`<span class="pg-total-preview" id="pgp-${safe}">${brl(techTotal+bizTotal)}</span>`;
+    html+=`<span class="pg-chevron" id="pgc-${safe}">▾</span>`;
+    html+=`</div>`;
+    html+=`<div class="pg-body" id="pgb-${safe}">`;
+    if(techLinhas.length){
+      html+=`<div style="padding:8px 13px;background:var(--n50);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--n700);border-bottom:1px solid var(--bdr)">Tech — Bônus Gerado</div>
+      <div class="tw" style="border-radius:0;border-top:none;border-bottom:none"><table>
+        <thead><tr><th>Loja / Cliente</th><th>CNPJ</th><th>Mês Ref.</th><th>Qtd Bônus</th><th>Comissão (×R$${pol.tech?.val})</th></tr></thead>
+        <tbody>${techLinhas.map(l=>`<tr><td>${l.cliente}</td><td style="font-size:11px;color:var(--n500)">${l.cnpj}</td><td style="font-size:11px;color:var(--n500)">${l.data||'—'}</td><td style="text-align:right">${l.qtd.toLocaleString('pt-BR')}</td><td style="text-align:right;font-weight:600;color:var(--n900)">${brl(l.com)}</td></tr>`).join('')}
+        <tr class="sum-row"><td colspan="3">Subtotal Integrações</td><td style="text-align:right">${sm(techLinhas.map(l=>l.qtd)).toLocaleString('pt-BR')} bônus</td><td style="text-align:right">${brl(techTotal)}</td></tr>
+        </tbody></table></div>`;
+    }
+    if(bizLinhas.length){
+      html+=`<div style="padding:8px 13px;background:var(--o50);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--od);border-bottom:1px solid var(--bdr)">Business — ${Math.round(pol.biz?.pct*100||0)}% sobre Receita</div>
+      <div class="tw" style="border-radius:0;border-top:none;border-bottom:none"><table>
+        <thead><tr><th>Cliente</th><th>CNPJ</th><th>Faturamento</th><th>Comissão (${Math.round(pol.biz?.pct*100||0)}%)</th></tr></thead>
+        <tbody>${bizLinhas.map(l=>`<tr><td>${l.cliente}</td><td style="font-size:11px;color:var(--n500)">${l.cnpj}</td><td style="text-align:right">${brl(l.val)}</td><td style="text-align:right;font-weight:600;color:var(--od)">${brl(l.com)}</td></tr>`).join('')}
+        <tr class="sum-row"><td colspan="2">Subtotal Indicações</td><td style="text-align:right">${brl(sm(bizLinhas.map(l=>l.val)))}</td><td style="text-align:right">${brl(bizTotal)}</td></tr>
+        </tbody></table></div>`;
+    }
+    html+=`<div class="pgf"><span style="font-size:11px;font-weight:600;color:var(--n700)">Total ${k}</span><span style="font-size:15px;font-weight:700;color:var(--od)">${brl(techTotal+bizTotal)}</span></div>`;
+    html+=`</div></div>`;
+    return html;
+  }).join('');
+  const niDiv=document.getElementById('nid-div');
+  if(nid.length){niDiv.style.display='block';document.getElementById('nid-lista').innerHTML=nid.map(n=>`• ${n}`).join('<br>');}
+  else niDiv.style.display='none';
+}
+function voltarUp(){setStep(1);document.getElementById('pnl-res').style.display='none';document.getElementById('fn').textContent='';document.getElementById('fi-up').value='';dadosApuracao=null;openUploadModal();}
+function regTodos(){
+  if(!dadosApuracao)return;
+  const {grupos,arq,mes}=dadosApuracao;
+  const hist=document.getElementById('tb-hist');
+  const empty=hist.querySelector('.em');
+
+  // Alimenta tabela de Comissão de Integração (histórico mês a mês)
+  const mesParts=mes.split('-');
+  const mesAno=parseInt(mesParts[0]);
+  const mesIdx=parseInt(mesParts[1])-1;
+  const targetTech=mesAno===2026?CT26:CT25;
+  Object.keys(grupos).forEach(k=>{
+    const {pol,techLinhas,techTotal}=grupos[k];
+    if(!techLinhas.length||techTotal<=0)return;
+    let entry=targetTech.find(c=>c.nome.toLowerCase()===k.toLowerCase());
+    if(!entry){
+      entry={nome:k,pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]};
+      targetTech.push(entry);
+    }
+    entry.vals[mesIdx]=(entry.vals[mesIdx]||0)+techTotal;
+  });
+  rC();// re-renderiza aba Comissão de Integração
+
+  const novas=Object.keys(grupos).flatMap(k=>{
+    const {pol,techLinhas,bizLinhas,techTotal,bizTotal}=grupos[k];
+    const rows=[];
+    if(techLinhas.length){
+      const idx='h'+(histIdx++);
+      HIST_DATA[idx]={k,tipo:'tech',linhas:techLinhas,total:techTotal,pol,mes,arq,status:'Ag. NF'};
+      rows.push(`<tr>
+        <td><strong>${k}</strong><div style="font-size:10px;color:var(--n300)">${arq}</div></td>
+        <td>${mes}</td><td><span class="badge b-tech">Integrações</span></td>
+        <td style="font-size:11px">R$0,05/bônus</td>
+        <td style="text-align:center">${techLinhas.length}</td>
+        <td style="text-align:right;font-size:12px">${sm(techLinhas.map(l=>l.qtd)).toLocaleString('pt-BR')} bônus</td>
+        <td style="text-align:right;font-weight:700;color:var(--n900)"><span class="com-link" onclick="abrirDetalhes('${idx}')">${brl(techTotal)}</span></td>
+        <td><span class="badge b-pending">Ag. NF</span></td>
+      </tr>`);
+    }
+    if(bizLinhas.length){
+      const idx='h'+(histIdx++);
+      HIST_DATA[idx]={k,tipo:'biz',linhas:bizLinhas,total:bizTotal,pol,mes,arq,status:'Ag. NF'};
+      rows.push(`<tr>
+        <td><strong>${k}</strong><div style="font-size:10px;color:var(--n300)">${arq}</div></td>
+        <td>${mes}</td><td><span class="badge b-biz">Indicações</span></td>
+        <td style="font-size:11px">${Math.round(pol.biz?.pct*100||0)}% receita</td>
+        <td style="text-align:center">${bizLinhas.length}</td>
+        <td style="text-align:right;font-size:12px">${brl(sm(bizLinhas.map(l=>l.val)))}</td>
+        <td style="text-align:right;font-weight:700;color:var(--od)"><span class="com-link" onclick="abrirDetalhes('${idx}')">${brl(bizTotal)}</span></td>
+        <td><span class="badge b-pending">Ag. NF</span></td>
+      </tr>`);
+    }
+    return rows;
+  }).join('');
+  hist.innerHTML=novas+(empty?'':hist.innerHTML);
+  setStep(4);document.getElementById('pnl-res').style.display='none';document.getElementById('fn').textContent='';document.getElementById('fi-up').value='';dadosApuracao=null;
+  atualizarSelectsMes();
+  rHistFiltro();
+}
+
+function atualizarSelectsMes(){
+  const meses=[];
+  Object.values(HIST_DATA).forEach(d=>{if(d.mes&&!meses.includes(d.mes))meses.push(d.mes);});
+  meses.sort();
+  const de=document.getElementById('ft-hist-mes-de');
+  const ate=document.getElementById('ft-hist-mes-ate');
+  const valDe=de.value;const valAte=ate.value;
+  de.innerHTML='<option value="">De (mês)...</option>'+meses.map(m=>`<option value="${m}"${m===valDe?' selected':''}>${m}</option>`).join('');
+  ate.innerHTML='<option value="">Até (mês)...</option>'+meses.map(m=>`<option value="${m}"${m===valAte?' selected':''}>${m}</option>`).join('');
+}
+
+function rHistFiltro(){
+  const busca=(document.getElementById('src-hist')?.value||'').toLowerCase().trim();
+  const tipo=document.getElementById('ft-hist-tipo')?.value||'';
+  const status=document.getElementById('ft-hist-status')?.value||'';
+  const mDe=document.getElementById('ft-hist-mes-de')?.value||'';
+  const mAte=document.getElementById('ft-hist-mes-ate')?.value||'';
+  const allRows=Object.entries(HIST_DATA);
+  const filtered=allRows.filter(([,d])=>{
+    if(busca&&!d.k.toLowerCase().includes(busca))return false;
+    if(tipo&&d.tipo!==tipo)return false;
+    if(status&&d.status&&d.status!==status)return false;
+    if(mDe&&d.mes&&d.mes<mDe)return false;
+    if(mAte&&d.mes&&d.mes>mAte)return false;
+    return true;
+  });
+  const tb=document.getElementById('tb-hist');
+  if(!filtered.length){
+    tb.innerHTML='<tr><td colspan="8"><div class="em">Nenhuma apuração encontrada para os filtros selecionados</div></td></tr>';
+    document.getElementById('hist-count').textContent='';
+    return;
+  }
+  tb.innerHTML=filtered.map(([idx,d])=>{
+    const isTech=d.tipo==='tech';
+    const st=d.status||'Ag. NF';
+    const stBadge=st==='Pago'?'b-signed':st==='Cancelado'?'b-neg':'b-pending';
+    if(isTech){
+      return `<tr>
+        <td><strong>${d.k}</strong><div style="font-size:10px;color:var(--n300)">${d.arq}</div></td>
+        <td>${d.mes}</td><td><span class="badge b-tech">Integrações</span></td>
+        <td style="font-size:11px">R$0,05/bônus</td>
+        <td style="text-align:center">${d.linhas.length}</td>
+        <td style="text-align:right;font-size:12px">${sm(d.linhas.map(l=>l.qtd)).toLocaleString('pt-BR')} bônus</td>
+        <td style="text-align:right;font-weight:700;color:var(--n900)"><span class="com-link" onclick="abrirDetalhes('${idx}')">${brl(d.total)}</span></td>
+        <td><span class="badge ${stBadge}">${st}</span></td>
+      </tr>`;
+    } else {
+      return `<tr>
+        <td><strong>${d.k}</strong><div style="font-size:10px;color:var(--n300)">${d.arq}</div></td>
+        <td>${d.mes}</td><td><span class="badge b-biz">Indicações</span></td>
+        <td style="font-size:11px">${Math.round(d.pol?.biz?.pct*100||0)}% receita</td>
+        <td style="text-align:center">${d.linhas.length}</td>
+        <td style="text-align:right;font-size:12px">${brl(sm(d.linhas.map(l=>l.val)))}</td>
+        <td style="text-align:right;font-weight:700;color:var(--od)"><span class="com-link" onclick="abrirDetalhes('${idx}')">${brl(d.total)}</span></td>
+        <td><span class="badge ${stBadge}">${st}</span></td>
+      </tr>`;
+    }
+  }).join('');
+  document.getElementById('hist-count').textContent=`${filtered.length} registro${filtered.length===1?'':'s'}`;
+}
+
+function limparFiltrosHist(){
+  document.getElementById('src-hist').value='';
+  document.getElementById('ft-hist-tipo').value='';
+  document.getElementById('ft-hist-status').value='';
+  document.getElementById('ft-hist-mes-de').value='';
+  document.getElementById('ft-hist-mes-ate').value='';
+  rHistFiltro();
+}
+
+function abrirDetalhes(idx){
+  const d=HIST_DATA[idx];if(!d)return;
+  const {k,tipo,linhas,total,pol,mes,arq}=d;
+  const isTech=tipo==='tech';
+  let rows='';
+  if(isTech){
+    rows=linhas.map(l=>`<tr>
+      <td>${l.cliente}</td>
+      <td style="font-size:11px;color:var(--n500)">${l.cnpj||'—'}</td>
+      <td style="font-size:11px;color:var(--n500);text-align:center">${l.data||'—'}</td>
+      <td style="text-align:right">${l.qtd.toLocaleString('pt-BR')}</td>
+      <td style="text-align:right;font-weight:600;color:var(--n900)">${brl(l.com)}</td>
+    </tr>`).join('');
+    rows+=`<tr class="sum-row"><td colspan="3">Total</td><td style="text-align:right">${sm(linhas.map(l=>l.qtd)).toLocaleString('pt-BR')} bônus</td><td style="text-align:right">${brl(total)}</td></tr>`;
+  } else {
+    rows=linhas.map(l=>`<tr>
+      <td>${l.cliente}</td>
+      <td style="font-size:11px;color:var(--n500)">${l.cnpj||'—'}</td>
+      <td style="text-align:right">${brl(l.val)}</td>
+      <td style="text-align:right;font-weight:600;color:var(--od)">${brl(l.com)}</td>
+    </tr>`).join('');
+    rows+=`<tr class="sum-row"><td colspan="2">Total</td><td style="text-align:right">${brl(sm(linhas.map(l=>l.val)))}</td><td style="text-align:right">${brl(total)}</td></tr>`;
+  }
+  const thead=isTech
+    ?`<tr><th>Loja</th><th>CNPJ</th><th>Mês Ref.</th><th>Qtd Bônus</th><th>Comissão</th></tr>`
+    :`<tr><th>Cliente</th><th>CNPJ</th><th>Faturamento</th><th>Comissão</th></tr>`;
+  document.getElementById('det-title').textContent=`${k} — ${mes}`;
+  document.getElementById('det-sub').textContent=`${isTech?'Integrações':'Indicações'} · ${linhas.length} registro(s) · Arquivo: ${arq}`;
+  document.getElementById('det-badge').innerHTML=isTech?`<span class="badge b-tech">Integrações · R$${pol.tech?.val}/bônus</span>`:`<span class="badge b-biz">Indicações · ${Math.round(pol.biz?.pct*100||0)}% receita</span>`;
+  document.getElementById('det-total').textContent=brl(total);
+  document.getElementById('det-tbody').innerHTML=rows;
+  document.getElementById('det-thead').innerHTML=thead;
+  document.getElementById('modal-det').classList.add('open');
+}
+function fecharDetalhes(){document.getElementById('modal-det').classList.remove('open');}
+
+// MODAL
+function toggleContrato(t){
+  const on=document.getElementById(`m-${t}-on`).checked;
+  document.getElementById(`m-${t}-fields`).style.display=on?'grid':'none';
+}
+function openM(mode,id=null){
+  eid=id;
+  document.getElementById('m-title').textContent=mode==='add'?'Novo Parceiro':'Editar Parceiro';
+  const fields=['m-nome','m-cnpj','m-prod','m-cont','m-email','m-obs','m-tech-pol','m-tech-val','m-tech-vig','m-biz-pol','m-biz-pct','m-biz-vig'];
+  if(mode==='edit'&&id){
+    const p=P.find(x=>x.id===id);if(!p)return;
+    document.getElementById('m-nome').value=p.nome;
+    document.getElementById('m-cnpj').value=p.cnpj;
+    document.getElementById('m-status').value=p.status;
+    document.getElementById('m-prod').value=p.prod||'';
+    document.getElementById('m-cont').value=p.cont||'';
+    document.getElementById('m-email').value=p.email||'';
+    document.getElementById('m-obs').value=p.obs||'';
+    const techOn=!!p.tech;
+    document.getElementById('m-tech-on').checked=techOn;
+    document.getElementById('m-tech-fields').style.display=techOn?'grid':'none';
+    if(p.tech){document.getElementById('m-tech-pol').value=p.tech.pol||'';document.getElementById('m-tech-val').value=p.tech.val||'';document.getElementById('m-tech-vig').value=p.tech.vig||'';}
+    const bizOn=!!p.biz;
+    document.getElementById('m-biz-on').checked=bizOn;
+    document.getElementById('m-biz-fields').style.display=bizOn?'grid':'none';
+    if(p.biz){document.getElementById('m-biz-pol').value=p.biz.pol||'';document.getElementById('m-biz-pct').value=p.biz.pct||'';document.getElementById('m-biz-vig').value=p.biz.vig||'';}
+  } else {
+    fields.forEach(f=>document.getElementById(f).value='');
+    document.getElementById('m-status').value='Assinado';
+    ['m-tech-on','m-biz-on'].forEach(f=>document.getElementById(f).checked=false);
+    ['m-tech-fields','m-biz-fields'].forEach(f=>document.getElementById(f).style.display='none');
+  }
+  document.getElementById('modal').classList.add('open');
+}
+function closeM(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeM();});
+function salvar(){
+  const nome=document.getElementById('m-nome').value.trim();if(!nome){alert('Informe o nome');return;}
+  const techOn=document.getElementById('m-tech-on').checked;
+  const bizOn=document.getElementById('m-biz-on').checked;
+  const d={nome,cnpj:document.getElementById('m-cnpj').value,status:document.getElementById('m-status').value,
+    prod:document.getElementById('m-prod').value,cont:document.getElementById('m-cont').value,
+    email:document.getElementById('m-email').value,obs:document.getElementById('m-obs').value,
+    tech:techOn?{pol:document.getElementById('m-tech-pol').value,val:parseFloat(document.getElementById('m-tech-val').value)||0.05,vig:document.getElementById('m-tech-vig').value}:null,
+    biz:bizOn?{pol:document.getElementById('m-biz-pol').value,pct:parseFloat(document.getElementById('m-biz-pct').value)||10,vig:document.getElementById('m-biz-vig').value}:null,
+  };
+  if(eid){const idx=P.findIndex(p=>p.id===eid);if(idx>=0)Object.assign(P[idx],d);}
+  else P.push({id:Date.now(),...d});
+  closeM();rC();
+}
+
+// ===================== CONTROLE DE INDICAÇÕES =====================
+// Dados pré-carregados da planilha CNPJS
+let IND = [
+  {id:1,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Marilia (MR)',cnpjCli:'69.195.709/0001-96',data:'',status:'Ativo',obs:''},
+  {id:2,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'A ESPORTIVA COMERCIAL LTDA',cnpjCli:'57.489.403/0014-88',data:'',status:'Ativo',obs:''},
+  {id:3,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'A ESPORTIVA COMERCIAL LTDA',cnpjCli:'57.489.403/0012-16',data:'',status:'Ativo',obs:''},
+  {id:4,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'A ESPORTIVA COMERCIAL LTDA',cnpjCli:'57.489.403/0011-35',data:'',status:'Ativo',obs:''},
+  {id:5,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'A ESPORTIVA COMERCIAL LTDA',cnpjCli:'57.489.403/0010-54',data:'',status:'Ativo',obs:''},
+  {id:6,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'A ESPORTIVA COMERCIAL LTDA',cnpjCli:'57.489.403/0007-59',data:'',status:'Ativo',obs:''},
+  {id:7,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina Eusebio Fortaleza',cnpjCli:'55.474.640/0001-25',data:'',status:'Ativo',obs:''},
+  {id:8,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina - CRM360 - Upsell Limeira',cnpjCli:'54.533.974/0001-60',data:'',status:'Ativo',obs:''},
+  {id:9,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina Ribeirao',cnpjCli:'53.796.407/0001-33',data:'',status:'Ativo',obs:''},
+  {id:10,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina Santa Ursula',cnpjCli:'53.782.920/0003-37',data:'',status:'Ativo',obs:''},
+  {id:11,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina Footwear Novo Shop Ribeirão - CRM360',cnpjCli:'53.782.920/0002-56',data:'',status:'Ativo',obs:''},
+  {id:12,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA FTW DO RIBEIRÃO SHOPPING - CRM360',cnpjCli:'53.782.920/0001-75',data:'',status:'Ativo',obs:''},
+  {id:13,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina - CRM360 - Lista da Vez',cnpjCli:'53.770.523/0001-83',data:'',status:'Ativo',obs:''},
+  {id:14,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina - CRM360 - Indaiatuba',cnpjCli:'53.617.398/0001-76',data:'',status:'Ativo',obs:''},
+  {id:15,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MCD - CNB',cnpjCli:'52.876.088/0001-03',data:'',status:'Ativo',obs:''},
+  {id:16,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MCD Brasília 2 - CRM360',cnpjCli:'52.600.283/0001-06',data:'',status:'Ativo',obs:''},
+  {id:17,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina - CRM360 - Loja Serra',cnpjCli:'52.353.770/0001-11',data:'',status:'Ativo',obs:''},
+  {id:18,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina - CRM360 - Loja Buriti',cnpjCli:'51.959.221/0001-22',data:'',status:'Ativo',obs:''},
+  {id:19,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Kayland',cnpjCli:'51.763.762/0001-80',data:'',status:'Ativo',obs:''},
+  {id:20,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina Franca',cnpjCli:'51.158.857/0001-75',data:'',status:'Ativo',obs:''},
+  {id:21,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA',cnpjCli:'51.080.044/0001-00',data:'',status:'Ativo',obs:''},
+  {id:22,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina - Footwear Palmas',cnpjCli:'50.201.126/0001-00',data:'',status:'Ativo',obs:''},
+  {id:23,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MCD Brasília - CRM360',cnpjCli:'49.822.139/0001-00',data:'',status:'Ativo',obs:''},
+  {id:24,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina - CRM360 - Rio Claro - Upsell',cnpjCli:'48.277.343/0001-24',data:'',status:'Ativo',obs:''},
+  {id:25,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MCD - CRM360 - Upsell BH',cnpjCli:'48.089.580/0001-61',data:'',status:'Ativo',obs:''},
+  {id:26,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Aloha - CRM360 - Upsell Presidente Prudente',cnpjCli:'47.753.770/0001-79',data:'',status:'Ativo',obs:''},
+  {id:27,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FOOTWEAR UBERLANDIA LTDA',cnpjCli:'47.480.044/0001-20',data:'',status:'Ativo',obs:''},
+  {id:28,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'GZ CARDOSO LTDA',cnpjCli:'47.155.241/0001-73',data:'',status:'Ativo',obs:''},
+  {id:29,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MG E CARVALHO LTDA',cnpjCli:'47.119.626/0001-85',data:'',status:'Ativo',obs:''},
+  {id:30,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FTW - CAMPO GRANDE RJ',cnpjCli:'46.942.384/0001-62',data:'',status:'Ativo',obs:''},
+  {id:31,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FTW Park Brasília',cnpjCli:'46.262.768/0001-34',data:'',status:'Ativo',obs:''},
+  {id:32,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FOOTWEAR CUIABA LTDA',cnpjCli:'45.178.675/0001-63',data:'',status:'Ativo',obs:''},
+  {id:33,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'LORENA DOS SANTOS CARVALHO LTDA',cnpjCli:'44.658.525/0001-94',data:'',status:'Ativo',obs:''},
+  {id:34,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA FOOTWEAR Shop Nova Santa Maria',cnpjCli:'43.871.232/0001-28',data:'',status:'Ativo',obs:''},
+  {id:35,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FOOTWEAR INDAIATUBA LTDA',cnpjCli:'43.694.802/0001-51',data:'',status:'Ativo',obs:''},
+  {id:36,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'NINNE COMERCIO DE VESTUARIO LTDA',cnpjCli:'43.267.758/0001-01',data:'',status:'Ativo',obs:''},
+  {id:37,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA',cnpjCli:'43.113.248/002-52',data:'',status:'Ativo',obs:''},
+  {id:38,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina - CRM360 - Upsell - Santa Maria',cnpjCli:'43.113.248/0003-33',data:'',status:'Ativo',obs:''},
+  {id:39,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MCD - GUARULHOS',cnpjCli:'43.113.248/0001-71',data:'',status:'Ativo',obs:''},
+  {id:40,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MCD SHOPPING PAULISTA',cnpjCli:'43.065.487/0001-01',data:'',status:'Ativo',obs:''},
+  {id:41,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MCD LITORAL',cnpjCli:'42.948.700/0001-52',data:'',status:'Ativo',obs:''},
+  {id:42,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FOOTWEAR ARARAQUARA LTDA',cnpjCli:'42.930.246/0001-02',data:'',status:'Ativo',obs:''},
+  {id:43,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FOOTWEAR ARACATUBA LTDA',cnpjCli:'42.923.760/0001-10',data:'',status:'Ativo',obs:''},
+  {id:44,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'K K CARVALHO LTDA',cnpjCli:'42.636.416/0004-93',data:'',status:'Ativo',obs:''},
+  {id:45,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'BP COMERCIO DE CONFECCOES E CALCADOS LTDA',cnpjCli:'42.636.416/0003-02',data:'',status:'Ativo',obs:''},
+  {id:46,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA - BH SHOPPING',cnpjCli:'42.636.416/0002-21',data:'',status:'Ativo',obs:''},
+  {id:47,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'L. CARVALHO E CARVALHO COMERCIO DE CONFECCOES',cnpjCli:'42.636.416/0001-40',data:'',status:'Ativo',obs:''},
+  {id:48,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'L. CARVALHO E CARVALHO COMERCIO DE CONFECCOES',cnpjCli:'42.635.669/0001-08',data:'',status:'Ativo',obs:''},
+  {id:49,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'L. CARVALHO E CARVALHO COMERCIO DE CONFECCOES',cnpjCli:'42.172.605/0001-00',data:'',status:'Ativo',obs:''},
+  {id:50,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA BARRA SHOPPING',cnpjCli:'42.109.601/0001-87',data:'',status:'Ativo',obs:''},
+  {id:51,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'GENESIS COMERCIO DE ROUPAS LTDA',cnpjCli:'40.818.638/0001-59',data:'',status:'Ativo',obs:''},
+  {id:52,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'SANTOS FOOTWEAR LTDA',cnpjCli:'40.568.184/0001-05',data:'',status:'Ativo',obs:''},
+  {id:53,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Kayland - Upsell Outlet Rio de Janeiro',cnpjCli:'40.191.888/0001-01',data:'',status:'Ativo',obs:''},
+  {id:54,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MFA COMERCIO DE CONFECCOES E CALCADOS LTDA',cnpjCli:'39.453.318/0001-63',data:'',status:'Ativo',obs:''},
+  {id:55,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'CARVALHO E CARVALHO COMERCIO DE CONFECCOES E CALCADOS LTDA',cnpjCli:'38.503.034/0001-71',data:'',status:'Ativo',obs:''},
+  {id:56,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA PITANGUEIRAS',cnpjCli:'38.486.655/0001-94',data:'',status:'Ativo',obs:''},
+  {id:57,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA BURITI GOIANIA',cnpjCli:'37.185.076/0001-49',data:'',status:'Ativo',obs:''},
+  {id:58,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'ROQUE IMPORTS',cnpjCli:'35.312.084/0001-83',data:'',status:'Ativo',obs:''},
+  {id:59,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'BAS COMERCIO DE ARTIGOS DO VESTUARIO E ACESSORIOS LTDA',cnpjCli:'34.055.911/0001-38',data:'',status:'Ativo',obs:''},
+  {id:60,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'LORENA LOBO DE AZEVEDO SOUZA STELLA',cnpjCli:'33.589.572/0001-07',data:'',status:'Ativo',obs:''},
+  {id:61,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'LUMAS COMERCIO DE ARTIGOS DO VESTUARIO E ACESSORIOS LTDA',cnpjCli:'33.566.467/0001-52',data:'',status:'Ativo',obs:''},
+  {id:62,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'CARVALHO FOOTWEAR LTDA',cnpjCli:'29.464.702/0005-31',data:'',status:'Ativo',obs:''},
+  {id:63,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA CAMPINAS SHOPPING',cnpjCli:'28.870.303/0021-93',data:'',status:'Ativo',obs:''},
+  {id:64,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA PQ D PEDRO',cnpjCli:'28.870.303/0017-07',data:'',status:'Ativo',obs:''},
+  {id:65,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA COMERCIO DE CONFECCOES E CALCADOS EIRELI',cnpjCli:'28.870.303/0016-26',data:'',status:'Ativo',obs:''},
+  {id:66,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA FTW PIRACICABA SHOP',cnpjCli:'28.870.303/0014-64',data:'',status:'Ativo',obs:''},
+  {id:67,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA TIVOLI SHOPPING',cnpjCli:'28.870.303/0011-11',data:'',status:'Ativo',obs:''},
+  {id:68,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA MAXI JUNDIAI',cnpjCli:'28.870.303/0010-30',data:'',status:'Ativo',obs:''},
+  {id:69,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA BANDEIRAS',cnpjCli:'28.870.303/0009-05',data:'',status:'Ativo',obs:''},
+  {id:70,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA JUNDIAI',cnpjCli:'28.870.303/0008-16',data:'',status:'Ativo',obs:''},
+  {id:71,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA COMERCIO DE CONFECCOES E CALCADOS EIRELI',cnpjCli:'28.870.303/0007-35',data:'',status:'Ativo',obs:''},
+  {id:72,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA IGUATEMI',cnpjCli:'28.870.303/0006-54',data:'',status:'Ativo',obs:''},
+  {id:73,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA COMERCIO DE CONFECCOES E CALCADOS EIRELI',cnpjCli:'28.870.303/0005-73',data:'',status:'Ativo',obs:''},
+  {id:74,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA HORTOLANDIA',cnpjCli:'28.870.303/0004-92',data:'',status:'Ativo',obs:''},
+  {id:75,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA',cnpjCli:'28.870.303/0002-20',data:'',status:'Ativo',obs:''},
+  {id:76,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA METRO TUCURUVI',cnpjCli:'28.870.303/0001-40',data:'',status:'Ativo',obs:''},
+  {id:77,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA CENTRO',cnpjCli:'10.916.540/0003-35',data:'',status:'Ativo',obs:''},
+  {id:78,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA.COM',cnpjCli:'10.916.540/0002-54',data:'',status:'Ativo',obs:''},
+  {id:79,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA BOTUCATU SHOPPING',cnpjCli:'10.872.187/0005-09',data:'',status:'Ativo',obs:''},
+  {id:80,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'DOM LUCIO',cnpjCli:'10.757.061/0001-51',data:'',status:'Ativo',obs:''},
+  {id:81,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Aloha - CRM360 - Upsell Presidente Prudente',cnpjCli:'10.243.677/0001-04',data:'',status:'Ativo',obs:''},
+  {id:82,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FLS COMERCIO DE ARTIGOS DO VESTUARIO LTDA',cnpjCli:'11.769.710/0003-69',data:'',status:'Ativo',obs:''},
+  {id:83,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'M.E.S. DOMINGUES LTDA',cnpjCli:'11.358.323/0001-78',data:'',status:'Ativo',obs:''},
+  {id:84,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'COQUELUCHE PRESENTES BAURU LTDA - ME',cnpjCli:'11.280.204/0033-27',data:'',status:'Ativo',obs:''},
+  {id:85,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA COMERCIO DE CONFECCOES E CALCADOS LTDA',cnpjCli:'11.280.204/0031-65',data:'',status:'Ativo',obs:''},
+  {id:86,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FTW BANDEIRAS',cnpjCli:'11.280.204/0030-84',data:'',status:'Ativo',obs:''},
+  {id:87,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA Outlet Grande SP',cnpjCli:'11.280.204/0029-40',data:'',status:'Ativo',obs:''},
+  {id:88,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Sumare',cnpjCli:'11.280.204/0028-60',data:'',status:'Ativo',obs:''},
+  {id:89,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Limeira',cnpjCli:'11.280.204/0027-89',data:'',status:'Ativo',obs:''},
+  {id:90,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Analia Franco',cnpjCli:'11.280.204/0026-06',data:'',status:'Ativo',obs:''},
+  {id:91,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'FOOTWEAR ITAQUERA',cnpjCli:'11.280.204/0024-36',data:'',status:'Ativo',obs:''},
+  {id:92,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA FOOTWEAR TATUAPE',cnpjCli:'11.280.204/0022-74',data:'',status:'Ativo',obs:''},
+  {id:93,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'SAO JOSE DO RIO PRETO (SJRP)',cnpjCli:'20.330.570/0001-57',data:'',status:'Ativo',obs:''},
+  {id:94,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'LUPO',cnpjCli:'14.733.373/0001-86',data:'',status:'Ativo',obs:''},
+  {id:95,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'JARDINS (HL)',cnpjCli:'15.584.331/0008-60',data:'',status:'Ativo',obs:''},
+  {id:96,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'COQUELUCHE CASA RIVIERA LTDA',cnpjCli:'25.118.348/0001-09',data:'',status:'Ativo',obs:''},
+  {id:97,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'OPHICINA CIANE SOROCABA',cnpjCli:'24.389.400/0001-07',data:'',status:'Ativo',obs:''},
+  {id:98,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'MARCELO ARRUDA STELLA',cnpjCli:'07.338.546/0003-68',data:'',status:'Ativo',obs:''},
+  {id:99,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'TAUBATE COMERCIO DE ARTIGOS ESPORTIVOS LTDA',cnpjCli:'06.242.552/0001-92',data:'',status:'Ativo',obs:''},
+  {id:100,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'TAUBATE COMERCIO DE ARTIGOS ESPORTIVOS LTDA',cnpjCli:'06.045.548/0001-34',data:'',status:'Ativo',obs:''},
+  {id:101,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'PAULO ROGERIO DE ARAUJO DUARTE - ARTIGOS ESPORTIVOS',cnpjCli:'05.011.381/0005-51',data:'',status:'Ativo',obs:''},
+  {id:102,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'COQUELUCHE',cnpjCli:'01.071.870/0001-14',data:'',status:'Ativo',obs:''},
+  {id:103,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'COQUELUCHE PRESENTES SUR LA PLAGE LTDA - ME',cnpjCli:'00.838.863/0001-32',data:'',status:'Ativo',obs:''},
+  {id:104,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'ENSEADA (EN)',cnpjCli:'55.684.693/0001-70',data:'',status:'Ativo',obs:''},
+  {id:105,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:"COQUELUCHE'S PRESENTES ASPEN MALL LTDA",cnpjCli:'27.180.131/0001-54',data:'',status:'Ativo',obs:''},
+  {id:106,parceiro:'Alexandre Cintra',razao:'RETAIL MANAGER INFORMATICA LTDA',cnpjParc:'12.432.137/0001-02',cliente:'Ophicina - CRM360 - Upsell Porto Alegre',cnpjCli:'08.705.130/0001-31',data:'',status:'Ativo',obs:''},
+  // Bruno Bueno
+  {id:107,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'Rabusch - GIFTBACK',cnpjCli:'91.289.934/0001-40',data:'',status:'Ativo',obs:''},
+  {id:108,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'K M BARROS LTDA',cnpjCli:'70.176.664/0007-87',data:'',status:'Ativo',obs:''},
+  {id:109,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'SIXTINI CONFECCOES LTDA',cnpjCli:'69.033.728/0006-20',data:'',status:'Ativo',obs:''},
+  {id:110,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'HIGIKITS COMERCIAL LTDA',cnpjCli:'49.147.951/0001-87',data:'',status:'Ativo',obs:''},
+  {id:111,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'PL MODA MASCULINA LTDA',cnpjCli:'47.100.212/0001-04',data:'',status:'Ativo',obs:''},
+  {id:112,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'M. R. FARIAS',cnpjCli:'46.888.275/0001-04',data:'',status:'Ativo',obs:''},
+  {id:113,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'LRB COMERCIO E CONFECCOES LTDA',cnpjCli:'45.982.660/0001-53',data:'',status:'Ativo',obs:''},
+  {id:114,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'MODA PAVONI COMERCIO LTDA',cnpjCli:'43.558.229/0001-59',data:'',status:'Ativo',obs:''},
+  {id:115,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'AC COMERCIO LTDA',cnpjCli:'42.908.499/0001-80',data:'',status:'Ativo',obs:''},
+  {id:116,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'CLOTH COMERCIO VAREJO LTDA',cnpjCli:'42.736.028/0001-31',data:'',status:'Ativo',obs:''},
+  {id:117,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'Trifil Estação',cnpjCli:'41.117.898/0001-60',data:'',status:'Ativo',obs:''},
+  {id:118,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'H S COMERCIO DE ARTIGOS DO VESTUARIO LTDA',cnpjCli:'40.654.518/0001-63',data:'',status:'Ativo',obs:''},
+  {id:119,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'FERRERO UBERLANDIA COMERCIO E CONFECCOES LTDA',cnpjCli:'35.342.058/0001-06',data:'',status:'Ativo',obs:''},
+  {id:120,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'FERRERO ZAFANNI COMERCIO E CONFECCOES LTDA',cnpjCli:'34.963.903/0002-70',data:'',status:'Ativo',obs:''},
+  {id:121,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'EDILSIA DA COSTA LEITE EIRELI',cnpjCli:'34.944.171/0001-90',data:'',status:'Ativo',obs:''},
+  {id:122,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'EDILSIA DA COSTA LEITE EIRELI',cnpjCli:'34.887.886/0004-00',data:'',status:'Ativo',obs:''},
+  {id:123,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ELZA MARIA DO NASCIMENTO EIRELI',cnpjCli:'34.887.886/0001-59',data:'',status:'Ativo',obs:''},
+  {id:124,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ELZA MARIA DO NASCIMENTO EIRELI',cnpjCli:'34.853.312/0001-60',data:'',status:'Ativo',obs:''},
+  {id:125,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ELZA MARIA DO NASCIMENTO EIRELI',cnpjCli:'34.767.761/0006-08',data:'',status:'Ativo',obs:''},
+  {id:126,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'JOSE TEODORO ALVES EIRELI',cnpjCli:'34.767.761/0001-95',data:'',status:'Ativo',obs:''},
+  {id:127,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'JOSE TEODORO ALVES EIRELI',cnpjCli:'34.509.029/0001-15',data:'',status:'Ativo',obs:''},
+  {id:128,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'JOSE TEODORO ALVES EIRELI',cnpjCli:'34.164.332/0001-23',data:'',status:'Ativo',obs:''},
+  {id:129,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'M.R COMERCIO DO VESTUARIO LTDA',cnpjCli:'31.189.661/0001-30',data:'',status:'Ativo',obs:''},
+  {id:130,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'B.S. LEAO CONFECCOES LTDA',cnpjCli:'29.464.702/0006-12',data:'',status:'Ativo',obs:''},
+  {id:131,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'SPIRITO SANTO COMERCIO DE CONFECCOES LTDA',cnpjCli:'26.719.547/0005-69',data:'',status:'Ativo',obs:''},
+  {id:132,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'SPIRITO SANTO COMERCIO DE CONFECCOES LTDA',cnpjCli:'26.719.547/0004-88',data:'',status:'Ativo',obs:''},
+  {id:133,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'SPIRITO SANTO COMERCIO DE CONFECCOES LTDA',cnpjCli:'26.719.547/0003-05',data:'',status:'Ativo',obs:''},
+  {id:134,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'SPIRITO SANTO COMERCIO DE CONFECCOES LTDA',cnpjCli:'26.719.547/0002-16',data:'',status:'Ativo',obs:''},
+  {id:135,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'SPIRITO SANTO COMERCIO DE CONFECCOES LTDA',cnpjCli:'26.719.547/0001-35',data:'',status:'Ativo',obs:''},
+  {id:136,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'SPIRITO SANTO COMERCIO DE CONFECCOES LTDA',cnpjCli:'26.657.638/0001-93',data:'',status:'Ativo',obs:''},
+  {id:137,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'SPIRITO SANTO COMERCIO DE CONFECCOES LTDA',cnpjCli:'25.186.417/0001-11',data:'',status:'Ativo',obs:''},
+  {id:138,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ANNA PRATA ACESSORIOS DE LUXO EIRELI',cnpjCli:'27.160.030/0002-00',data:'',status:'Ativo',obs:''},
+  {id:139,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ELISANGELA RAMOS BERNARDI & FILHO LTDA',cnpjCli:'23.866.786/0001-20',data:'',status:'Ativo',obs:''},
+  {id:140,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'MARILDA PANZENBOECK BAPTISTA LTDA',cnpjCli:'23.229.133/0001-30',data:'',status:'Ativo',obs:''},
+  {id:141,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'J BRUVIC LTDA',cnpjCli:'18.817.409/0003-22',data:'',status:'Ativo',obs:''},
+  {id:142,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'IRMAOS LEAO CONFECCOES LTDA',cnpjCli:'18.608.192/0008-55',data:'',status:'Ativo',obs:''},
+  {id:143,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'IRMAOS LEAO CONFECCOES LTDA',cnpjCli:'18.608.192/0001-89',data:'',status:'Ativo',obs:''},
+  {id:144,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ARLEX PIRES DO NASCIMENTO',cnpjCli:'18.251.071/0001-22',data:'',status:'Ativo',obs:''},
+  {id:145,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ARLEX PIRES DO NASCIMENTO',cnpjCli:'17.667.399/0001-61',data:'',status:'Ativo',obs:''},
+  {id:146,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ST COMERCIO DE VESTUARIO LTDA',cnpjCli:'17.024.771/0001-11',data:'',status:'Ativo',obs:''},
+  {id:147,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'DANIELA ALVES BIJUTERIAS',cnpjCli:'15.584.331/0005-17',data:'',status:'Ativo',obs:''},
+  {id:148,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'DANIELA ALVES BIJUTERIAS',cnpjCli:'15.534.096/0001-45',data:'',status:'Ativo',obs:''},
+  {id:149,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'DANIELA ALVES BIJUTERIAS',cnpjCli:'15.356.498/0001-05',data:'',status:'Ativo',obs:''},
+  {id:150,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ICAFE WALLIG COMERCIO VAREJISTA DE VESTUARIOS E BIJUTERIAS LTDA',cnpjCli:'14.768.658/0001-52',data:'',status:'Ativo',obs:''},
+  {id:151,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'MARKA SPORTS COMERCIO EIRELI',cnpjCli:'05.934.776/0001-00',data:'',status:'Ativo',obs:''},
+  {id:152,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ROSANA PINTO ROSA',cnpjCli:'05.989.541/0001-08',data:'',status:'Ativo',obs:''},
+  {id:153,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'E. LEAO CONFECCOES LTDA',cnpjCli:'05.011.381/0003-90',data:'',status:'Ativo',obs:''},
+  {id:154,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'E. LEAO CONFECCOES LTDA',cnpjCli:'05.011.381/0001-28',data:'',status:'Ativo',obs:''},
+  {id:155,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'E. LEAO CONFECCOES LTDA',cnpjCli:'04.904.833/0001-38',data:'',status:'Ativo',obs:''},
+  {id:156,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'E. LEAO CONFECCOES LTDA',cnpjCli:'04.880.485/0001-06',data:'',status:'Ativo',obs:''},
+  {id:157,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'F A S LEAO CONFECCOES LTDA',cnpjCli:'08.705.130/0001-31',data:'',status:'Ativo',obs:''},
+  {id:158,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'ICAFE DO SUL COMERCIO VAREJISTA DE VESTUARIOS E BIJUTERIAS LTDA',cnpjCli:'08.413.534/0001-51',data:'',status:'Ativo',obs:''},
+  {id:159,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'SPT SNT COMERCIO DE ROUPAS E ACESSORIOS LTDA',cnpjCli:'11.366.843/0001-22',data:'',status:'Ativo',obs:''},
+  {id:160,parceiro:'Bruno Bueno',razao:'BR Consultoria & Serviços',cnpjParc:'24.585.527/0001-93',cliente:'CADILLAC STORE LTDA',cnpjCli:'20.512.706/0001-40',data:'',status:'Ativo',obs:''},
+  // DAMA33
+  {id:161,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-37',cliente:'RESGGATE',cnpjCli:'46.416.104/0001-82',data:'',status:'Ativo',obs:''},
+  {id:162,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-55',cliente:'LATREILLE',cnpjCli:'45.941.717/0001-76',data:'',status:'Ativo',obs:''},
+  {id:163,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-54',cliente:'BRUNA V. LATREILLE LTDA',cnpjCli:'45.108.895/0002-00',data:'',status:'Ativo',obs:''},
+  {id:164,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-40',cliente:'Lojas LM',cnpjCli:'43.444.644/0001-81',data:'',status:'Ativo',obs:''},
+  {id:165,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-41',cliente:'ARANDA ESPORTES EIRELI',cnpjCli:'34.988.234/0001-00',data:'',status:'Ativo',obs:''},
+  {id:166,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-39',cliente:'Lojas LM',cnpjCli:'34.887.886/0002-30',data:'',status:'Ativo',obs:''},
+  {id:167,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-38',cliente:'BELLA ESPORTES LTDA',cnpjCli:'28.251.164/0001-00',data:'',status:'Ativo',obs:''},
+  {id:168,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-50',cliente:'CP P ESTACAO COMERCIO E SERVICOS DE CONFECCAO EIRELI',cnpjCli:'29.464.702/0003-70',data:'',status:'Ativo',obs:''},
+  {id:169,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-51',cliente:'CP P ESTACAO COMERCIO E SERVICOS DE CONFECCAO EIRELI',cnpjCli:'29.464.702/0002-99',data:'',status:'Ativo',obs:''},
+  {id:170,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-42',cliente:'CP P ESTACAO COMERCIO E SERVICOS DE CONFECCAO EIRELI',cnpjCli:'29.464.702/0001-08',data:'',status:'Ativo',obs:''},
+  {id:171,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-48',cliente:'CP P ESTACAO COMERCIO E SERVICOS DE CONFECCAO EIRELI',cnpjCli:'28.927.497/0003-79',data:'',status:'Ativo',obs:''},
+  {id:172,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-47',cliente:'ARAMIS CUIABA',cnpjCli:'28.927.497/0002-98',data:'',status:'Ativo',obs:''},
+  {id:173,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-36',cliente:'ARANDA BERTOGLIO LTDA',cnpjCli:'14.722.355/0001-07',data:'',status:'Ativo',obs:''},
+  {id:174,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-46',cliente:'ARAMIS VARZEA GRANDE',cnpjCli:'29.464.702/0004-50',data:'',status:'Ativo',obs:''},
+  {id:175,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-45',cliente:'Chopinzinho',cnpjCli:'23.844.876/0001-10',data:'',status:'Ativo',obs:''},
+  {id:176,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-43',cliente:'CHARME COMERCIO DE CALCADOS EIRELI',cnpjCli:'23.860.228/0001-57',data:'',status:'Ativo',obs:''},
+  {id:177,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-57',cliente:'Francisco Beltrao',cnpjCli:'23.502.221/0003-25',data:'',status:'Ativo',obs:''},
+  {id:178,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-56',cliente:'SIDNEIA BORSOI LATREILLE EIRELI',cnpjCli:'23.456.212/0001-83',data:'',status:'Ativo',obs:''},
+  {id:179,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-44',cliente:'CASA PRADO',cnpjCli:'18.817.409/0002-41',data:'',status:'Ativo',obs:''},
+  {id:180,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-52',cliente:'Cascavel JL Shopping',cnpjCli:'26.719.547/0007-20',data:'',status:'Ativo',obs:''},
+  {id:181,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-53',cliente:'LCB 01 COMERCIO DE COSMETICOS - EIRELI',cnpjCli:'26.719.547/0006-40',data:'',status:'Ativo',obs:''},
+  {id:182,parceiro:'DAMA33',razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpjParc:'26.033.722/0001-49',cliente:'Lojas LM',cnpjCli:'17.024.771/0002-00',data:'',status:'Ativo',obs:''},
+  // GBR Digital
+  {id:183,parceiro:'GBR Digital',razao:'GBR DIGITAL MARKETING CONSULTING',cnpjParc:'50.568.215/0001-81',cliente:'MIDI STORE',cnpjCli:'52.345.680/0001-89',data:'',status:'Ativo',obs:''},
+  {id:184,parceiro:'GBR Digital',razao:'GBR DIGITAL MARKETING CONSULTING',cnpjParc:'50.568.215/0001-81',cliente:'MIDI STORE',cnpjCli:'51.944.113/0001-86',data:'',status:'Ativo',obs:''},
+  {id:185,parceiro:'GBR Digital',razao:'GBR DIGITAL MARKETING CONSULTING',cnpjParc:'50.568.215/0001-81',cliente:'COMPLE',cnpjCli:'35.438.482/0001-40',data:'',status:'Ativo',obs:''},
+  {id:186,parceiro:'GBR Digital',razao:'GBR DIGITAL MARKETING CONSULTING',cnpjParc:'50.568.215/0001-81',cliente:'Siricutico',cnpjCli:'34.767.761/0004-38',data:'',status:'Ativo',obs:''},
+  {id:187,parceiro:'GBR Digital',razao:'GBR DIGITAL MARKETING CONSULTING',cnpjParc:'50.568.215/0001-81',cliente:'PURA',cnpjCli:'27.160.030/0001-11',data:'',status:'Ativo',obs:''},
+  {id:188,parceiro:'GBR Digital',razao:'GBR DIGITAL MARKETING CONSULTING',cnpjParc:'50.568.215/0001-81',cliente:'MIDI STORE',cnpjCli:'23.988.712/0001-66',data:'',status:'Ativo',obs:''},
+  {id:189,parceiro:'GBR Digital',razao:'GBR DIGITAL MARKETING CONSULTING',cnpjParc:'50.568.215/0001-81',cliente:'Siricutico',cnpjCli:'14.668.951/0001-48',data:'',status:'Ativo',obs:''},
+  {id:190,parceiro:'GBR Digital',razao:'GBR DIGITAL MARKETING CONSULTING',cnpjParc:'50.568.215/0001-81',cliente:'Siricutico',cnpjCli:'13.862.494/0001-65',data:'',status:'Ativo',obs:''},
+  {id:191,parceiro:'GBR Digital',razao:'GBR DIGITAL MARKETING CONSULTING',cnpjParc:'50.568.215/0001-81',cliente:'Siricutico',cnpjCli:'02.187.845/0003-25',data:'',status:'Ativo',obs:''},
+  // Frank Azulay
+  {id:192,parceiro:'Frank Azulay',razao:'FINDER NEGOCIOS B2B LTDA',cnpjParc:'41.862.979/0001-94',cliente:'FMU',cnpjCli:'63.063.689/0001-13',data:'',status:'Ativo',obs:''},
+  {id:193,parceiro:'Frank Azulay',razao:'FINDER NEGOCIOS B2B LTDA',cnpjParc:'41.862.979/0001-94',cliente:'DSOP EDUCACAO FINANCEIRA LTDA',cnpjCli:'10.233.817/0001-63',data:'',status:'Ativo',obs:''},
+  // Wizos
+  {id:194,parceiro:'Wizos',razao:'Wizos Desenvolvimento e Comercio de Software LTDA',cnpjParc:'51.288.138/0001-79',cliente:'Di Santinni',cnpjCli:'56.618.513/0069-58',data:'',status:'Ativo',obs:''},
+  // Michel Blueman
+  {id:195,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Limits',cnpjCli:'54.711.306/0001-85',data:'',status:'Ativo',obs:''},
+  {id:196,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Febracis',cnpjCli:'52.983.397/0001-82',data:'',status:'Ativo',obs:''},
+  {id:197,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'47.380.978/0001-90',data:'',status:'Ativo',obs:''},
+  {id:198,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'47.257.676/0001-29',data:'',status:'Ativo',obs:''},
+  {id:199,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'47.070.053/0001-42',data:'',status:'Ativo',obs:''},
+  {id:200,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Limits',cnpjCli:'28.927.497/0001-07',data:'',status:'Ativo',obs:''},
+  {id:201,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Limits',cnpjCli:'28.870.303/0013-18',data:'',status:'Ativo',obs:''},
+  {id:202,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Limits',cnpjCli:'28.870.303/0012-37',data:'',status:'Ativo',obs:''},
+  {id:203,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'21.262.904/0001-65',data:'',status:'Ativo',obs:''},
+  {id:204,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Limits',cnpjCli:'22.452.823/0001-90',data:'',status:'Ativo',obs:''},
+  {id:205,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'11.280.204/0032-46',data:'',status:'Ativo',obs:''},
+  {id:206,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'10.233.817/0003-25',data:'',status:'Ativo',obs:''},
+  {id:207,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'07.338.546/0001-04',data:'',status:'Ativo',obs:''},
+  {id:208,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'07.059.461/0002-60',data:'',status:'Ativo',obs:''},
+  {id:209,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'07.059.461/0001-89',data:'',status:'Ativo',obs:''},
+  {id:210,parceiro:'Michel - Blueman',razao:'Musique Design e Participações ltda',cnpjParc:'14.419.866/0001-46',cliente:'Sobral Design',cnpjCli:'01.854.341/0002-78',data:'',status:'Ativo',obs:''},
+  // Shop9 / Merithu / Clube Visionário / Agência Toff
+  {id:211,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Blue Shark',cnpjCli:'35.027.442/0001-06',data:'',status:'Ativo',obs:''},
+  {id:212,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Blue Shark',cnpjCli:'34.963.903/0001-90',data:'',status:'Ativo',obs:''},
+  {id:213,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Blue Shark',cnpjCli:'24.435.772/0001-14',data:'',status:'Ativo',obs:''},
+  {id:214,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Atlética esportes',cnpjCli:'22.046.537/0001-25',data:'',status:'Ativo',obs:''},
+  {id:215,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Blue Shark',cnpjCli:'21.310.208/0001-87',data:'',status:'Ativo',obs:''},
+  {id:216,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Blue Shark',cnpjCli:'01.177.647/0001-56',data:'',status:'Ativo',obs:''},
+  {id:217,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Blue Shark',cnpjCli:'00.958.624/0001-16',data:'',status:'Ativo',obs:''},
+  {id:218,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Atlética esportes',cnpjCli:'07.342.046/0001-38',data:'',status:'Ativo',obs:''},
+  {id:219,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Atlética esportes',cnpjCli:'07.338.546/0002-87',data:'',status:'Ativo',obs:''},
+  {id:220,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Atlética esportes',cnpjCli:'00.661.211/0001-75',data:'',status:'Ativo',obs:''},
+  {id:221,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Colcholândia 360',cnpjCli:'04.096.114/0001-38',data:'',status:'Ativo',obs:''},
+  {id:222,parceiro:'Shop9',razao:'Rc9 Comercio e Importacao Ltda',cnpjParc:'31.649.942/0001-29',cliente:'Colcholândia - Giftback',cnpjCli:'03.653.189/0001-00',data:'',status:'Ativo',obs:''},
+  {id:223,parceiro:'Merithu',razao:'MERITHU CONSULTORIA EM GESTAO EMPRESARIAL LTDA',cnpjParc:'31.649.942/0001-29',cliente:'Casa de Chá TS – Gramado',cnpjCli:'51.423.506/0001-44',data:'',status:'Ativo',obs:''},
+  {id:224,parceiro:'Merithu',razao:'MERITHU CONSULTORIA EM GESTAO EMPRESARIAL LTDA',cnpjParc:'31.649.942/0001-29',cliente:'Tea Shop – Gramado',cnpjCli:'51.210.100/0001-83',data:'',status:'Ativo',obs:''},
+  {id:225,parceiro:'Merithu',razao:'MERITHU CONSULTORIA EM GESTAO EMPRESARIAL LTDA',cnpjParc:'31.649.942/0001-29',cliente:'Tea Shop Brasil - Iguatemi Poa',cnpjCli:'15.584.331/0007-89',data:'',status:'Ativo',obs:''},
+  {id:226,parceiro:'Clube Visionário',razao:'Visionários Educação LTDA',cnpjParc:'60.909.167/0001-00',cliente:'Grupo New York',cnpjCli:'32.428.948/0001-39',data:'',status:'Ativo',obs:''},
+  {id:227,parceiro:'Clube Visionário',razao:'Visionários Educação LTDA',cnpjParc:'60.909.167/0001-00',cliente:'Óptica europa',cnpjCli:'00.103.495/0001-84',data:'',status:'Ativo',obs:''},
+  {id:228,parceiro:'Agência Toff',razao:'Toff Business Performance LTDA',cnpjParc:'40.717.766/0001-06',cliente:'Mundo Infantil',cnpjCli:'09.511.154/0001-12',data:'',status:'Ativo',obs:''},
+  {id:229,parceiro:'Agência Toff',razao:'Toff Business Performance LTDA',cnpjParc:'40.717.766/0001-05',cliente:'Platinum e Miniature Kids',cnpjCli:'27.180.131/0001-54',data:'',status:'Ativo',obs:''},
+  // Ranner / Tecnogalli
+  {id:230,parceiro:'Ranner - Rogério',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'DALBER',cnpjCli:'79.874.392/0002-59',data:'',status:'Pendente',obs:'Aguardando renovação'},
+  {id:231,parceiro:'Ranner - Rogério',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'Ibirama (Dalbergia)',cnpjCli:'79.874.392/0001-78',data:'',status:'Pendente',obs:'Aguardando renovação'},
+  {id:232,parceiro:'Ranner - Rogério',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'MONYSE THAIS DE OLIVEIRA',cnpjCli:'14.722.355/0002-80',data:'',status:'Pendente',obs:''},
+  {id:233,parceiro:'Ranner - Rogério',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'Lontras',cnpjCli:'12.546.548/0001-10',data:'',status:'Pendente',obs:''},
+  {id:234,parceiro:'Ranner - Rogério',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'IRIA TOTTENE DE OLIVEIRA',cnpjCli:'05.259.012/0001-59',data:'',status:'Pendente',obs:''},
+  {id:235,parceiro:'Tecnogalli',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'ASSAD ROUPAS LTDA',cnpjCli:'30.213.919/0001-24',data:'',status:'Pendente',obs:'Aguardando renovação'},
+  {id:236,parceiro:'Tecnogalli',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'LA COMERCIO DE ROUPAS LTDA',cnpjCli:'18.893.618/0001-93',data:'',status:'Pendente',obs:''},
+  {id:237,parceiro:'Tecnogalli',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'LR COMERCIO DE ROUPAS LTDA',cnpjCli:'06.022.257/0001-20',data:'',status:'Pendente',obs:''},
+  {id:238,parceiro:'Tecnogalli',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'J.C COMERCIO DE ROUPAS LTDA',cnpjCli:'05.121.932/0001-06',data:'',status:'Pendente',obs:''},
+  {id:239,parceiro:'Tecnogalli',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'RJ COMERCIO DE ROUPAS LTDA',cnpjCli:'05.011.381/0006-32',data:'',status:'Pendente',obs:''},
+  {id:240,parceiro:'Tecnogalli',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'JOSE ASSAD FILHO',cnpjCli:'04.879.354/0001-09',data:'',status:'Pendente',obs:''},
+  {id:241,parceiro:'Tecnogalli',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'C J COMERCIO DE ROUPAS LTDA',cnpjCli:'04.434.491/0001-30',data:'',status:'Pendente',obs:''},
+  {id:242,parceiro:'Tecnogalli',razao:'ESPERAR RENOVAR CONTRATO',cnpjParc:'',cliente:'ELLEGANCE MODA MASCULINA LTDA',cnpjCli:'04.262.720/0001-86',data:'',status:'Pendente',obs:''},
+  // Pinout
+  {id:243,parceiro:'Pinout',razao:'',cnpjParc:'31.649.942/0001-29',cliente:'VINO',cnpjCli:'52.942.964/0001-52',data:'',status:'Ativo',obs:''},
+];
+
+let indEid=null;
+
+// Mapa de razões sociais e CNPJs por parceiro
+const PARC_INFO={
+  'Alexandre Cintra':{razao:'RETAIL MANAGER INFORMATICA LTDA',cnpj:'12.432.137/0001-02'},
+  'Bruno Bueno':{razao:'BR Consultoria & Serviços',cnpj:'24.585.527/0001-93'},
+  'DAMA33':{razao:'DAMA 33 GESTAO DE MARCAS LTDA',cnpj:'26.033.722/0001-37'},
+  'GBR Digital':{razao:'GBR DIGITAL MARKETING CONSULTING',cnpj:'50.568.215/0001-81'},
+  'Frank Azulay':{razao:'FINDER NEGOCIOS B2B LTDA',cnpj:'41.862.979/0001-94'},
+  'Wizos':{razao:'Wizos Desenvolvimento e Comercio de Software LTDA',cnpj:'51.288.138/0001-79'},
+  'Michel - Blueman':{razao:'Musique Design e Participações ltda',cnpj:'14.419.866/0001-46'},
+  'Shop9':{razao:'Rc9 Comercio e Importacao Ltda',cnpj:'31.649.942/0001-29'},
+  'Merithu':{razao:'MERITHU CONSULTORIA EM GESTAO EMPRESARIAL LTDA',cnpj:'31.649.942/0001-29'},
+  'Clube Visionário':{razao:'Visionários Educação LTDA',cnpj:'60.909.167/0001-00'},
+  'Agência Toff':{razao:'Toff Business Performance LTDA',cnpj:'40.717.766/0001-06'},
+  'Ranner - Rogério':{razao:'ESPERAR RENOVAR CONTRATO',cnpj:''},
+  'Tecnogalli':{razao:'ESPERAR RENOVAR CONTRATO',cnpj:''},
+  'Pinout':{razao:'',cnpj:'31.649.942/0001-29'},
+};
+
+function sIndBadge(s){
+  if(s==='Ativo')return`<span class="badge b-signed">Ativo</span>`;
+  if(s==='Inativo')return`<span class="badge b-neg">Inativo</span>`;
+  return`<span class="badge b-pending">Pendente</span>`;
+}
+
+// Track open groups across renders
+const indOpenGroups = new Set();
+
+function toggleIndGroup(parceiro){
+  const safe=parceiro.replace(/[^a-zA-Z0-9]/g,'_');
+  const body=document.getElementById('indg-body-'+safe);
+  const chev=document.getElementById('indg-chev-'+safe);
+  if(!body)return;
+  const isOpen=body.classList.contains('open');
+  if(isOpen){body.classList.remove('open');chev.classList.remove('open');indOpenGroups.delete(parceiro);}
+  else{body.classList.add('open');chev.classList.add('open');indOpenGroups.add(parceiro);}
+}
+
+function expandAllGroups(){
+  document.querySelectorAll('.ind-group-body').forEach(b=>b.classList.add('open'));
+  document.querySelectorAll('.ind-group-chevron').forEach(c=>c.classList.add('open'));
+  [...new Set(IND.map(i=>i.parceiro))].forEach(p=>indOpenGroups.add(p));
+}
+
+function collapseAllGroups(){
+  document.querySelectorAll('.ind-group-body').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.ind-group-chevron').forEach(c=>c.classList.remove('open'));
+  indOpenGroups.clear();
+}
+
+function rInd(){
+  const q=(document.getElementById('src-ind').value||'').toLowerCase();
+  const fp=document.getElementById('ft-ind-parc').value;
+  const fs=document.getElementById('ft-ind-status').value;
+  const f=IND.filter(i=>{
+    return(!q||(i.parceiro+i.cliente+i.cnpjCli+i.cnpjParc).toLowerCase().includes(q))&&
+      (!fp||i.parceiro===fp)&&(!fs||i.status===fs);
+  });
+
+  // stats
+  const parceiros=[...new Set(IND.map(i=>i.parceiro))];
+  const ativos=IND.filter(i=>i.status==='Ativo').length;
+  const pendentes=IND.filter(i=>i.status==='Pendente').length;
+  document.getElementById('stats-ind').innerHTML=`
+    <div class="sc"><div class="sl">Total Indicações</div><div class="sv ac">${IND.length}</div></div>
+    <div class="sc"><div class="sl">Parceiros</div><div class="sv">${parceiros.length}</div></div>
+    <div class="sc"><div class="sl">Ativas</div><div class="sv ac">${ativos}</div></div>
+    <div class="sc"><div class="sl">Pendentes</div><div class="sv">${pendentes}</div></div>
+    <div class="sc"><div class="sl">Exibindo</div><div class="sv">${f.length}</div></div>`;
+
+  // populate filter
+  const sel=document.getElementById('ft-ind-parc');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">Todos os parceiros</option>'+
+    [...new Set(IND.map(i=>i.parceiro))].sort().map(p=>`<option value="${p}"${p===cur?' selected':''}>${p}</option>`).join('');
+
+  const cont=document.getElementById('ind-groups-cont');
+  if(!f.length){cont.innerHTML='<div class="em">Nenhuma indicação encontrada</div>';return;}
+
+  // Group by parceiro
+  const grupos={};
+  f.forEach(i=>{
+    if(!grupos[i.parceiro])grupos[i.parceiro]={razao:i.razao,cnpjParc:i.cnpjParc,items:[]};
+    grupos[i.parceiro].items.push(i);
+  });
+
+  // If search is active, auto-expand all
+  const searchActive=q||fp||fs;
+
+  cont.innerHTML=Object.entries(grupos).sort((a,b)=>a[0].localeCompare(b[0])).map(([parceiro,g])=>{
+    const safe=parceiro.replace(/[^a-zA-Z0-9]/g,'_');
+    const isOpen=searchActive||indOpenGroups.has(parceiro);
+    const ativosG=g.items.filter(i=>i.status==='Ativo').length;
+    const pendentesG=g.items.filter(i=>i.status==='Pendente').length;
+    return`<div class="ind-group">
+      <div class="ind-group-header" onclick="toggleIndGroup('${parceiro.replace(/'/g,"\\'")}')">
+        <span class="ind-group-chevron${isOpen?' open':''}" id="indg-chev-${safe}">▶</span>
+        <div style="flex:1">
+          <div class="ind-group-name">${parceiro}</div>
+          ${g.razao?`<div class="ind-group-razao">${g.razao}${g.cnpjParc?' · '+g.cnpjParc:''}</div>`:''}
+        </div>
+        <div class="ind-group-meta">
+        </div>
+      </div>
+      <div class="ind-group-body${isOpen?' open':''}" id="indg-body-${safe}">
+        <div class="tw" style="border-radius:0;border:none">
+          <table>
+            <thead><tr>
+              <th>Cliente (Indicado)</th>
+              <th>CNPJ Cliente</th>
+            </tr></thead>
+            <tbody>
+              ${g.items.map(i=>`<tr>
+                <td><strong style="color:var(--n900)">${i.cliente}</strong></td>
+                <td style="font-size:11px;color:var(--n500)">${i.cnpjCli||'—'}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div class="ind-group-footer">
+          <span style="color:var(--n500);font-weight:700">Total</span>
+          <strong>${g.items.length} indicaç${g.items.length===1?'ão':'ões'}</strong>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function autoFillParceiro(){
+  const p=document.getElementById('mind-parc').value;
+  const info=PARC_INFO[p];
+  if(info){
+    document.getElementById('mind-razao').value=info.razao;
+    document.getElementById('mind-cnpj-parc').value=info.cnpj;
+  }else{
+    document.getElementById('mind-razao').value='';
+    document.getElementById('mind-cnpj-parc').value='';
+  }
+}
+
+function openIndM(){
+  indEid=null;
+  document.getElementById('mind-title').textContent='Nova Indicação';
+  ['mind-razao','mind-cnpj-parc','mind-cliente','mind-cnpj-cli','mind-obs'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mind-parc').value='';
+  document.getElementById('mind-status').value='Ativo';
+  document.getElementById('mind-data').value=new Date().toISOString().split('T')[0];
+  // populate parceiros
+  const sel=document.getElementById('mind-parc');
+  const paircList=[...new Set([...Object.keys(PARC_INFO),...IND.map(i=>i.parceiro)])].sort();
+  sel.innerHTML='<option value="">Selecione o parceiro...</option>'+paircList.map(p=>`<option value="${p}">${p}</option>`).join('');
+  document.getElementById('modal-ind').classList.add('open');
+}
+
+function editInd(id){
+  indEid=id;
+  const i=IND.find(x=>x.id===id);if(!i)return;
+  document.getElementById('mind-title').textContent='Editar Indicação';
+  const paircList=[...new Set([...Object.keys(PARC_INFO),...IND.map(i=>i.parceiro)])].sort();
+  const sel=document.getElementById('mind-parc');
+  sel.innerHTML='<option value="">Selecione o parceiro...</option>'+paircList.map(p=>`<option value="${p}"${p===i.parceiro?' selected':''}>${p}</option>`).join('');
+  document.getElementById('mind-razao').value=i.razao||'';
+  document.getElementById('mind-cnpj-parc').value=i.cnpjParc||'';
+  document.getElementById('mind-cliente').value=i.cliente;
+  document.getElementById('mind-cnpj-cli').value=i.cnpjCli||'';
+  document.getElementById('mind-data').value=i.data||'';
+  document.getElementById('mind-status').value=i.status;
+  document.getElementById('mind-obs').value=i.obs||'';
+  document.getElementById('modal-ind').classList.add('open');
+}
+
+function closeIndM(){document.getElementById('modal-ind').classList.remove('open');}
+document.getElementById('modal-ind').addEventListener('click',e=>{if(e.target===document.getElementById('modal-ind'))closeIndM();});
+
+function salvarInd(){
+  const parc=document.getElementById('mind-parc').value.trim();
+  const cli=document.getElementById('mind-cliente').value.trim();
+  if(!parc){alert('Selecione o parceiro');return;}
+  if(!cli){alert('Informe o cliente indicado');return;}
+  const d={
+    parceiro:parc,
+    razao:document.getElementById('mind-razao').value.trim(),
+    cnpjParc:document.getElementById('mind-cnpj-parc').value.trim(),
+    cliente:cli,
+    cnpjCli:document.getElementById('mind-cnpj-cli').value.trim(),
+    data:document.getElementById('mind-data').value,
+    status:document.getElementById('mind-status').value,
+    obs:document.getElementById('mind-obs').value.trim(),
+  };
+  if(indEid){const idx=IND.findIndex(i=>i.id===indEid);if(idx>=0)Object.assign(IND[idx],d);}
+  else IND.push({id:Date.now(),...d});
+  closeIndM();rInd();
+}
+
+function delInd(id){
+  if(!confirm('Remover esta indicação?'))return;
+  IND=IND.filter(i=>i.id!==id);
+  rInd();
+}
+
+function exportInd(){
+  const h=['Parceiro','Razão Social Parceiro','CNPJ Parceiro','Cliente','CNPJ Cliente','Data Indicação','Status','Observações'];
+  const rows=IND.map(i=>[i.parceiro,i.razao,i.cnpjParc,i.cliente,i.cnpjCli,i.data,i.status,i.obs]);
+  const csv=[h,...rows].map(r=>r.map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='indicacoes_crmbonus.csv';a.click();
+}
+
+rC();rB();rInd();rBonusTech();
+
+function limparFiltrosBT(){
+  document.getElementById('src-bt').value='';
+  document.getElementById('ft-bt-pol').value='';
+  rBonusTech();
+}
+function rBonusTech(){
+  const ano=document.getElementById('ano-bonus-tech').value;
+  const src=(document.getElementById('src-bt').value||'').toLowerCase();
+  const pol=document.getElementById('ft-bt-pol').value;
+  const rows=ano==='2025'?CT25:CT26;
+  const filtered=rows.filter(r=>{
+    if(src&&!r.nome.toLowerCase().includes(src))return false;
+    if(pol&&!(r.pol||'').includes(pol))return false;
+    return true;
+  });
+  const brl=(v)=>v>0?'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+  let html='';
+  const totals=Array(12).fill(0);
+  filtered.forEach(r=>{
+    const tot=r.vals.reduce((s,v)=>s+(v||0),0);
+    r.vals.forEach((v,i)=>totals[i]+=(v||0));
+    html+=`<tr><td style="font-weight:600">${r.nome}</td><td style="color:var(--n300);font-size:11px">${r.pol}</td>`;
+    r.vals.forEach(v=>html+=`<td>${brl(v)}</td>`);
+    html+=`<td style="font-weight:700;color:var(--od)">${brl(tot)}</td></tr>`;
+  });
+  const grandTotal=totals.reduce((s,v)=>s+v,0);
+  html+=`<tr class="sum-row"><td>Total</td><td></td>${totals.map(v=>v>0?`<td>${brl(v)}</td>`:'<td>—</td>').join('')}<td>${brl(grandTotal)}</td></tr>`;
+  document.getElementById('tb-bonus-tech').innerHTML=html||`<tr><td colspan="15"><div class="em">Nenhum dado encontrado</div></td></tr>`;
+}
+
+function openUploadModal(){document.getElementById('modal-upload').classList.add('open');}
+function closeUploadModal(){document.getElementById('modal-upload').classList.remove('open');}
+
+
+
+function exportParceiro(id){
+  const p=P.find(x=>x.id===id);if(!p)return;
+  const nome=p.nome;
+
+  // Find matching commission rows (fuzzy match on partner name)
+  const nomeLow=nome.toLowerCase();
+  const matchName=(n)=>{
+    const nl=n.toLowerCase();
+    return nl===nomeLow||nl.includes(nomeLow)||nomeLow.includes(nl);
+  };
+
+  const techRows25=(CT25||[]).filter(c=>matchName(c.nome));
+  const techRows26=(CT26||[]).filter(c=>matchName(c.nome));
+  const bizRows25=(CB25||[]).filter(c=>matchName(c.nome));
+  const bizRows26=(CB26||[]).filter(c=>matchName(c.nome));
+
+  const WB=XLSX.utils.book_new();
+  const fmt=(v)=>v>0?v:0;
+  const fmtBRL=(v)=>v>0?'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+
+  // --- Sheet 1: Resumo ---
+  const resumoData=[
+    ['Histórico de Comissões — '+nome],
+    ['CNPJ:', p.cnpj||'—'],
+    ['Status:', p.status||'—'],
+    ['Produtos:', p.prod||'—'],
+    ['Contato:', p.cont||'—'],
+    ['Email fin.:', p.email||'—'],
+    [''],
+    ['Contratos Ativos:'],
+    p.tech?['Tech:', p.tech.pol||'—', 'R$/bônus:', p.tech.val||0.05]:[],
+    p.biz?['Business:', p.biz.pol||'—', '%:', p.biz.pct||0]:[],
+    [''],
+    ['Observações:', p.obs||'—'],
+  ].filter(r=>r.length>0);
+
+  const wsRes=XLSX.utils.aoa_to_sheet(resumoData);
+  wsRes['!cols']=[{wch:20},{wch:50},{wch:15},{wch:15}];
+  XLSX.utils.book_append_sheet(WB,wsRes,'Cadastro');
+
+  // --- Sheet helper: monthly table ---
+  const buildSheet=(rows25,rows26,tipo)=>{
+    if(!rows25.length&&!rows26.length)return null;
+    const header=['Parceiro','Política','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez','Total Ano'];
+    const data=[header];
+    const addRows=(rows,ano)=>{
+      if(!rows.length)return;
+      data.push([`— ${ano} —`,...Array(14).fill('')]);
+      let totals=Array(12).fill(0);
+      rows.forEach(c=>{
+        const t=c.vals.reduce((s,v)=>s+(v||0),0);
+        data.push([c.nome,c.pol,...c.vals.map(v=>fmt(v)),t]);
+        c.vals.forEach((v,i)=>totals[i]+=v||0);
+      });
+      const totAno=totals.reduce((s,v)=>s+v,0);
+      data.push(['TOTAL','', ...totals.map(v=>fmt(v)),totAno]);
+    };
+    addRows(rows25,'2025');
+    addRows(rows26,'2026');
+    const ws=XLSX.utils.aoa_to_sheet(data);
+    ws['!cols']=[{wch:22},{wch:36},...Array(13).fill({wch:12})];
+    return ws;
+  };
+
+  if(p.tech){
+    const ws=buildSheet(techRows25,techRows26,'Tech');
+    if(ws)XLSX.utils.book_append_sheet(WB,ws,'Comissão Tech');
+  }
+  if(p.biz){
+    const ws=buildSheet(bizRows25,bizRows26,'Business');
+    if(ws)XLSX.utils.book_append_sheet(WB,ws,'Comissão Business');
+  }
+
+  // --- Sheet 3: Consolidado mensal (todos os anos + tipos juntos) ---
+  const consolData=[['Mês/Ano','Tech','Business','Total']];
+  const years=[{label:'2025',tech:techRows25,biz:bizRows25},{label:'2026',tech:techRows26,biz:bizRows26}];
+  years.forEach(({label,tech,biz})=>{
+    M.forEach((mes,i)=>{
+      const t=tech.reduce((s,c)=>s+(c.vals[i]||0),0);
+      const b=biz.reduce((s,c)=>s+(c.vals[i]||0),0);
+      if(t>0||b>0)consolData.push([`${mes}/${label}`,fmt(t),fmt(b),fmt(t+b)]);
+    });
+  });
+  if(consolData.length>1){
+    const totalT=consolData.slice(1).reduce((s,r)=>s+(r[1]||0),0);
+    const totalB=consolData.slice(1).reduce((s,r)=>s+(r[2]||0),0);
+    consolData.push(['TOTAL GERAL',totalT,totalB,totalT+totalB]);
+    const wsC=XLSX.utils.aoa_to_sheet(consolData);
+    wsC['!cols']=[{wch:14},{wch:16},{wch:16},{wch:16}];
+    XLSX.utils.book_append_sheet(WB,wsC,'Consolidado');
+  }
+
+  const filename=`comissoes_${nome.toLowerCase().replace(/\s+/g,'_')}.xlsx`;
+  XLSX.writeFile(WB,filename);
+}
+</script>
+
+<div id="modal-adim" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)closeAdimModal()">
+  <div style="background:#fff;border-radius:12px;padding:24px;width:100%;max-width:680px;border-top:4px solid var(--orange);max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
+    <div class="mh"><div class="mt">Upload &mdash; Adimpl&ecirc;ncia</div><button class="xb" onclick="closeAdimModal()">&#215;</button></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div>
+        <div class="upload-zone" onclick="document.getElementById('fi-adim').click()" ondragover="event.preventDefault()" ondrop="event.preventDefault();hAdimDrop(event)">
+          <div style="font-size:30px;margin-bottom:8px">&#128203;</div>
+          <div style="font-size:13px;font-weight:700;color:var(--n700);margin-bottom:4px">Arraste ou clique para selecionar</div>
+          <div style="font-size:11px;color:var(--n300)">.xlsx &mdash; T&iacute;tulos a receber</div>
+        </div>
+        <input type="file" id="fi-adim" style="display:none" accept=".xlsx,.xls" onchange="hAdimFile(event)">
+        <div id="adim-fn" style="font-size:11px;color:var(--od);margin-top:8px;font-weight:600"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Como funciona</div>
+        <div style="font-size:12px;color:var(--n700);line-height:1.8">Cruza os <strong>CNPJs dos clientes indicados</strong> com o relat&oacute;rio. Soma o <strong>Vl.L&iacute;quido</strong> por parceiro, usa a <strong>coluna J (data de pagamento)</strong> para distribuir nos meses corretos e aplica a pol&iacute;tica contratual.</div>
+        <div style="padding:10px;background:var(--n50);border-radius:var(--r);font-size:11px;color:var(--n500);margin-top:12px"><strong>Colunas esperadas:</strong><br>Cd.Cliente &middot; L&iacute;quido &middot; coluna J (data)</div>
+      </div>
+    </div>
+    <div id="adim-preview" style="display:none">
+      <div style="font-size:11px;font-weight:700;color:var(--n900);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Pr&eacute;via</div>
+      <div class="tw" style="max-height:260px;overflow-y:auto">
+        <table><thead><tr><th>Parceiro</th><th>Pol&iacute;tica</th><th>Clientes</th><th>Base</th><th>Comiss&atilde;o</th></tr></thead><tbody id="adim-preview-tbody"></tbody></table>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:var(--ol);border-radius:var(--r);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div><div style="font-size:10px;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;font-weight:600">Total</div><div style="font-size:20px;font-weight:700;color:var(--od)" id="adim-total-preview"></div></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-g" onclick="closeAdimModal()">Cancelar</button><button class="btn btn-p" onclick="registrarAdim()">&#10003; Registrar</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+var adimDadosPendentes=null;
+function openAdimModal(){document.getElementById('modal-adim').style.display='flex';}
+function closeAdimModal(){document.getElementById('modal-adim').style.display='none';document.getElementById('adim-fn').textContent='';document.getElementById('adim-preview').style.display='none';adimDadosPendentes=null;}
+function hAdimDrop(e){var f=e.dataTransfer.files[0];if(f)procAdim(f);}
+function hAdimFile(e){var f=e.target.files[0];if(f)procAdim(f);}
+function normCNPJ(v){return String(v||'').replace(/[^0-9]/g,'').padStart(14,'0');}
+var POL_BIZ={
+  'alexandre cintra':{pol:'20% receita',fn:function(b){return b*0.20;}},
+  'retail manager':{pol:'20% receita',fn:function(b){return b*0.20;}},
+  'bruno bueno':{pol:'10% receita',fn:function(b){return b*0.10;}},
+  'dama 33':{pol:'20% receita',fn:function(b){return b*0.20;}},
+  'dama33':{pol:'20% receita',fn:function(b){return b*0.20;}},
+  'gbr digital':{pol:'Escalonado',fn:function(b){return b<=50000?b*0.05:b<=125000?b*0.075:b<=300000?b*0.085:b*0.10;}},
+  'frank azulay':{pol:'10% receita',fn:function(b){return b*0.10;}},
+  'presence':{pol:'10% adimpl.',fn:function(b){return b*0.10;}},
+  'datasystem':{pol:'5% TPV',fn:function(b){return b*0.05;}},
+  'nuvemshop':{pol:'10% receita',fn:function(b){return b*0.10;}},
+  'wake':{pol:'10% receita',fn:function(b){return b*0.10;}},
+  'wizos':{pol:'10% receita',fn:function(b){return b*0.10;}},
+  'merithu':{pol:'10% receita',fn:function(b){return b*0.10;}},
+  'agencia toff':{pol:'10% receita',fn:function(b){return b*0.10;}},
+  'agência toff':{pol:'10% receita',fn:function(b){return b*0.10;}},
+  'safrapay':{pol:'10% receita',fn:function(b){return b*0.10;}}
+};
+function procAdim(file){
+  document.getElementById('adim-fn').textContent='Lendo '+file.name+'...';
+  var rd=new FileReader();
+  rd.onload=function(e){
+    try{
+      var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      document.getElementById('adim-fn').textContent='OK: '+file.name+' ('+rows.length+' linhas)';
+      calcAdim(rows,file.name);
+    }catch(err){document.getElementById('adim-fn').textContent='Erro: '+err.message;}
+  };
+  rd.readAsArrayBuffer(file);
+}
+// Converte valor serial de data Excel ou string de data para {ano, mesIdx}
+function parseDataPgto(raw){
+  if(!raw)return null;
+  // Se for número serial Excel (>1000 = provavelmente data)
+  if(typeof raw==='number'&&raw>1000){
+    // Excel serial: dias desde 1900-01-00 (com bug do 1900 leap year)
+    var d=new Date(Math.round((raw-25569)*86400*1000));
+    return{ano:d.getUTCFullYear(),mesIdx:d.getUTCMonth()};
+  }
+  // Se for string, tenta parsear formatos comuns: dd/mm/yyyy, yyyy-mm-dd, etc.
+  var s=String(raw).trim();
+  var m;
+  // dd/mm/yyyy ou dd-mm-yyyy
+  m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+  if(m)return{ano:parseInt(m[3]),mesIdx:parseInt(m[2])-1};
+  // yyyy-mm-dd
+  m=s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+  if(m)return{ano:parseInt(m[1]),mesIdx:parseInt(m[2])-1};
+  // Tenta via Date.parse como fallback
+  var dt=new Date(s);
+  if(!isNaN(dt))return{ano:dt.getFullYear(),mesIdx:dt.getMonth()};
+  return null;
+}
+
+function calcAdim(rows,arq){
+  var sample=rows[0]||{};
+  var cols=Object.keys(sample);
+  var cCNPJ=cols.find(function(c){return /cd.?cliente/i.test(c);});
+  if(!cCNPJ)cCNPJ=cols.find(function(c){return /cliente/i.test(c);});
+  var cLiq=cols.find(function(c){return /l.?quido/i.test(c);});
+  // Coluna J = índice 9 (0-based) — usamos a chave pelo índice posicional
+  var cData=cols[9]||null; // coluna J
+
+  // Mapa: cnpj -> {ano_mesIdx -> valor}
+  var mapaAdimPorMes={};
+  rows.forEach(function(r){
+    var cnpj=normCNPJ(r[cCNPJ]);
+    if(!cnpj||cnpj==='00000000000000')return;
+    var raw=r[cLiq];
+    var val=typeof raw==='number'?raw:parseFloat(String(raw||'').replace(/[^0-9.,]/g,'').replace(',','.'))||0;
+    if(val<=0)return;
+    var dataRaw=cData?r[cData]:null;
+    var dt=parseDataPgto(dataRaw);
+    var chave=dt?(dt.ano+'_'+dt.mesIdx):'sem_data';
+    if(!mapaAdimPorMes[cnpj])mapaAdimPorMes[cnpj]={};
+    mapaAdimPorMes[cnpj][chave]=(mapaAdimPorMes[cnpj][chave]||0)+val;
+  });
+
+  // Consolida CNPJs sem data num único bucket para preview total
+  var mapaAdimTotal={};
+  Object.keys(mapaAdimPorMes).forEach(function(cnpj){
+    var total=Object.values(mapaAdimPorMes[cnpj]).reduce(function(s,v){return s+v;},0);
+    mapaAdimTotal[cnpj]=total;
+  });
+
+  var porParceiro={};
+  IND.forEach(function(i){
+    if(!i.cnpjCli)return;
+    var cnpj=normCNPJ(i.cnpjCli);
+    if(!porParceiro[i.parceiro])porParceiro[i.parceiro]={cnpjs:{},};
+    porParceiro[i.parceiro].cnpjs[cnpj]=i.cliente;
+  });
+  var resultado=[];
+  Object.keys(porParceiro).forEach(function(parceiro){
+    var group=porParceiro[parceiro];
+    var polKey=parceiro.toLowerCase().trim();
+    var polBiz=POL_BIZ[polKey]||{pol:'10% receita',fn:function(b){return b*0.10;}};
+    var base=0;var encontrados=[];
+    Object.keys(group.cnpjs).forEach(function(cnpj){
+      if(mapaAdimTotal[cnpj]){base+=mapaAdimTotal[cnpj];encontrados.push({nome:group.cnpjs[cnpj],cnpj:cnpj,val:mapaAdimTotal[cnpj]});}
+    });
+    if(base>0)resultado.push({parceiro:parceiro,pol:polBiz.pol,encontrados:encontrados,base:base,comissao:polBiz.fn(base),polFn:polBiz.fn,cnpjsGrupo:group.cnpjs});
+  });
+  if(!resultado.length){document.getElementById('adim-fn').textContent+=' — Nenhum CNPJ indicado encontrado no relatório';return;}
+  adimDadosPendentes={resultado:resultado,arq:arq,mapaAdimPorMes:mapaAdimPorMes};
+  var totalCom=resultado.reduce(function(s,r){return s+r.comissao;},0);
+  document.getElementById('adim-total-preview').textContent=brl(totalCom);
+  document.getElementById('adim-preview-tbody').innerHTML=resultado.map(function(r){
+    return '<tr><td><strong>'+r.parceiro+'</strong></td><td style="font-size:11px;color:var(--n500)">'+r.pol+'</td>'
+      +'<td style="text-align:center">'+r.encontrados.length+'</td>'
+      +'<td style="text-align:right;font-size:12px">'+brl(r.base)+'</td>'
+      +'<td style="text-align:right;font-weight:700;color:var(--od)">'+brl(r.comissao)+'</td></tr>';
+  }).join('');
+  document.getElementById('adim-preview').style.display='block';
+}
+function registrarAdim(){
+  if(!adimDadosPendentes)return;
+  var resultado=adimDadosPendentes.resultado;
+  var arq=adimDadosPendentes.arq;
+  var mapaAdimPorMes=adimDadosPendentes.mapaAdimPorMes;
+  var totalCom=0;
+  var mesesRegistrados=new Set();
+
+  resultado.forEach(function(r){
+    var polKey=r.parceiro.toLowerCase().trim();
+    var polBiz=POL_BIZ[polKey]||{pol:'10% receita',fn:function(b){return b*0.10;}};
+    var cnpjsGrupo=r.cnpjsGrupo;
+
+    // Para cada mês/ano encontrado na planilha, calcular separadamente
+    var porMes={};
+    Object.keys(cnpjsGrupo).forEach(function(cnpj){
+      var dadosCnpj=mapaAdimPorMes[cnpj];
+      if(!dadosCnpj)return;
+      Object.keys(dadosCnpj).forEach(function(chave){
+        if(chave==='sem_data')return;
+        var v=dadosCnpj[chave];
+        if(!porMes[chave])porMes[chave]={base:0,cnpjs:{}};
+        porMes[chave].base+=v;
+        if(!porMes[chave].cnpjs[cnpj])porMes[chave].cnpjs[cnpj]={nome:cnpjsGrupo[cnpj],val:0};
+        porMes[chave].cnpjs[cnpj].val+=v;
+      });
+    });
+
+    Object.keys(porMes).forEach(function(chave){
+      var parts=chave.split('_');
+      var ano=parseInt(parts[0]);var mesIdx=parseInt(parts[1]);
+      var base=porMes[chave].base;
+      var comissao=polBiz.fn(base);
+      totalCom+=comissao;
+      mesesRegistrados.add((mesIdx+1)+'/'+ano);
+
+      var target=ano===2026?CB26:CB25;
+      var entry=target.find(function(c){return c.nome.toLowerCase()===r.parceiro.toLowerCase();});
+      if(!entry){entry={nome:r.parceiro,pol:r.pol,vals:[0,0,0,0,0,0,0,0,0,0,0,0]};target.push(entry);}
+      entry.vals[mesIdx]=(entry.vals[mesIdx]||0)+comissao;
+
+      // Detalhe clicável
+      var key=r.parceiro+'__'+mesIdx;
+      if(!ADIM_DETAIL[key])ADIM_DETAIL[key]=[];
+      var pct=base>0?comissao/base:0;
+      Object.values(porMes[chave].cnpjs).forEach(function(c){
+        ADIM_DETAIL[key].push({cliente:c.nome,cnpj:c.cnpj||'',val:c.val,comissao:c.val*pct});
+      });
+    });
+
+    // Fallback: linhas sem data vão para o mês mais recente encontrado ou ignoram
+    // (sem data = ignorado para não contaminar mês errado)
+  });
+
+  rB();
+  closeAdimModal();
+  var mesesStr=Array.from(mesesRegistrados).sort().join(', ');
+  var banner=document.getElementById('adim-resultado');
+  document.getElementById('adim-res-banner').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><strong>Adimplência registrada — '+mesesStr+'</strong><div style="font-size:11px;margin-top:4px">'+resultado.length+' parceiro(s)</div></div><div style="font-size:20px;font-weight:700;color:var(--od)">'+brl(totalCom)+'</div></div>';
+  banner.style.display='block';
+  setTimeout(function(){banner.style.display='none';},8000);
+}
+</script>
+<div id="modal-biz-det" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)document.getElementById('modal-biz-det').style.display='none'">
+  <div style="background:#fff;border-radius:12px;padding:24px;width:100%;max-width:700px;border-top:4px solid var(--orange);max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
+    <div class="mh">
+      <div>
+        <div class="mt" id="biz-det-title"></div>
+        <div style="font-size:11px;color:var(--n500);margin-top:3px" id="biz-det-sub"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="text-align:right">
+          <div style="font-size:10px;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;font-weight:600">Comissão</div>
+          <div style="font-size:20px;font-weight:700;color:var(--od)" id="biz-det-total"></div>
+        </div>
+        <button class="xb" onclick="document.getElementById('modal-biz-det').style.display='none'">&#215;</button>
+      </div>
+    </div>
+    <div class="tw" style="margin-top:16px">
+      <table>
+        <thead><tr><th>Empresa</th><th>CNPJ</th><th style="text-align:right">Receita (base)</th><th style="text-align:right">Comissão</th></tr></thead>
+        <tbody id="biz-det-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
