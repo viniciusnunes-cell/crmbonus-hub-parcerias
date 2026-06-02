@@ -2000,9 +2000,8 @@ function buildPolBiz(){
   P.forEach(function(p){
     if(!p.biz)return;
     var key=p.nome.toLowerCase().trim();
-    var pct=(p.biz.pct||0.10);
+    var pct=(p.biz.pct||10)/100; // pct armazenado como 10 = 10%
     POL_BIZ[key]={pol:Math.round(pct*100)+'% receita',pct:pct,fn:function(pctV){return function(b){return b*pctV;};}(pct)};
-    // aliases comuns
     if(p.nome.toLowerCase().includes('retail manager')){
       POL_BIZ['alexandre cintra']={pol:Math.round(pct*100)+'% receita',pct:pct,fn:function(pctV){return function(b){return b*pctV;};}(pct)};
     }
