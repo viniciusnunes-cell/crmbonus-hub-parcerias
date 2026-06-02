@@ -2416,12 +2416,17 @@ function procTech(file){
       var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
       var ws=wb.Sheets[wb.SheetNames[0]];
       var rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});
-      // Tenta header na linha 2 se linha 1 for filtros
+      // Se primeira linha for filtros (não tem coluna Integração), tenta a linha 2
       if(rows.length>0){
         var keys=Object.keys(rows[0]);
         var hasInteg=keys.some(function(k){return /integra/i.test(k);});
         if(!hasInteg){
+          // Tenta range 1 (pula linha 0)
           rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:1});
+          // Se ainda não achar, tenta range 2
+          if(rows.length>0&&!Object.keys(rows[0]).some(function(k){return /integra/i.test(k);})){
+            rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:2});
+          }
         }
       }
       document.getElementById('tech-fn').textContent='OK: '+file.name+' ('+rows.length+' linhas)';
