@@ -179,7 +179,7 @@ tr:hover td{background:var(--o50);}
       <option value="Em negociação">Em negociação</option>
       <option value="Contrato enviado">Contrato enviado</option>
     </select>
-
+    <button class="btn btn-p" onclick="openM('add')">+ Novo Parceiro</button>
   </div>
   <div style="display:flex;gap:16px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
     <span style="font-size:10px;font-weight:700;color:var(--n300);text-transform:uppercase;letter-spacing:0.8px">Status:</span>
@@ -2013,7 +2013,31 @@ function editInd(id){
 function closeIndM(){document.getElementById('modal-ind').classList.remove('open');}
 document.getElementById('modal-ind').addEventListener('click',e=>{if(e.target===document.getElementById('modal-ind'))closeIndM();});
 
-function salvarInd(){
+async function carregarIndicacoesSupabase(){
+  try{
+    const {data,error}=await sb.from('indicacoes').select('*').order('id');
+    if(error)throw error;
+    if(data&&data.length>0){
+      IND.splice(0,IND.length,...data.map(r=>({
+        id:r.id,_sbId:r.id,
+        parceiro:r.parceiro||'',
+        razao:r.razao_social_parceiro||'',
+        cnpjParc:r.cnpj_parceiro||'',
+        cliente:r.cliente||'',
+        cnpjCli:r.cnpj_cliente||'',
+        data:r.data_indicacao||'',
+        status:r.status||'Ativo',
+        obs:r.observacoes||'',
+      })));
+      rInd();
+      showSync('✓ Indicações carregadas do banco');
+    }
+  }catch(e){
+    console.warn('Supabase indicações:',e.message);
+  }
+}
+
+async function salvarInd(){
   const parc=document.getElementById('mind-parc').value.trim();
   const cli=document.getElementById('mind-cliente').value.trim();
   if(!parc){alert('Selecione o parceiro');return;}
@@ -2028,14 +2052,38 @@ function salvarInd(){
     status:document.getElementById('mind-status').value,
     obs:document.getElementById('mind-obs').value.trim(),
   };
-  if(indEid){const idx=IND.findIndex(i=>i.id===indEid);if(idx>=0)Object.assign(IND[idx],d);}
-  else IND.push({id:Date.now(),...d});
+  const payload={
+    parceiro:d.parceiro, razao_social_parceiro:d.razao,
+    cnpj_parceiro:d.cnpjParc, cliente:d.cliente,
+    cnpj_cliente:d.cnpjCli, status:d.status, observacoes:d.obs,
+  };
+  try{
+    if(indEid){
+      const idx=IND.findIndex(i=>i.id===indEid);
+      const sbId=idx>=0?IND[idx]._sbId:null;
+      if(idx>=0)Object.assign(IND[idx],d);
+      if(sbId)await sb.from('indicacoes').update(payload).eq('id',sbId);
+    } else {
+      const {data,error}=await sb.from('indicacoes').insert(payload).select().single();
+      if(error)throw error;
+      IND.push({id:data.id,_sbId:data.id,...d});
+    }
+    showSync('✓ Indicação salva no banco');
+  }catch(e){
+    if(!indEid)IND.push({id:Date.now(),...d});
+    showSync('⚠ Salvo apenas localmente',false);
+  }
   closeIndM();rInd();
 }
 
-function delInd(id){
+async function delInd(id){
   if(!confirm('Remover esta indicação?'))return;
+  const item=IND.find(i=>i.id===id);
   IND=IND.filter(i=>i.id!==id);
+  if(item?._sbId){
+    try{await sb.from('indicacoes').delete().eq('id',item._sbId);showSync('✓ Removido do banco');}
+    catch(e){showSync('⚠ Remoção local apenas',false);}
+  }
   rInd();
 }
 
@@ -2404,6 +2452,7 @@ window.addEventListener('DOMContentLoaded', function(){
   rC(); // renderiza dados locais imediatamente
   carregarParceirosSupabase(); // depois sincroniza com banco
   migrarHistoricoSupabase(); // migra histórico 2025/2026 se ainda não fez
+  carregarIndicacoesSupabase(); // carrega indicações do banco
 });
 </script>
 <div id="modal-biz-det" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)document.getElementById('modal-biz-det').style.display='none'">
