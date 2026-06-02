@@ -2403,9 +2403,19 @@ function parseMesTech(v){
   v=String(v||'').trim();
   var mpt={jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
   var lower=v.toLowerCase();
-  for(var m in mpt){if(lower.includes(m))return{mes:mpt[m],ano:2026};}
+  // Formato "Abr-26", "Mai-26", etc
+  for(var m in mpt){
+    if(lower.startsWith(m)){
+      var ano=lower.includes('25')?2025:2026;
+      return{mes:mpt[m],ano:ano};
+    }
+  }
+  // Formato "2026-05-01 00:00:00" ou "2026-05-01"
   var d=new Date(v);
-  if(!isNaN(d))return{mes:d.getMonth()+1,ano:d.getFullYear()};
+  if(!isNaN(d.getTime()))return{mes:d.getMonth()+1,ano:d.getFullYear()};
+  // Formato dd/mm/yyyy
+  var match=v.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if(match)return{mes:parseInt(match[2]),ano:parseInt(match[3])};
   return null;
 }
 function procTech(file){
@@ -2415,20 +2425,17 @@ function procTech(file){
     try{
       var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
       var ws=wb.Sheets[wb.SheetNames[0]];
-      // Busca a linha do header varrendo as primeiras 10 linhas
-      var headerRow=-1;
-      for(var ri=0;ri<10;ri++){
-        var testRows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:ri,header:1});
-        if(testRows.length>0){
-          var firstRow=testRows[0];
-          if(firstRow.some(function(c){return /integra/i.test(String(c));})){
-            headerRow=ri;
-            break;
+      // Header está na linha 3 do Excel (índice 2) — pula linhas de filtro
+      var rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:2});
+      // Verifica se achou coluna Integração, senão tenta varrer
+      if(!rows.length||!Object.keys(rows[0]).some(function(k){return /integra/i.test(k);})){
+        for(var ri=0;ri<=5;ri++){
+          var test=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:ri});
+          if(test.length&&Object.keys(test[0]).some(function(k){return /integra/i.test(k);})){
+            rows=test; break;
           }
         }
       }
-      if(headerRow<0){document.getElementById('tech-fn').textContent+=' — Coluna Integração não encontrada nas primeiras 10 linhas';return;}
-      var rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:headerRow});
       document.getElementById('tech-fn').textContent='OK: '+file.name+' ('+rows.length+' linhas)';
       calcTech(rows,file.name);
     }catch(err){document.getElementById('tech-fn').textContent='Erro: '+err.message;}
@@ -2444,10 +2451,17 @@ function calcTech(rows,arq){
   var cLoja=cols.find(function(c){return /^loja$/i.test(c.trim());});
   if(!cInteg||!cQtd){document.getElementById('tech-fn').textContent+=' — Colunas Integração/Quantidade não encontradas';return;}
 
+  var PARCEIROS_CONTRATO=['cigam','trinks','maqplan','presence','shoppub','wizos','laserchip',
+    'linx microvix','linx microvix v2','linx pos','linx pos v2','linx omni pos','linx seta digital',
+    'linx seta digital v2','linx millenium v2','linx degust','linx degust v2','linx commerce','linx store x',
+    'vtex v1','vtex v2','vtex','totvs moda','totvs protheus','data system','varejonline',
+    'nuvemshop','wake','safrapay','jetcommerce','jet e-commerce','shop control 9'];
+
   var porParc={};
   var detalhe={};
   rows.forEach(function(r){
     var integ=(r[cInteg]||'').trim().toLowerCase();
+    if(!PARCEIROS_CONTRATO.includes(integ))return; // só parceiros com contrato
     var parc=TECH_POL_MAP[integ];
     if(!parc)return;
     var dt=cData?parseMesTech(r[cData]):null;
