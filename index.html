@@ -1877,9 +1877,7 @@ function rBonusTech(){
     r.vals.forEach((v,i)=>totals[i]+=(v||0));
     html+=`<tr><td style="font-weight:600">${r.nome}</td><td style="color:var(--n300);font-size:11px">${r.pol}</td>`;
     r.vals.forEach((v,i)=>{
-      var key=r.nome+'__'+i;
-      var temDet=TECH_DETAIL[key]&&TECH_DETAIL[key].length>0;
-      if(v>0&&temDet){
+      if(v>0){
         html+=`<td><span style="cursor:pointer;color:var(--od);font-weight:600;text-decoration:underline dotted" onclick="abrirTechDet('${r.nome}',${i})">${brl(v)}</span></td>`;
       } else {
         html+=`<td>${brl(v)}</td>`;
@@ -1890,21 +1888,6 @@ function rBonusTech(){
   const grandTotal=totals.reduce((s,v)=>s+v,0);
   html+=`<tr class="sum-row"><td>Total</td><td></td>${totals.map(v=>v>0?`<td>${brl(v)}</td>`:'<td>—</td>').join('')}<td>${brl(grandTotal)}</td></tr>`;
   document.getElementById('tb-bonus-tech').innerHTML=html||`<tr><td colspan="15"><div class="em">Nenhum dado encontrado</div></td></tr>`;
-}
-
-function abrirTechDet(parceiro, mesIdx){
-  var key=parceiro+'__'+mesIdx;
-  var itens=TECH_DETAIL[key]||[];
-  var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  var total=itens.reduce(function(s,i){return s+(i.comissao||0);},0);
-  document.getElementById('biz-det-title').textContent=parceiro+' — '+MESES[mesIdx];
-  document.getElementById('biz-det-sub').textContent=itens.length+' loja'+(itens.length!==1?'s':'');
-  document.getElementById('biz-det-total').textContent='R$ '+total.toLocaleString('pt-BR',{minimumFractionDigits:2});
-  document.getElementById('biz-det-tbody').innerHTML=itens.map(function(i){
-    return '<tr><td style="font-weight:600">'+i.loja+'</td><td style="text-align:center">'+i.qtd+' bônus</td><td style="text-align:right;font-weight:700;color:var(--od)">R$ '+Number(i.comissao).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td></tr>';
-  }).join('');
-  document.getElementById('biz-det-thead').innerHTML='<tr><th>Loja</th><th style="text-align:center">Qtd Bônus</th><th style="text-align:right">Comissão</th></tr>';
-  document.getElementById('modal-biz-det').style.display='flex';
 }
 
 function openUploadModal(){document.getElementById('modal-upload').classList.add('open');}
@@ -2321,13 +2304,8 @@ const TECH_DETAIL={};
 
 async function carregarTechSupabase(){
   try{
-    const [{data:com,error:e1},{data:det,error:e2}]=await Promise.all([
-      sb.from('comissoes').select('*').eq('tipo','tech').order('ano').order('mes'),
-      sb.from('comissoes_detalhe').select('*').eq('tipo','tech')
-    ]);
+    const {data:com,error:e1}=await sb.from('comissoes').select('*').eq('tipo','tech').order('ano').order('mes');
     if(e1)throw e1;
-    if(e2)throw e2;
-    // Popula CT25/CT26
     if(com&&com.length){
       CT25.splice(0,CT25.length);
       CT26.splice(0,CT26.length);
@@ -2339,17 +2317,54 @@ async function carregarTechSupabase(){
         entry.vals[(r.mes-1)]=(entry.vals[(r.mes-1)]||0)+(r.total||0);
       });
     }
-    // Popula TECH_DETAIL
-    if(det&&det.length){
-      det.forEach(function(r){
-        var key=r.parceiro+'__'+(r.mes-1);
-        if(!TECH_DETAIL[key])TECH_DETAIL[key]=[];
-        TECH_DETAIL[key].push({loja:r.cliente||'',comissao:r.comissao||0,qtd:r.comissao>0?Math.round(r.comissao/0.05):0});
-      });
-    }
-    rBonusTech(); // re-renderiza com detalhes já carregados
+    rBonusTech();
     showSync('✓ Comissões de integração carregadas do banco');
   }catch(e){console.warn('Supabase tech:',e.message);}
+}
+
+// Carrega detalhe sob demanda ao clicar
+async function abrirTechDet(parceiro, mesIdx){
+  var key=parceiro+'__'+mesIdx;
+  var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('biz-det-title').textContent=parceiro+' — '+MESES[mesIdx];
+  document.getElementById('biz-det-sub').textContent='Carregando...';
+  document.getElementById('biz-det-total').textContent='';
+  document.getElementById('biz-det-tbody').innerHTML='';
+  document.getElementById('biz-det-thead').innerHTML='<tr><th>Loja</th><th style="text-align:center">Qtd Bônus</th><th style="text-align:right">Comissão</th></tr>';
+  document.getElementById('modal-biz-det').style.display='flex';
+
+  // Usa cache se já carregou
+  if(TECH_DETAIL[key]&&TECH_DETAIL[key].length>0){
+    renderTechDet(parceiro,mesIdx,TECH_DETAIL[key]);
+    return;
+  }
+
+  // Busca do banco com paginação
+  var itens=[];
+  var from=0;
+  var pageSize=1000;
+  while(true){
+    var {data,error}=await sb.from('comissoes_detalhe')
+      .select('*').eq('tipo','tech').eq('parceiro',parceiro).eq('mes',mesIdx+1)
+      .range(from,from+pageSize-1);
+    if(error||!data||!data.length)break;
+    itens=itens.concat(data.map(function(r){return{loja:r.cliente||'',comissao:r.comissao||0,qtd:r.comissao>0?Math.round(r.comissao/0.05):0};}));
+    if(data.length<pageSize)break;
+    from+=pageSize;
+  }
+  TECH_DETAIL[key]=itens;
+  renderTechDet(parceiro,mesIdx,itens);
+}
+
+function renderTechDet(parceiro,mesIdx,itens){
+  var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var total=itens.reduce(function(s,i){return s+(i.comissao||0);},0);
+  document.getElementById('biz-det-title').textContent=parceiro+' — '+MESES[mesIdx];
+  document.getElementById('biz-det-sub').textContent=itens.length+' loja'+(itens.length!==1?'s':'');
+  document.getElementById('biz-det-total').textContent='R$ '+total.toLocaleString('pt-BR',{minimumFractionDigits:2});
+  document.getElementById('biz-det-tbody').innerHTML=itens.map(function(i){
+    return '<tr><td style="font-weight:600">'+i.loja+'</td><td style="text-align:center">'+i.qtd+' bônus</td><td style="text-align:right;font-weight:700;color:var(--od)">R$ '+Number(i.comissao).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td></tr>';
+  }).join('');
 }
 
 async function carregarDetalhesBusinessSupabase(){
