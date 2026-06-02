@@ -2188,17 +2188,41 @@ function registrarAdim(){
   });
 
   rB();
-  // Salva comissões Business no Supabase
+  // Salva comissões Business no Supabase — um registro por parceiro/mês
   (async function(){
     try{
-      var inserts=resultado.map(function(r){
+      var inserts=[];
+      resultado.forEach(function(r){
         var polKey=r.parceiro.toLowerCase().trim();
         var polBiz=POL_BIZ[polKey]||{pol:'10% receita',pct:0.10};
-        return{parceiro:r.parceiro,tipo:'business',mes:0,ano:0,total:r.comissao,politica:polBiz.pol,qtd_bonus:0,base_receita:r.base,arquivo:arq};
+        var cnpjsGrupo=r.cnpjsGrupo;
+        var porMes={};
+        Object.keys(cnpjsGrupo).forEach(function(cnpj){
+          var dadosCnpj=adimDadosPendentes.mapaAdimPorMes[cnpj];
+          if(!dadosCnpj)return;
+          Object.keys(dadosCnpj).forEach(function(chave){
+            if(chave==='sem_data')return;
+            var v=dadosCnpj[chave];
+            if(!porMes[chave])porMes[chave]=0;
+            porMes[chave]+=v;
+          });
+        });
+        Object.keys(porMes).forEach(function(chave){
+          var parts=chave.split('_');
+          var ano=parseInt(parts[0]);
+          var mesIdx=parseInt(parts[1]);
+          var base=porMes[chave];
+          var comissao=r.polFn(base);
+          inserts.push({parceiro:r.parceiro,tipo:'business',mes:mesIdx+1,ano:ano,total:comissao,politica:polBiz.pol,qtd_bonus:0,base_receita:base,arquivo:arq});
+        });
       });
-      await sb.from('comissoes').insert(inserts);
-      showSync('✓ Comissões de indicação salvas no banco');
-    }catch(e){showSync('⚠ Comissões salvas localmente apenas',false);}
+      if(inserts.length){
+        // Remove registros existentes do mesmo arquivo para evitar duplicata
+        await sb.from('comissoes').delete().eq('tipo','business').eq('arquivo',arq);
+        await sb.from('comissoes').insert(inserts);
+        showSync('✓ '+inserts.length+' registros de indicação salvos no banco');
+      }
+    }catch(e){showSync('⚠ Comissões salvas localmente apenas: '+e.message,false);}
   })();
   closeAdimModal();
   var mesesStr=Array.from(mesesRegistrados).sort().join(', ');
