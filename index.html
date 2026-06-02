@@ -2400,21 +2400,26 @@ function closeTechUploadModal(){document.getElementById('modal-tech-upload').sty
 function hTechDrop(e){var f=e.dataTransfer.files[0];if(f)procTech(f);}
 function hTechFile(e){var f=e.target.files[0];if(f)procTech(f);}
 function parseMesTech(v){
-  v=String(v||'').trim();
+  if(!v&&v!==0)return null;
+  // Número serial do Excel (ex: 46773 = 2026-05-01)
+  if(typeof v==='number'&&v>40000){
+    var d=new Date(Math.round((v-25569)*86400*1000));
+    return{mes:d.getUTCMonth()+1,ano:d.getUTCFullYear()};
+  }
+  var s=String(v).trim();
+  // Formato "Abr-26", "Mar-26"
   var mpt={jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
-  var lower=v.toLowerCase();
-  // Formato "Abr-26", "Mai-26", etc
+  var lower=s.toLowerCase();
   for(var m in mpt){
     if(lower.startsWith(m)){
       var ano=lower.includes('25')?2025:2026;
       return{mes:mpt[m],ano:ano};
     }
   }
-  // Formato "2026-05-01 00:00:00" ou "2026-05-01"
-  var d=new Date(v);
-  if(!isNaN(d.getTime()))return{mes:d.getMonth()+1,ano:d.getFullYear()};
-  // Formato dd/mm/yyyy
-  var match=v.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  // Formato ISO ou dd/mm/yyyy
+  var d2=new Date(s);
+  if(!isNaN(d2.getTime()))return{mes:d2.getMonth()+1,ano:d2.getFullYear()};
+  var match=s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
   if(match)return{mes:parseInt(match[2]),ano:parseInt(match[3])};
   return null;
 }
@@ -2426,11 +2431,11 @@ function procTech(file){
       var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
       var ws=wb.Sheets[wb.SheetNames[0]];
       // Header está na linha 3 do Excel (índice 2) — pula linhas de filtro
-      var rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:2});
+      var rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true,range:2});
       // Verifica se achou coluna Integração, senão tenta varrer
       if(!rows.length||!Object.keys(rows[0]).some(function(k){return /integra/i.test(k);})){
         for(var ri=0;ri<=5;ri++){
-          var test=XLSX.utils.sheet_to_json(ws,{defval:'',raw:false,range:ri});
+          var test=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true,range:ri});
           if(test.length&&Object.keys(test[0]).some(function(k){return /integra/i.test(k);})){
             rows=test; break;
           }
