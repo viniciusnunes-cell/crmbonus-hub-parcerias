@@ -2449,6 +2449,9 @@ function calcTech(rows,arq){
   var cQtd=cols.find(function(c){return /quantidade|qtd/i.test(c);});
   var cData=cols.find(function(c){return /^data$/i.test(c.trim());});
   var cLoja=cols.find(function(c){return /^loja$/i.test(c.trim());});
+  // Debug: mostra amostra da coluna Data
+  var amostraDatas=rows.slice(0,5).map(function(r){return cData?r[cData]:'sem-col';});
+  document.getElementById('tech-fn').textContent+=' | Datas: '+JSON.stringify(amostraDatas);
   if(!cInteg||!cQtd){document.getElementById('tech-fn').textContent+=' — Colunas Integração/Quantidade não encontradas';return;}
 
   var PARCEIROS_CONTRATO=['cigam','trinks','maqplan','presence','shoppub','wizos','laserchip',
