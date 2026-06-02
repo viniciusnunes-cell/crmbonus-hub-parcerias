@@ -1296,35 +1296,87 @@ function mostrarRes({grupos,nid,arq,mes}){
   else niDiv.style.display='none';
 }
 function voltarUp(){setStep(1);document.getElementById('pnl-res').style.display='none';document.getElementById('fn').textContent='';document.getElementById('fi-up').value='';dadosApuracao=null;openUploadModal();}
-function regTodos(){
+async function salvarComissaoSupabase(k,tipo,mes,ano,total,pol,qtdBonus,baseReceita,arquivo){
+  try{
+    const {error}=await sb.from('comissoes').insert({
+      parceiro:k, tipo, mes, ano, total,
+      politica:tipo==='tech'?pol.tech?.val+'':Math.round((pol.biz?.pct||0)*100)+'%',
+      qtd_bonus:qtdBonus||0,
+      base_receita:baseReceita||0,
+      arquivo:arquivo||''
+    });
+    if(error)throw error;
+  }catch(e){console.warn('Supabase comissao:',e.message);}
+}
+
+async function migrarHistoricoSupabase(){
+  // Verifica se já migrou
+  if(localStorage.getItem('sb_migrated_com'))return;
+  try{
+    const {count}=await sb.from('comissoes').select('*',{count:'exact',head:true});
+    if(count>0){localStorage.setItem('sb_migrated_com','1');return;}
+    const inserts=[];
+    const addRows=(arr,tipo,ano)=>{
+      arr.forEach(c=>{
+        c.vals.forEach((v,mi)=>{
+          if(v>0)inserts.push({
+            parceiro:c.nome, tipo, mes:mi+1, ano, total:v,
+            politica:c.pol||'', qtd_bonus:0, base_receita:0, arquivo:'histórico'
+          });
+        });
+      });
+    };
+    addRows(CT25,'tech',2025);addRows(CB25,'business',2025);
+    addRows(CT26,'tech',2026);addRows(CB26,'business',2026);
+    if(inserts.length){
+      const {error}=await sb.from('comissoes').insert(inserts);
+      if(error)throw error;
+      showSync(`✓ ${inserts.length} registros históricos migrados para o banco`);
+    }
+    localStorage.setItem('sb_migrated_com','1');
+  }catch(e){
+    console.warn('Migração histórico:',e.message);
+    showSync('⚠ Migração histórica falhou: '+e.message,false);
+  }
+}
+
+async function regTodos(){
   if(!dadosApuracao)return;
   const {grupos,arq,mes}=dadosApuracao;
   const hist=document.getElementById('tb-hist');
   const empty=hist.querySelector('.em');
 
-  // Alimenta tabela de Comissão de Integração (histórico mês a mês)
   const mesParts=mes.split('-');
   const mesAno=parseInt(mesParts[0]);
   const mesIdx=parseInt(mesParts[1])-1;
   const targetTech=mesAno===2026?CT26:CT25;
-  Object.keys(grupos).forEach(k=>{
-    const {pol,techLinhas,techTotal}=grupos[k];
-    if(!techLinhas.length||techTotal<=0)return;
-    let entry=targetTech.find(c=>c.nome.toLowerCase()===k.toLowerCase());
-    if(!entry){
-      entry={nome:k,pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]};
-      targetTech.push(entry);
-    }
-    entry.vals[mesIdx]=(entry.vals[mesIdx]||0)+techTotal;
-  });
-  rC();// re-renderiza aba Comissão de Integração
+  const targetBiz=mesAno===2026?CB26:CB25;
 
+  // Atualiza arrays locais
+  Object.keys(grupos).forEach(k=>{
+    const {pol,techLinhas,bizLinhas,techTotal,bizTotal}=grupos[k];
+    if(techLinhas.length&&techTotal>0){
+      let entry=targetTech.find(c=>c.nome.toLowerCase()===k.toLowerCase());
+      if(!entry){entry={nome:k,pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]};targetTech.push(entry);}
+      entry.vals[mesIdx]=(entry.vals[mesIdx]||0)+techTotal;
+    }
+    if(bizLinhas.length&&bizTotal>0){
+      let entry=targetBiz.find(c=>c.nome.toLowerCase()===k.toLowerCase());
+      if(!entry){entry={nome:k,pol:pol.biz?.pct*100+'%',vals:[0,0,0,0,0,0,0,0,0,0,0,0]};targetBiz.push(entry);}
+      entry.vals[mesIdx]=(entry.vals[mesIdx]||0)+bizTotal;
+    }
+  });
+  rC();
+
+  // Salva no Supabase e monta tabela local
+  const saves=[];
   const novas=Object.keys(grupos).flatMap(k=>{
     const {pol,techLinhas,bizLinhas,techTotal,bizTotal}=grupos[k];
     const rows=[];
     if(techLinhas.length){
       const idx='h'+(histIdx++);
       HIST_DATA[idx]={k,tipo:'tech',linhas:techLinhas,total:techTotal,pol,mes,arq,status:'Ag. NF'};
+      saves.push(salvarComissaoSupabase(k,'tech',mesIdx+1,mesAno,techTotal,pol,sm(techLinhas.map(l=>l.qtd)),0,arq));
       rows.push(`<tr>
         <td><strong>${k}</strong><div style="font-size:10px;color:var(--n300)">${arq}</div></td>
         <td>${mes}</td><td><span class="badge b-tech">Integrações</span></td>
@@ -1338,6 +1390,7 @@ function regTodos(){
     if(bizLinhas.length){
       const idx='h'+(histIdx++);
       HIST_DATA[idx]={k,tipo:'biz',linhas:bizLinhas,total:bizTotal,pol,mes,arq,status:'Ag. NF'};
+      saves.push(salvarComissaoSupabase(k,'business',mesIdx+1,mesAno,bizTotal,pol,0,sm(bizLinhas.map(l=>l.val)),arq));
       rows.push(`<tr>
         <td><strong>${k}</strong><div style="font-size:10px;color:var(--n300)">${arq}</div></td>
         <td>${mes}</td><td><span class="badge b-biz">Indicações</span></td>
@@ -1350,10 +1403,14 @@ function regTodos(){
     }
     return rows;
   }).join('');
+
   hist.innerHTML=novas+(empty?'':hist.innerHTML);
   setStep(4);document.getElementById('pnl-res').style.display='none';document.getElementById('fn').textContent='';document.getElementById('fi-up').value='';dadosApuracao=null;
   atualizarSelectsMes();
   rHistFiltro();
+
+  // Salva tudo no Supabase em paralelo
+  Promise.all(saves).then(()=>showSync('✓ Comissões salvas no banco'));
 }
 
 function atualizarSelectsMes(){
@@ -2346,6 +2403,7 @@ function registrarAdim(){
 window.addEventListener('DOMContentLoaded', function(){
   rC(); // renderiza dados locais imediatamente
   carregarParceirosSupabase(); // depois sincroniza com banco
+  migrarHistoricoSupabase(); // migra histórico 2025/2026 se ainda não fez
 });
 </script>
 <div id="modal-biz-det" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)document.getElementById('modal-biz-det').style.display='none'">
