@@ -2174,12 +2174,17 @@ function registrarAdim(){
       if(!entry){entry={nome:r.parceiro,pol:r.pol,vals:[0,0,0,0,0,0,0,0,0,0,0,0]};target.push(entry);}
       entry.vals[mesIdx]=(entry.vals[mesIdx]||0)+comissao;
 
-      // Detalhe clicável
+      // Detalhe clicável — salva em memória E no banco
       var key=r.parceiro+'__'+mesIdx;
       if(!ADIM_DETAIL[key])ADIM_DETAIL[key]=[];
       var pct=base>0?comissao/base:0;
       Object.values(porMes[chave].cnpjs).forEach(function(c){
         ADIM_DETAIL[key].push({cliente:c.nome,cnpj:c.cnpj||'',val:c.val,comissao:c.val*pct});
+      });
+      // Acumula detalhes para salvar no banco
+      if(!detalheInserts[key])detalheInserts[key]={parceiro:r.parceiro,mes:mesIdx+1,ano:ano,arquivo:arq,itens:[]};
+      Object.values(porMes[chave].cnpjs).forEach(function(c){
+        detalheInserts[key].itens.push({cliente:c.nome,cnpj:c.cnpj||'',base_receita:c.val,comissao:c.val*pct});
       });
     });
 
@@ -2192,6 +2197,7 @@ function registrarAdim(){
   (async function(){
     try{
       var inserts=[];
+      var detalhes=[];
       resultado.forEach(function(r){
         var polKey=r.parceiro.toLowerCase().trim();
         var polBiz=POL_BIZ[polKey]||{pol:'10% receita',pct:0.10};
@@ -2203,26 +2209,37 @@ function registrarAdim(){
           Object.keys(dadosCnpj).forEach(function(chave){
             if(chave==='sem_data')return;
             var v=dadosCnpj[chave];
-            if(!porMes[chave])porMes[chave]=0;
-            porMes[chave]+=v;
+            if(!porMes[chave])porMes[chave]={base:0,cnpjs:{}};
+            porMes[chave].base+=v;
+            if(!porMes[chave].cnpjs[cnpj])porMes[chave].cnpjs[cnpj]={nome:cnpjsGrupo[cnpj],val:0};
+            porMes[chave].cnpjs[cnpj].val+=v;
           });
         });
         Object.keys(porMes).forEach(function(chave){
           var parts=chave.split('_');
           var ano=parseInt(parts[0]);
           var mesIdx=parseInt(parts[1]);
-          var base=porMes[chave];
+          var base=porMes[chave].base;
           var comissao=r.polFn(base);
+          var pct=base>0?comissao/base:0;
           inserts.push({parceiro:r.parceiro,tipo:'business',mes:mesIdx+1,ano:ano,total:comissao,politica:polBiz.pol,qtd_bonus:0,base_receita:base,arquivo:arq});
+          // Detalhe por loja
+          Object.values(porMes[chave].cnpjs).forEach(function(c){
+            detalhes.push({parceiro:r.parceiro,tipo:'business',mes:mesIdx+1,ano:ano,arquivo:arq,cliente:c.nome,cnpj:'',base_receita:c.val,comissao:c.val*pct});
+          });
         });
       });
       if(inserts.length){
-        // Remove registros existentes do mesmo arquivo para evitar duplicata
         await sb.from('comissoes').delete().eq('tipo','business').eq('arquivo',arq);
+        await sb.from('comissoes_detalhe').delete().eq('tipo','business').eq('arquivo',arq);
         await sb.from('comissoes').insert(inserts);
-        showSync('✓ '+inserts.length+' registros de indicação salvos no banco');
+        // Salva detalhes em lotes de 500
+        for(var i=0;i<detalhes.length;i+=500){
+          await sb.from('comissoes_detalhe').insert(detalhes.slice(i,i+500));
+        }
+        showSync('✓ '+inserts.length+' registros + detalhes salvos no banco');
       }
-    }catch(e){showSync('⚠ Comissões salvas localmente apenas: '+e.message,false);}
+    }catch(e){showSync('⚠ Erro ao salvar: '+e.message,false);}
   })();
   closeAdimModal();
   var mesesStr=Array.from(mesesRegistrados).sort().join(', ');
@@ -2251,13 +2268,29 @@ async function carregarComissoesBusinessSupabase(){
   }catch(e){console.warn('Supabase biz:',e.message);}
 }
 
+async function carregarDetalhesBusinessSupabase(){
+  try{
+    const {data,error}=await sb.from('comissoes_detalhe').select('*').eq('tipo','business');
+    if(error)throw error;
+    if(!data||!data.length)return;
+    data.forEach(function(r){
+      var mesIdx=r.mes-1;
+      var key=r.parceiro+'__'+mesIdx;
+      if(!ADIM_DETAIL[key])ADIM_DETAIL[key]=[];
+      ADIM_DETAIL[key].push({cliente:r.cliente||'',cnpj:r.cnpj||'',val:r.base_receita||0,comissao:r.comissao||0});
+    });
+    rB();
+  }catch(e){console.warn('Supabase detalhe biz:',e.message);}
+}
+
 // Inicializa: carrega parceiros do Supabase ao abrir o app
 window.addEventListener('DOMContentLoaded', function(){
-  rC(); // renderiza dados locais imediatamente
-  carregarParceirosSupabase(); // depois sincroniza com banco
-  migrarHistoricoSupabase(); // migra histórico 2025/2026 se ainda não fez
-  carregarIndicacoesSupabase(); // carrega indicações do banco
-  carregarComissoesBusinessSupabase(); // carrega comissões de indicação do banco
+  rC();
+  carregarParceirosSupabase();
+  migrarHistoricoSupabase();
+  carregarIndicacoesSupabase();
+  carregarComissoesBusinessSupabase();
+  carregarDetalhesBusinessSupabase();
 });
 </script>
 <div id="modal-biz-det" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)document.getElementById('modal-biz-det').style.display='none'">
