@@ -583,8 +583,8 @@ async function carregarParceirosSupabase(){
         cont:r.contato_comercial||'',
         email:r.email_financeiro||'',
         obs:r.observacoes||'',
-        tech:null,
-        biz:null,
+        tech:r.tech_val?{pol:r.tech_pol||'R$0,05/bônus',val:r.tech_val,vig:r.tech_vig||''}:null,
+        biz:r.biz_pct?{pol:r.biz_pol||'% receita',pct:r.biz_pct,vig:r.biz_vig||''}:null,
         _sbId:r.id,
       }));
       // Substitui array P mantendo dados tech/biz dos registros locais quando nome coincide
@@ -614,6 +614,12 @@ async function salvarSupabase(d){
       contato_comercial:d.cont||null,
       email_financeiro:d.email||null,
       observacoes:d.obs||null,
+      tech_val:d.tech?d.tech.val:null,
+      tech_pol:d.tech?d.tech.pol:null,
+      tech_vig:d.tech?d.tech.vig:null,
+      biz_pct:d.biz?d.biz.pct:null,
+      biz_pol:d.biz?d.biz.pol:null,
+      biz_vig:d.biz?d.biz.vig:null,
     };
     let res;
     if(d._sbId){
