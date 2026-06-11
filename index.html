@@ -2391,7 +2391,7 @@ async function carregarDetalhesBusinessSupabase(){
 // Inicializa: carrega parceiros do Supabase ao abrir o app
 window.addEventListener('DOMContentLoaded', function(){
   rC();
-  carregarParceirosSupabase();
+  carregarParceirosSupabase().then(function(){buildTechMap();buildPolBiz();});
   migrarHistoricoSupabase();
   carregarIndicacoesSupabase();
   carregarComissoesBusinessSupabase();
@@ -2402,20 +2402,49 @@ window.addEventListener('DOMContentLoaded', function(){
 
 <script>
 var techDadosPendentes=null;
-var TECH_POL_MAP={
-  'cigam':'CIGAM','trinks':'Trinks','maqplan':'MAQPLAN','presence':'Presence',
-  'shoppub':'Shoppub','wizos':'Wizos','laserchip':'LaserChip',
+// TECH_POL_MAP e PARCEIROS_CONTRATO são construídos dinamicamente do banco (array P)
+// O mapa de variantes de integração → nome do parceiro fica aqui (só os aliases, não as premissas)
+var INTEG_ALIAS_MAP={
   'linx microvix':'LINX + Seta','linx microvix v2':'LINX + Seta','linx pos':'LINX + Seta',
   'linx pos v2':'LINX + Seta','linx omni pos':'LINX + Seta','linx seta digital':'LINX + Seta',
   'linx seta digital v2':'LINX + Seta','linx millenium v2':'LINX + Seta','linx degust':'LINX + Seta',
   'linx degust v2':'LINX + Seta','linx commerce':'LINX + Seta','linx store x':'LINX + Seta',
+  'linx + seta':'LINX + Seta',
   'vtex v1':'VTEX - V2','vtex v2':'VTEX - V2','vtex':'VTEX - V2',
   'totvs moda':'TOTVS','totvs protheus':'TOTVS',
-  'data system':'DataSystem','varejonline':'Varejonline',
-  'nuvemshop':'NuvemShop','wake':'Wake','safrapay':'Safrapay',
+  'data system':'DataSystem','datasystem':'DataSystem',
+  'nuvem shop':'NuvemShop','nuvemshop':'NuvemShop',
   'jetcommerce':'JetCommerce','jet e-commerce':'JetCommerce',
-  'shop control 9':'Shoppub'
+  'shop control 9':'Shoppub','shoppub':'Shoppub',
+  'varejonline':'Varejonline',
+  'wake':'Wake','safrapay':'Safrapay',
+  'cigam':'CIGAM','trinks':'Trinks','maqplan':'MAQPLAN',
+  'presence':'Presence','wizos':'Wizos','laserchip':'LaserChip',
 };
+var TECH_POL_MAP={};
+var PARCEIROS_CONTRATO=[];
+
+function buildTechMap(){
+  TECH_POL_MAP={};
+  PARCEIROS_CONTRATO=[];
+  // Constrói a partir dos parceiros com tech no banco
+  P.forEach(function(p){
+    if(!p.tech)return;
+    var nomeLow=p.nome.toLowerCase().trim();
+    TECH_POL_MAP[nomeLow]=p.nome;
+    PARCEIROS_CONTRATO.push(nomeLow);
+  });
+  // Adiciona aliases do mapa fixo apontando para o parceiro correto
+  Object.keys(INTEG_ALIAS_MAP).forEach(function(alias){
+    var nomeParceiro=INTEG_ALIAS_MAP[alias];
+    // Só adiciona se o parceiro existe em P com tech
+    var parc=P.find(function(p){return p.nome===nomeParceiro&&p.tech;});
+    if(parc){
+      TECH_POL_MAP[alias]=nomeParceiro;
+      if(!PARCEIROS_CONTRATO.includes(alias))PARCEIROS_CONTRATO.push(alias);
+    }
+  });
+}
 function openTechUploadModal(){document.getElementById('modal-tech-upload').style.display='flex';}
 function closeTechUploadModal(){document.getElementById('modal-tech-upload').style.display='none';document.getElementById('tech-fn').textContent='';document.getElementById('tech-preview').style.display='none';techDadosPendentes=null;}
 function hTechDrop(e){var f=e.dataTransfer.files[0];if(f)procTech(f);}
@@ -2475,31 +2504,28 @@ function calcTech(rows,arq){
   var cQtd=cols.find(function(c){return /quantidade|qtd/i.test(c);});
   var cData=cols.find(function(c){return /^data$/i.test(c.trim());});
   var cLoja=cols.find(function(c){return /^loja$/i.test(c.trim());});
-  // Debug: mostra amostra da coluna Data
+  buildTechMap(); // reconstrói mapa com parceiros atuais do banco
   var amostraDatas=rows.slice(0,5).map(function(r){return cData?r[cData]:'sem-col';});
   document.getElementById('tech-fn').textContent+=' | Datas: '+JSON.stringify(amostraDatas);
   if(!cInteg||!cQtd){document.getElementById('tech-fn').textContent+=' — Colunas Integração/Quantidade não encontradas';return;}
-
-  var PARCEIROS_CONTRATO=['cigam','trinks','maqplan','presence','shoppub','wizos','laserchip',
-    'linx microvix','linx microvix v2','linx pos','linx pos v2','linx omni pos','linx seta digital',
-    'linx seta digital v2','linx millenium v2','linx degust','linx degust v2','linx commerce','linx store x',
-    'vtex v1','vtex v2','vtex','totvs moda','totvs protheus','data system','varejonline',
-    'nuvemshop','wake','safrapay','jetcommerce','jet e-commerce','shop control 9'];
 
   var porParc={};
   var detalhe={};
   rows.forEach(function(r){
     var integ=(r[cInteg]||'').trim().toLowerCase();
-    if(!PARCEIROS_CONTRATO.includes(integ))return; // só parceiros com contrato
-    var parc=TECH_POL_MAP[integ];
-    if(!parc)return;
+    if(!PARCEIROS_CONTRATO.includes(integ))return;
+    var nomeParceiro=TECH_POL_MAP[integ];
+    if(!nomeParceiro)return;
+    // Busca o parceiro no banco para pegar o tech_val correto
+    var parcObj=P.find(function(p){return p.nome===nomeParceiro&&p.tech;});
+    var techVal=parcObj&&parcObj.tech?parcObj.tech.val:0.05;
     var dt=cData?parseMesTech(r[cData]):null;
     if(!dt)return;
     var qtd=parseInt(r[cQtd])||0;
     if(qtd<=0)return;
     var loja=cLoja?String(r[cLoja]||''):'';
-    var k=parc+'__'+(dt.mes-1)+'__'+dt.ano;
-    if(!porParc[k])porParc[k]={parceiro:parc,mes:dt.mes,ano:dt.ano,qtd:0,lojas:{}};
+    var k=nomeParceiro+'__'+(dt.mes-1)+'__'+dt.ano;
+    if(!porParc[k])porParc[k]={parceiro:nomeParceiro,mes:dt.mes,ano:dt.ano,qtd:0,techVal:techVal,lojas:{}};
     porParc[k].qtd+=qtd;
     porParc[k].lojas[loja]=(porParc[k].lojas[loja]||0)+qtd;
   });
@@ -2510,16 +2536,16 @@ function calcTech(rows,arq){
   // Agrupa por parceiro para prévia
   var porNome={};
   resultado.forEach(function(r){
-    if(!porNome[r.parceiro])porNome[r.parceiro]={qtd:0,com:0};
+    if(!porNome[r.parceiro])porNome[r.parceiro]={qtd:0,com:0,techVal:r.techVal||0.05};
     porNome[r.parceiro].qtd+=r.qtd;
-    porNome[r.parceiro].com+=r.qtd*0.05;
+    porNome[r.parceiro].com+=r.qtd*(r.techVal||0.05);
   });
 
-  var totalCom=resultado.reduce(function(s,r){return s+r.qtd*0.05;},0);
+  var totalCom=resultado.reduce(function(s,r){return s+r.qtd*(r.techVal||0.05);},0);
   document.getElementById('tech-total-preview').textContent='R$ '+totalCom.toLocaleString('pt-BR',{minimumFractionDigits:2});
   document.getElementById('tech-preview-tbody').innerHTML=Object.keys(porNome).map(function(p){
     var v=porNome[p];
-    return '<tr><td><strong>'+p+'</strong></td><td style="font-size:11px;color:var(--n500)">R$0,05/bônus</td>'
+    return '<tr><td><strong>'+p+'</strong></td><td style="font-size:11px;color:var(--n500)">R$'+v.techVal.toFixed(2)+'/bônus</td>'
       +'<td style="text-align:center">'+v.qtd.toLocaleString('pt-BR')+'</td>'
       +'<td style="text-align:right;font-weight:700;color:var(--od)">R$ '+v.com.toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td></tr>';
   }).join('');
@@ -2533,21 +2559,20 @@ async function registrarTech(){
   var inserts=[];
   var detalhes=[];
   resultado.forEach(function(r){
-    var total=r.qtd*0.05;
-    inserts.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,total:total,politica:'R$0,05/bônus',qtd_bonus:r.qtd,base_receita:0,arquivo:arq});
+    var techVal=r.techVal||0.05;
+    var total=r.qtd*techVal;
+    inserts.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,total:total,politica:'R$'+techVal.toFixed(2)+'/bônus',qtd_bonus:r.qtd,base_receita:0,arquivo:arq});
     Object.keys(r.lojas).forEach(function(loja){
       var q=r.lojas[loja];
-      detalhes.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,arquivo:arq,cliente:loja,cnpj:'',base_receita:0,comissao:q*0.05});
-      // Atualiza memória
+      detalhes.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,arquivo:arq,cliente:loja,cnpj:'',base_receita:0,comissao:q*techVal});
       var key=r.parceiro+'__'+(r.mes-1);
       if(!TECH_DETAIL[key])TECH_DETAIL[key]=[];
-      TECH_DETAIL[key].push({loja:loja,comissao:q*0.05,qtd:q});
+      TECH_DETAIL[key].push({loja:loja,comissao:q*techVal,qtd:q});
     });
-    // Atualiza CT26/CT25
     var target=r.ano===2026?CT26:CT25;
     var entry=target.find(function(c){return c.nome.toLowerCase()===r.parceiro.toLowerCase();});
-    if(!entry){entry={nome:r.parceiro,pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]};target.push(entry);}
-    entry.vals[r.mes-1]=(entry.vals[r.mes-1]||0)+r.qtd*0.05;
+    if(!entry){entry={nome:r.parceiro,pol:'R$'+techVal.toFixed(2)+'/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]};target.push(entry);}
+    entry.vals[r.mes-1]=(entry.vals[r.mes-1]||0)+total;
   });
   try{
     await sb.from('comissoes').delete().eq('tipo','tech').eq('arquivo',arq);
