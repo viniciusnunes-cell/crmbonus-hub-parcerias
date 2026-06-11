@@ -573,7 +573,7 @@ async function carregarParceirosSupabase(){
     const {data,error}=await sb.from('parceiros').select('id,nome,cnpj,tipo,politica,status,contato_comercial,email_financeiro,observacoes,tech_val,tech_pol,tech_vig,biz_pct,biz_pol,biz_vig').order('id');
     if(error)throw error;
     if(data&&data.length>0){
-      // Mapeia formato Supabase → formato app
+      console.log('DEBUG parceiro[0]:', JSON.stringify(data[0]));
       const remotos=data.map(r=>({
         id:r.id,
         nome:r.nome,
