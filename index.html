@@ -570,7 +570,7 @@ function showSync(msg, ok=true){
 // Carrega parceiros do Supabase e mescla com os locais (locais têm prioridade de exibição se Supabase vazio)
 async function carregarParceirosSupabase(){
   try{
-    const {data,error}=await sb.from('parceiros').select('*').order('id');
+    const {data,error}=await sb.from('parceiros').select('id,nome,cnpj,tipo,politica,status,contato_comercial,email_financeiro,observacoes,tech_val,tech_pol,tech_vig,biz_pct,biz_pol,biz_vig').order('id');
     if(error)throw error;
     if(data&&data.length>0){
       // Mapeia formato Supabase → formato app
