@@ -587,11 +587,6 @@ async function carregarParceirosSupabase(){
         biz:r.biz_pct?{pol:r.biz_pol||'% receita',pct:r.biz_pct,vig:r.biz_vig||''}:null,
         _sbId:r.id,
       }));
-      // Substitui array P mantendo dados tech/biz dos registros locais quando nome coincide
-      remotos.forEach(rem=>{
-        const local=P.find(p=>p.nome.toLowerCase()===rem.nome.toLowerCase());
-        if(local){rem.tech=local.tech;rem.biz=local.biz;}
-      });
       P.splice(0,P.length,...remotos);
       rC();
       showSync('✓ Parceiros carregados do banco');
