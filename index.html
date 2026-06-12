@@ -673,8 +673,12 @@ const P=[
     tech:{pol:'R$0,05 por bônus gerado via integração GIFTBACK',val:0.05,vig:'Contrato'},
     biz:null},
 
-  {id:8,nome:'LINX + Seta',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Crédito R$5M a partir jan/24',
-    tech:{pol:'R$0,05/bônus via PDV Linx; R$0,016/bônus via PDV não-Linx. Crédito de R$5M acumulado.',val:0.05,vig:'Contrato'},
+  {id:8,nome:'Linx Retail',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Inclui: Seta Digital, Seta Digital V2, Microvix, Microvix V2. Crédito R$5M a partir jan/24.',
+    tech:{pol:'R$0,05/bônus (Seta Digital / Seta Digital V2 / Microvix / Microvix V2)',val:0.05,vig:'Contrato'},
+    biz:null},
+
+  {id:81,nome:'Linx Enterprise',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Inclui: Millenium V2, Omni Pos, Linx Pos, Linx Pos V2, Linx Store X.',
+    tech:{pol:'R$0,05/bônus (Millenium V2 / Omni Pos / Linx Pos / Linx Pos V2 / Linx Store X)',val:0.05,vig:'Contrato'},
     biz:null},
 
   {id:9,nome:'VTEX - V2',cnpj:'05.314.972/0003-36',status:'Assinado',prod:'GIFTBACK',cont:'Ingra 11 99787-0814',email:'',obs:'Mín R$2.000/mês',
@@ -731,7 +735,8 @@ const CT25=[ // Tech 2025 — bônus gerado
   {nome:'CIGAM',pol:'R$0,05/bônus',vals:[3420,3679.95,3633.15,0,0,0,17469.85,5179.8,5043.85,11299.2,6785.25,7050]},
   {nome:'Trinks',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,3374.9,726.95,659.1,698.8,691.55,778.75]},
   {nome:'MAQPLAN',pol:'R$0,05/bônus',vals:[0,0,0,0,25.57,186.97,220.97,200.82,155.12,153.22,152.65,208.67]},
-  {nome:'LINX + Seta',pol:'R$0,05/bônus (PDV Linx)',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Linx Retail',pol:'R$0,05/bônus (Seta / Microvix)',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Linx Enterprise',pol:'R$0,05/bônus (Millenium / Pos / Store X)',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
   {nome:'JetCommerce',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
   {nome:'Presence',pol:'R$0,05/bônus (a partir nov/25)',vals:[0,0,0,0,0,0,0,0,0,0,1819.48,2469.03]},
 ];
@@ -757,7 +762,7 @@ const POL={
   'linx degust v2'     :{nome:'LINX DEGUST V2',      tech:{val:0.05},biz:null},
   'linx commerce'      :{nome:'LINX COMMERCE',       tech:{val:0.05},biz:null},
   'linx store x'       :{nome:'LINX STORE X',        tech:{val:0.05},biz:null},
-  'linx + seta'        :{nome:'LINX + Seta',         tech:{val:0.05},biz:null},
+  'linx + seta'        :{nome:'Linx Retail',          tech:{val:0.05},biz:null},
   // ── VTEX
   'vtex v1'            :{nome:'VTEX V1',             tech:{val:0.05},biz:null},
   'vtex v2'            :{nome:'VTEX V2',             tech:{val:0.05},biz:null},
@@ -2576,11 +2581,22 @@ var techDadosPendentes=null;
 // TECH_POL_MAP e PARCEIROS_CONTRATO são construídos dinamicamente do banco (array P)
 // O mapa de variantes de integração → nome do parceiro fica aqui (só os aliases, não as premissas)
 var INTEG_ALIAS_MAP={
-  'linx microvix':'LINX + Seta','linx microvix v2':'LINX + Seta','linx pos':'LINX + Seta',
-  'linx pos v2':'LINX + Seta','linx omni pos':'LINX + Seta','linx seta digital':'LINX + Seta',
-  'linx seta digital v2':'LINX + Seta','linx millenium v2':'LINX + Seta','linx degust':'LINX + Seta',
-  'linx degust v2':'LINX + Seta','linx commerce':'LINX + Seta','linx store x':'LINX + Seta',
-  'linx + seta':'LINX + Seta',
+  // Linx Retail → Seta Digital + Microvix
+  'linx seta digital'      :'Linx Retail',
+  'linx seta digital v2'   :'Linx Retail',
+  'linx microvix'          :'Linx Retail',
+  'linx microvix v2'       :'Linx Retail',
+  // Linx Enterprise → Millenium / Omni Pos / Linx Pos / Linx Pos V2 / Store X
+  'linx millenium v2'      :'Linx Enterprise',
+  'linx omni pos'          :'Linx Enterprise',
+  'linx pos'               :'Linx Enterprise',
+  'linx pos v2'            :'Linx Enterprise',
+  'linx store x'           :'Linx Enterprise',
+  // Outros aliases Linx sem categoria definida → Linx Retail (fallback)
+  'linx + seta'            :'Linx Retail',
+  'linx degust'            :'Linx Retail',
+  'linx degust v2'         :'Linx Retail',
+  'linx commerce'          :'Linx Enterprise',
   'vtex v1':'VTEX - V2','vtex v2':'VTEX - V2','vtex':'VTEX - V2',
   'totvs moda':'TOTVS','totvs protheus':'TOTVS',
   'data system':'DataSystem','datasystem':'DataSystem',
