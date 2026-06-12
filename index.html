@@ -1946,6 +1946,11 @@ function limparFiltrosBT(){
   document.getElementById('ft-bt-pol').value='';
   rBonusTech();
 }
+const linxGroupCollapsed={};
+function toggleLinxGroup(safe){
+  linxGroupCollapsed[safe]=!linxGroupCollapsed[safe];
+  rBonusTech();
+}
 function rBonusTech(){
   const ano=document.getElementById('ano-bonus-tech').value;
   const src=(document.getElementById('src-bt').value||'').toLowerCase();
@@ -1990,18 +1995,11 @@ function rBonusTech(){
   let html='';
   const totals=Array(12).fill(0);
 
-  const linxGroupOpen={};
-  function toggleLinxGroup(safe){
-    linxGroupOpen[safe]=!linxGroupOpen[safe];
-    const rows=document.querySelectorAll('.linxg-sub-'+safe);
-    const chev=document.getElementById('linxg-chev-'+safe);
-    rows.forEach(function(r){r.style.display=linxGroupOpen[safe]?'none':'';});
-    if(chev)chev.textContent=linxGroupOpen[safe]?'▶':'▾';
-  }
   function renderLinxGroup(groupNome, membros, rowsArr){
     let gHtml='';
     const gTotals=Array(12).fill(0);
     const safe=groupNome.replace(/[^a-zA-Z0-9]/g,'_');
+    const collapsed=linxGroupCollapsed[safe];
     membros.forEach(function(mNome){
       const r=rowsArr.find(function(x){return x.nome===mNome;});
       if(!r)return;
@@ -2009,7 +2007,8 @@ function rBonusTech(){
       const tot=r.vals.reduce((s,v)=>s+(v||0),0);
       r.vals.forEach((v,i)=>{ totals[i]+=(v||0); gTotals[i]+=(v||0); });
       const label=LINX_LABELS[mNome]||mNome;
-      gHtml+=`<tr class="linxg-sub-${safe}"><td style="font-weight:500;padding-left:28px;font-size:12px;color:var(--n700)"><span style="color:var(--n300);margin-right:5px">↳</span>${label}</td><td style="color:var(--n300);font-size:11px">${r.pol}</td>`;
+      const hidStyle=collapsed?'display:none;':'';
+      gHtml+=`<tr style="${hidStyle}"><td style="font-weight:500;padding-left:28px;font-size:12px;color:var(--n700)"><span style="color:var(--n300);margin-right:5px">↳</span>${label}</td><td style="color:var(--n300);font-size:11px">${r.pol}</td>`;
       r.vals.forEach((v,i)=>{
         if(v>0){
           const chk=chkIcon(r.nome+'__'+i+'__tech');
@@ -2019,8 +2018,9 @@ function rBonusTech(){
       gHtml+=`<td style="text-align:right;font-weight:700;color:var(--od)">${brl(tot)}</td></tr>`;
     });
     const gTot=gTotals.reduce((s,v)=>s+v,0);
+    const chev=collapsed?'▶':'▾';
     let header=`<tr style="cursor:pointer;user-select:none" onclick="toggleLinxGroup('${safe}')">`;
-    header+=`<td style="font-weight:700"><span id="linxg-chev-${safe}" style="font-size:11px;color:var(--orange);margin-right:6px">▾</span>${groupNome}</td>`;
+    header+=`<td style="font-weight:700"><span style="font-size:11px;color:var(--orange);margin-right:6px">${chev}</span>${groupNome}</td>`;
     header+=`<td style="color:var(--n300);font-size:11px">R$0,05/bônus</td>`;
     gTotals.forEach(v=>{ header+=`<td style="text-align:right;font-size:11px;font-weight:600;color:var(--od)">${v>0?brl(v):'<span style="color:var(--n100)">—</span>'}</td>`; });
     header+=`<td style="text-align:right;font-weight:700;color:var(--od)">${brl(gTot)}</td></tr>`;
