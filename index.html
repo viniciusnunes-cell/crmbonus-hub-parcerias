@@ -673,12 +673,20 @@ const P=[
     tech:{pol:'R$0,05 por bônus gerado via integração GIFTBACK',val:0.05,vig:'Contrato'},
     biz:null},
 
-  {id:8,nome:'Linx Retail',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Inclui: Seta Digital, Seta Digital V2, Microvix, Microvix V2. Crédito R$5M a partir jan/24.',
-    tech:{pol:'R$0,05/bônus (Seta Digital / Seta Digital V2 / Microvix / Microvix V2)',val:0.05,vig:'Contrato'},
+  {id:8,nome:'Linx Retail — Seta',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Seta Digital + Seta Digital V2',
+    tech:{pol:'R$0,05/bônus (Seta Digital / Seta Digital V2)',val:0.05,vig:'Contrato'},
     biz:null},
 
-  {id:81,nome:'Linx Enterprise',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Inclui: Millenium V2, Omni Pos, Linx Pos, Linx Pos V2, Linx Store X.',
-    tech:{pol:'R$0,05/bônus (Millenium V2 / Omni Pos / Linx Pos / Linx Pos V2 / Linx Store X)',val:0.05,vig:'Contrato'},
+  {id:82,nome:'Linx Retail — Microvix',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Microvix + Microvix V2',
+    tech:{pol:'R$0,05/bônus (Microvix / Microvix V2)',val:0.05,vig:'Contrato'},
+    biz:null},
+
+  {id:83,nome:'Linx Enterprise — Millenium',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Millenium V2',
+    tech:{pol:'R$0,05/bônus (Millenium V2)',val:0.05,vig:'Contrato'},
+    biz:null},
+
+  {id:84,nome:'Linx Enterprise — Pos/Store',cnpj:'54.517.628/0029-01',status:'Assinado',prod:'TODOS PRODUTOS',cont:'',email:'yngrid.souza@linx.com.br',obs:'Omni Pos / Linx Pos / Linx Pos V2 / Linx Store X',
+    tech:{pol:'R$0,05/bônus (Omni Pos / Linx Pos / Linx Pos V2 / Linx Store X)',val:0.05,vig:'Contrato'},
     biz:null},
 
   {id:9,nome:'VTEX - V2',cnpj:'05.314.972/0003-36',status:'Assinado',prod:'GIFTBACK',cont:'Ingra 11 99787-0814',email:'',obs:'Mín R$2.000/mês',
@@ -735,8 +743,10 @@ const CT25=[ // Tech 2025 — bônus gerado
   {nome:'CIGAM',pol:'R$0,05/bônus',vals:[3420,3679.95,3633.15,0,0,0,17469.85,5179.8,5043.85,11299.2,6785.25,7050]},
   {nome:'Trinks',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,3374.9,726.95,659.1,698.8,691.55,778.75]},
   {nome:'MAQPLAN',pol:'R$0,05/bônus',vals:[0,0,0,0,25.57,186.97,220.97,200.82,155.12,153.22,152.65,208.67]},
-  {nome:'Linx Retail',pol:'R$0,05/bônus (Seta / Microvix)',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {nome:'Linx Enterprise',pol:'R$0,05/bônus (Millenium / Pos / Store X)',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Linx Retail — Seta',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Linx Retail — Microvix',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Linx Enterprise — Millenium',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
+  {nome:'Linx Enterprise — Pos/Store',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
   {nome:'JetCommerce',pol:'R$0,05/bônus',vals:[0,0,0,0,0,0,0,0,0,0,0,0]},
   {nome:'Presence',pol:'R$0,05/bônus (a partir nov/25)',vals:[0,0,0,0,0,0,0,0,0,0,1819.48,2469.03]},
 ];
@@ -762,7 +772,7 @@ const POL={
   'linx degust v2'     :{nome:'LINX DEGUST V2',      tech:{val:0.05},biz:null},
   'linx commerce'      :{nome:'LINX COMMERCE',       tech:{val:0.05},biz:null},
   'linx store x'       :{nome:'LINX STORE X',        tech:{val:0.05},biz:null},
-  'linx + seta'        :{nome:'Linx Retail',          tech:{val:0.05},biz:null},
+  'linx + seta'        :{nome:'Linx Retail — Seta',   tech:{val:0.05},biz:null},
   // ── VTEX
   'vtex v1'            :{nome:'VTEX V1',             tech:{val:0.05},biz:null},
   'vtex v2'            :{nome:'VTEX V2',             tech:{val:0.05},biz:null},
@@ -1933,24 +1943,76 @@ function rBonusTech(){
   const sortNome=sortIcon('bt','nome');
   const sortTot=sortIcon('bt','total');
 
+  // Grupos Linx: agrupa visualmente com cabeçalho e subtotal
+  const LINX_GROUPS={
+    'Linx Retail':['Linx Retail — Seta','Linx Retail — Microvix'],
+    'Linx Enterprise':['Linx Enterprise — Millenium','Linx Enterprise — Pos/Store']
+  };
+  const LINX_LABELS={
+    'Linx Retail — Seta':'Seta + Seta V2',
+    'Linx Retail — Microvix':'Microvix + Microvix V2',
+    'Linx Enterprise — Millenium':'Millenium V2',
+    'Linx Enterprise — Pos/Store':'Omni Pos / Linx Pos / Linx Pos V2 / Store X'
+  };
+  const linxNomes=Object.values(LINX_GROUPS).flat();
+  const linxRendered=new Set();
+
   let html='';
   const totals=Array(12).fill(0);
+
+  function renderLinxGroup(groupNome, membros, rowsArr){
+    let gHtml='';
+    const gTotals=Array(12).fill(0);
+    membros.forEach(function(mNome){
+      const r=rowsArr.find(function(x){return x.nome===mNome;});
+      if(!r)return;
+      linxRendered.add(mNome);
+      const tot=r.vals.reduce((s,v)=>s+(v||0),0);
+      r.vals.forEach((v,i)=>{ totals[i]+=(v||0); gTotals[i]+=(v||0); });
+      const label=LINX_LABELS[mNome]||mNome;
+      gHtml+=`<tr><td style="font-weight:600;padding-left:24px;font-size:12px;color:var(--n700)">${label}</td><td style="color:var(--n300);font-size:11px">${r.pol}</td>`;
+      r.vals.forEach((v,i)=>{
+        if(v>0){
+          const chk=chkIcon(r.nome+'__'+i+'__tech');
+          gHtml+=`<td style="text-align:right;font-size:11px"><span style="cursor:pointer;color:var(--od);font-weight:600;text-decoration:underline dotted" onclick="abrirTechDet('${r.nome}',${i})">${brl(v)}</span>${chk}</td>`;
+        } else { gHtml+=`<td style="text-align:right;font-size:11px"><span style="color:var(--n100)">—</span></td>`; }
+      });
+      gHtml+=`<td style="text-align:right;font-weight:700;color:var(--od)">${brl(tot)}</td></tr>`;
+    });
+    const gTot=gTotals.reduce((s,v)=>s+v,0);
+    // Cabeçalho do grupo
+    let header=`<tr style="background:var(--n900)"><td style="font-weight:700;font-size:11px;color:var(--white);letter-spacing:0.5px;text-transform:uppercase;padding:7px 13px" colspan="2">${groupNome}</td>`;
+    gTotals.forEach(v=>{ header+=`<td style="text-align:right;font-size:11px;font-weight:600;color:var(--orange)">${v>0?brl(v):'<span style=\"color:#555\">—</span>'}</td>`; });
+    header+=`<td style="text-align:right;font-weight:700;color:var(--orange)">${brl(gTot)}</td></tr>`;
+    return header+gHtml;
+  }
+
   sorted.forEach(r=>{
+    if(linxRendered.has(r.nome))return;
+    // Verifica se é membro de algum grupo Linx ainda não renderizado
+    let foundGroup=null;
+    Object.keys(LINX_GROUPS).forEach(function(g){
+      if(LINX_GROUPS[g].includes(r.nome))foundGroup=g;
+    });
+    if(foundGroup){
+      // Renderiza o grupo inteiro na primeira vez que encontrar um membro
+      html+=renderLinxGroup(foundGroup,LINX_GROUPS[foundGroup],sorted);
+      return;
+    }
+    // Parceiro normal
     const tot=r.vals.reduce((s,v)=>s+(v||0),0);
     r.vals.forEach((v,i)=>totals[i]+=(v||0));
     html+=`<tr><td style="font-weight:600">${r.nome}</td><td style="color:var(--n300);font-size:11px">${r.pol}</td>`;
     r.vals.forEach((v,i)=>{
       if(v>0){
         const chk=chkIcon(r.nome+'__'+i+'__tech');
-        html+=`<td><span style="cursor:pointer;color:var(--od);font-weight:600;text-decoration:underline dotted" onclick="abrirTechDet('${r.nome}',${i})">${brl(v)}</span>${chk}</td>`;
-      } else {
-        html+=`<td>${brl(v)}</td>`;
-      }
+        html+=`<td style="text-align:right;font-size:11px"><span style="cursor:pointer;color:var(--od);font-weight:600;text-decoration:underline dotted" onclick="abrirTechDet('${r.nome}',${i})">${brl(v)}</span>${chk}</td>`;
+      } else { html+=`<td style="text-align:right;font-size:11px"><span style="color:var(--n100)">—</span></td>`; }
     });
-    html+=`<td style="font-weight:700;color:var(--od)">${brl(tot)}</td></tr>`;
+    html+=`<td style="text-align:right;font-weight:700;color:var(--od)">${brl(tot)}</td></tr>`;
   });
   const grandTotal=totals.reduce((s,v)=>s+v,0);
-  html+=`<tr class="sum-row"><td>Total</td><td></td>${totals.map(v=>v>0?`<td>${brl(v)}</td>`:'<td>—</td>').join('')}<td>${brl(grandTotal)}</td></tr>`;
+  html+=`<tr class="sum-row"><td>Total</td><td></td>${totals.map(v=>v>0?`<td style="text-align:right">${brl(v)}</td>`:'<td style="text-align:right">—</td>').join('')}<td style="text-align:right">${brl(grandTotal)}</td></tr>`;
   document.getElementById('tb-bonus-tech').innerHTML=html||`<tr><td colspan="15"><div class="em">Nenhum dado encontrado</div></td></tr>`;
 
   // Atualiza thead com ícones de ordenação
@@ -2606,22 +2668,23 @@ var techDadosPendentes=null;
 // TECH_POL_MAP e PARCEIROS_CONTRATO são construídos dinamicamente do banco (array P)
 // O mapa de variantes de integração → nome do parceiro fica aqui (só os aliases, não as premissas)
 var INTEG_ALIAS_MAP={
-  // Linx Retail → Seta Digital + Microvix
-  'linx seta digital'      :'Linx Retail',
-  'linx seta digital v2'   :'Linx Retail',
-  'linx microvix'          :'Linx Retail',
-  'linx microvix v2'       :'Linx Retail',
-  // Linx Enterprise → Millenium / Omni Pos / Linx Pos / Linx Pos V2 / Store X
-  'linx millenium v2'      :'Linx Enterprise',
-  'linx omni pos'          :'Linx Enterprise',
-  'linx pos'               :'Linx Enterprise',
-  'linx pos v2'            :'Linx Enterprise',
-  'linx store x'           :'Linx Enterprise',
-  // Outros aliases Linx sem categoria definida → Linx Retail (fallback)
-  'linx + seta'            :'Linx Retail',
-  'linx degust'            :'Linx Retail',
-  'linx degust v2'         :'Linx Retail',
-  'linx commerce'          :'Linx Enterprise',
+  // Linx Retail — Seta
+  'linx seta digital'      :'Linx Retail — Seta',
+  'linx seta digital v2'   :'Linx Retail — Seta',
+  'linx + seta'            :'Linx Retail — Seta',
+  // Linx Retail — Microvix
+  'linx microvix'          :'Linx Retail — Microvix',
+  'linx microvix v2'       :'Linx Retail — Microvix',
+  // Linx Enterprise — Millenium
+  'linx millenium v2'      :'Linx Enterprise — Millenium',
+  'linx degust'            :'Linx Enterprise — Millenium',
+  'linx degust v2'         :'Linx Enterprise — Millenium',
+  // Linx Enterprise — Pos/Store
+  'linx omni pos'          :'Linx Enterprise — Pos/Store',
+  'linx pos'               :'Linx Enterprise — Pos/Store',
+  'linx pos v2'            :'Linx Enterprise — Pos/Store',
+  'linx store x'           :'Linx Enterprise — Pos/Store',
+  'linx commerce'          :'Linx Enterprise — Pos/Store',
   'vtex v1':'VTEX - V2','vtex v2':'VTEX - V2','vtex':'VTEX - V2',
   'totvs moda':'TOTVS','totvs protheus':'TOTVS',
   'data system':'DataSystem','datasystem':'DataSystem',
@@ -2645,14 +2708,16 @@ function buildTechMap(){
     TECH_POL_MAP[nomeLow]=p.nome;
     PARCEIROS_CONTRATO.push(nomeLow);
   });
-  // Adiciona aliases do mapa fixo apontando para o parceiro correto
+  // Adiciona aliases do mapa fixo — sempre registra, independente de estar em P
   Object.keys(INTEG_ALIAS_MAP).forEach(function(alias){
     var nomeParceiro=INTEG_ALIAS_MAP[alias];
-    // Só adiciona se o parceiro existe em P com tech
-    var parc=P.find(function(p){return p.nome===nomeParceiro&&p.tech;});
-    if(parc){
-      TECH_POL_MAP[alias]=nomeParceiro;
-      if(!PARCEIROS_CONTRATO.includes(alias))PARCEIROS_CONTRATO.push(alias);
+    TECH_POL_MAP[alias]=nomeParceiro;
+    if(!PARCEIROS_CONTRATO.includes(alias))PARCEIROS_CONTRATO.push(alias);
+    // Garante que o parceiro destino tambem esta no mapa
+    var nomeLow=nomeParceiro.toLowerCase().trim();
+    if(!TECH_POL_MAP[nomeLow]){
+      TECH_POL_MAP[nomeLow]=nomeParceiro;
+      if(!PARCEIROS_CONTRATO.includes(nomeLow))PARCEIROS_CONTRATO.push(nomeLow);
     }
   });
 }
