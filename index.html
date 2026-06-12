@@ -200,6 +200,11 @@ th[onclick]{transition:background .15s;}
       <option value="Em negociação">Em negociação</option>
       <option value="Contrato enviado">Contrato enviado</option>
     </select>
+    <select class="sel" id="ft-sort-c" onchange="rC()">
+      <option value="">Ordem padrão</option>
+      <option value="az">Nome A → Z</option>
+      <option value="za">Nome Z → A</option>
+    </select>
     <button class="btn btn-p" onclick="openM('add')">+ Novo Parceiro</button>
   </div>
   <div style="display:flex;gap:16px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
@@ -951,6 +956,9 @@ function rC(){
       (!ft||(ft==='Ambos'?tipo==='Ambos':tipo===ft||tipo==='Ambos'))&&
       (!fs||p.status===fs);
   });
+  const sort=document.getElementById('ft-sort-c').value;
+  if(sort==='az')f.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  else if(sort==='za')f.sort((a,b)=>b.nome.localeCompare(a.nome,'pt-BR'));
   const cont=document.getElementById('cards-c');
   if(!f.length){cont.innerHTML='<div class="em">Nenhum parceiro encontrado</div>';return;}
 
