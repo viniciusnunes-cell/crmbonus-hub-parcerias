@@ -1200,6 +1200,8 @@ function abrirDetalheAdim(parceiro, mesIdx){
     <td style="text-align:right;font-weight:700;color:var(--od)">${brl(totalCom)}</td>
   </tr>`;
   document.getElementById('modal-biz-det').style.display='flex';
+  document.getElementById('chk-email').checked=false;
+  document.getElementById('chk-nf').checked=false;
 }
 
 function abrirClientesIndicados(parceiro, evt){
@@ -1213,6 +1215,8 @@ function abrirClientesIndicados(parceiro, evt){
     <td style="font-size:11px;color:var(--n500);font-family:monospace" colspan="3">${i.cnpjCli||'—'}</td>
   </tr>`).join('');
   document.getElementById('modal-biz-det').style.display='flex';
+  document.getElementById('chk-email').checked=false;
+  document.getElementById('chk-nf').checked=false;
 }
 
 function rB(){
@@ -2441,6 +2445,8 @@ async function abrirTechDet(parceiro, mesIdx){
   document.getElementById('modal-biz-det').style.display='flex';
   document.getElementById('biz-det-base-wrap').style.display='none';
   document.getElementById('biz-det-export-adim-btn').style.display='none';
+  document.getElementById('chk-email').checked=false;
+  document.getElementById('chk-nf').checked=false;
   _techDetSort={col:null,dir:1};
 
   // Usa cache se já carregou
@@ -2798,6 +2804,16 @@ async function registrarTech(){
         <thead id="biz-det-thead"><tr><th>Empresa</th><th>CNPJ</th><th style="text-align:right">Valor Pago</th><th style="text-align:right">Comissão</th></tr></thead>
         <tbody id="biz-det-tbody"></tbody>
       </table>
+    </div>
+    <div style="display:flex;gap:24px;margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr)">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--n700)">
+        <input type="checkbox" id="chk-email" style="width:16px;height:16px;accent-color:var(--orange);cursor:pointer">
+        E-mail enviado
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--n700)">
+        <input type="checkbox" id="chk-nf" style="width:16px;height:16px;accent-color:var(--orange);cursor:pointer">
+        Nota fiscal recebida
+      </label>
     </div>
   </div>
 </div>
