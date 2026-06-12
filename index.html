@@ -2426,6 +2426,7 @@ async function abrirTechDet(parceiro, mesIdx){
   document.getElementById('biz-det-tbody').innerHTML='';
   document.getElementById('biz-det-thead').innerHTML='<tr><th>Loja</th><th style="text-align:center">Qtd Bônus</th><th style="text-align:right">Comissão</th></tr>';
   document.getElementById('modal-biz-det').style.display='flex';
+  _techDetSort={col:null,dir:1};
 
   // Usa cache se já carregou
   if(TECH_DETAIL[key]&&TECH_DETAIL[key].length>0){
@@ -2450,15 +2451,43 @@ async function abrirTechDet(parceiro, mesIdx){
   renderTechDet(parceiro,mesIdx,itens);
 }
 
+var _techDetSort={col:null,dir:1};
 function renderTechDet(parceiro,mesIdx,itens){
   var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   var total=itens.reduce(function(s,i){return s+(i.comissao||0);},0);
+  var totalBonus=itens.reduce(function(s,i){return s+(i.qtd||0);},0);
   document.getElementById('biz-det-title').textContent=parceiro+' — '+MESES[mesIdx];
-  document.getElementById('biz-det-sub').textContent=itens.length+' loja'+(itens.length!==1?'s':'');
+  document.getElementById('biz-det-sub').textContent=
+    itens.length+' loja'+(itens.length!==1?'s':'')+
+    ' · '+totalBonus.toLocaleString('pt-BR')+' bônus';
   document.getElementById('biz-det-total').textContent='R$ '+total.toLocaleString('pt-BR',{minimumFractionDigits:2});
-  document.getElementById('biz-det-tbody').innerHTML=itens.map(function(i){
-    return '<tr><td style="font-weight:600">'+i.loja+'</td><td style="text-align:center">'+i.qtd+' bônus</td><td style="text-align:right;font-weight:700;color:var(--od)">R$ '+Number(i.comissao).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td></tr>';
+
+  // Ordena
+  var sorted=itens.slice();
+  if(_techDetSort.col==='loja') sorted.sort(function(a,b){return _techDetSort.dir*a.loja.localeCompare(b.loja,'pt-BR');});
+  else if(_techDetSort.col==='qtd') sorted.sort(function(a,b){return _techDetSort.dir*((a.qtd||0)-(b.qtd||0));});
+  else if(_techDetSort.col==='com') sorted.sort(function(a,b){return _techDetSort.dir*((a.comissao||0)-(b.comissao||0));});
+
+  function si(col){
+    if(_techDetSort.col!==col) return '<span style="opacity:.3;font-size:9px;margin-left:3px">⇅</span>';
+    return _techDetSort.dir===1?'<span style="font-size:9px;margin-left:3px">▲</span>':'<span style="font-size:9px;margin-left:3px">▼</span>';
+  }
+  function th(col,label,align){
+    return '<th style="cursor:pointer;user-select:none'+(align?';text-align:'+align:'')+'" onclick="toggleTechDetSort(\''+col+'\',\''+parceiro+'\','+mesIdx+')">'
+      +label+si(col)+'</th>';
+  }
+
+  document.getElementById('biz-det-thead').innerHTML=
+    '<tr>'+th('loja','Loja',null)+th('qtd','Qtd Bônus','center')+th('com','Comissão','right')+'</tr>';
+  document.getElementById('biz-det-tbody').innerHTML=sorted.map(function(i){
+    return '<tr><td style="font-weight:600">'+i.loja+'</td><td style="text-align:center">'+i.qtd.toLocaleString('pt-BR')+'</td><td style="text-align:right;font-weight:700;color:var(--od)">R$ '+Number(i.comissao).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td></tr>';
   }).join('');
+}
+function toggleTechDetSort(col,parceiro,mesIdx){
+  if(_techDetSort.col===col) _techDetSort.dir*=-1;
+  else {_techDetSort.col=col;_techDetSort.dir=1;}
+  var key=parceiro+'__'+mesIdx;
+  renderTechDet(parceiro,mesIdx,TECH_DETAIL[key]||[]);
 }
 
 async function carregarDetalhesBusinessSupabase(){
