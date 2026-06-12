@@ -1183,9 +1183,11 @@ function abrirDetalheAdim(parceiro, mesIdx){
   document.getElementById('biz-det-title').textContent=parceiro+' — '+MESES_LABEL[mesIdx];
   document.getElementById('biz-det-sub').textContent=itens.length+' cliente'+(itens.length!==1?'s encontrados':'encontrado')+' no relatório de adimplência';
   document.getElementById('biz-det-total').textContent=brl(totalCom);
+  document.getElementById('biz-det-thead').innerHTML='<tr><th>Empresa</th><th>CNPJ</th><th style="text-align:right">Valor Pago</th><th style="text-align:right">Comissão</th></tr>';
+  document.getElementById('biz-det-export-btn').style.display='none';
   document.getElementById('biz-det-tbody').innerHTML=itens.map(i=>`<tr>
     <td><strong style="color:var(--n900)">${i.cliente}</strong></td>
-    <td style="font-size:11px;color:var(--n500);font-family:monospace">${i.cnpj}</td>
+    <td style="font-size:11px;color:var(--n500);font-family:monospace">${i.cnpj||'—'}</td>
     <td style="text-align:right;font-size:12px">${brl(i.val)}</td>
     <td style="text-align:right;font-weight:700;color:var(--od)">${brl(i.comissao)}</td>
   </tr>`).join('')+`<tr style="background:var(--ol)">
@@ -2758,7 +2760,7 @@ async function registrarTech(){
     </div>
     <div class="tw" style="margin-top:16px">
       <table>
-        <thead id="biz-det-thead"><tr><th>Empresa</th><th>CNPJ</th><th style="text-align:right">Receita (base)</th><th style="text-align:right">Comissão</th></tr></thead>
+        <thead id="biz-det-thead"><tr><th>Empresa</th><th>CNPJ</th><th style="text-align:right">Valor Pago</th><th style="text-align:right">Comissão</th></tr></thead>
         <tbody id="biz-det-tbody"></tbody>
       </table>
     </div>
