@@ -2541,6 +2541,7 @@ function exportAdimDet(){
   var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   XLSX.writeFile(wb,parceiro+'_'+MESES[mesIdx]+'.xlsx');
 }
+function toggleTechDetSort(col,parceiro,mesIdx){
   if(_techDetSort.col===col) _techDetSort.dir*=-1;
   else {_techDetSort.col=col;_techDetSort.dir=1;}
   var key=parceiro+'__'+mesIdx;
