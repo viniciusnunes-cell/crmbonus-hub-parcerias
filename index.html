@@ -303,37 +303,6 @@ th[onclick]{transition:background .15s;}
     </div>
   </div>
 
-  <!-- HISTÓRICO DE APURAÇÕES -->
-  <div class="card">
-    <div class="ct" style="display:flex;align-items:center;justify-content:space-between">
-      <span>Histórico de Apurações</span>
-      <span id="hist-count" style="font-size:11px;font-weight:600;color:var(--n500)"></span>
-    </div>
-    <div class="toolbar" style="margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <input class="sb" id="src-hist" placeholder="Buscar parceiro..." oninput="rHistFiltro()" style="max-width:200px">
-      <select class="sel" id="ft-hist-tipo" onchange="rHistFiltro()">
-        <option value="">Todos os tipos</option>
-        <option value="tech">Integrações</option>
-        <option value="biz">Indicações</option>
-      </select>
-      <select class="sel" id="ft-hist-status" onchange="rHistFiltro()">
-        <option value="">Todos os status</option>
-        <option value="Ag. NF">Ag. NF</option>
-        <option value="Pago">Pago</option>
-        <option value="Cancelado">Cancelado</option>
-      </select>
-      <select class="sel" id="ft-hist-mes-de" onchange="rHistFiltro()" style="min-width:130px">
-        <option value="">De (mês)...</option>
-      </select>
-      <select class="sel" id="ft-hist-mes-ate" onchange="rHistFiltro()" style="min-width:130px">
-        <option value="">Até (mês)...</option>
-      </select>
-      <button class="btn btn-g" onclick="limparFiltrosHist()" style="padding:8px 12px;font-size:11px">✕ Limpar</button>
-    </div>
-    <div class="tw"><table><thead><tr><th>Parceiro</th><th>Referência</th><th>Tipo</th><th>Modelo</th><th>Lojas</th><th>Bônus</th><th>Comissão</th><th>Status</th></tr></thead>
-    <tbody id="tb-hist"><tr><td colspan="8"><div class="em">Nenhuma apuração registrada</div></td></tr></tbody></table>
-  </div>
-</div>
 
 <!-- MODAL UPLOAD BÔNUS -->
 <div class="mo" id="modal-upload" onclick="if(event.target===this)closeUploadModal()">
