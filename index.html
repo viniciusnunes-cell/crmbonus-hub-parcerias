@@ -434,7 +434,7 @@ th[onclick]{transition:background .15s;}
 
 <!-- MODAL INDICAÇÕES -->
 <div class="mo" id="modal-ind">
-  <div class="modal">
+  <div class="modal" onclick="event.stopPropagation()">
     <div class="mh">
       <div class="mt" id="mind-title">Nova Indicação</div>
       <button class="xb" onclick="closeIndM()">×</button>
@@ -1899,7 +1899,8 @@ async function salvarInd(){
   const payload={
     parceiro:d.parceiro, razao_social_parceiro:d.razao,
     cnpj_parceiro:d.cnpjParc, cliente:d.cliente,
-    cnpj_cliente:d.cnpjCli, status:d.status, observacoes:d.obs,
+    cnpj_cliente:d.cnpjCli, data_indicacao:d.data||null,
+    status:d.status, observacoes:d.obs,
   };
   try{
     if(indEid){
@@ -1915,7 +1916,7 @@ async function salvarInd(){
     showSync('✓ Indicação salva no banco');
   }catch(e){
     if(!indEid)IND.push({id:Date.now(),...d});
-    showSync('⚠ Salvo apenas localmente',false);
+    showSync('⚠ Erro ao salvar: '+(e.message||JSON.stringify(e)),false);
   }
   closeIndM();rInd();
 }
