@@ -137,6 +137,8 @@ tr:hover td{background:var(--o50);}
 .ind-group-meta{display:flex;gap:6px;align-items:center;}
 .ind-group-count{background:var(--orange);color:var(--n900);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
 .ind-group-ativos{background:#D4EDDA;color:#1A6B35;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;}
+th[onclick]:hover{background:#222;cursor:pointer;}
+th[onclick]{transition:background .15s;}
 .ind-group-body{display:none;}
 .ind-group-body.open{display:block;}
 .ind-group table{border-radius:0;border:none;}
@@ -150,8 +152,27 @@ tr:hover td{background:var(--o50);}
 <div class="app rel" id="app">
 <div class="header">
   <div class="brand">
-    <div class="logo">cb</div>
-    <div><div class="bname">crmbonus<span class="barrow">↗</span></div><div class="bsub">Hub de Parceiros</div></div>
+    <svg height="32" viewBox="0 0 2000 550" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="flex-shrink:0">
+      <defs>
+        <linearGradient id="cb-grad" x1="1790.41" y1="395.29" x2="1967.43" y2="208.33" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#fda92b"/><stop offset=".17" stop-color="#fda42b"/><stop offset=".36" stop-color="#fd972d"/>
+          <stop offset=".54" stop-color="#fd8330"/><stop offset=".66" stop-color="#fc7e31"/><stop offset=".8" stop-color="#fc7035"/>
+          <stop offset=".94" stop-color="#fc5a3c"/><stop offset=".99" stop-color="#fc5140"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#cb-grad)" d="M1957.59,407.26l-.02-160.2c0-5.49-1.87-10.46-5.42-14.38l-.18-.2c-.48-.6-1-1.18-1.55-1.74-.68-.68-1.41-1.32-2.34-2.02-3.8-3.16-8.54-4.83-13.7-4.83l-160.2-.02v40.82s113.7.01,113.7.01l-111.08,111.08,27.53,27.53,1.28,1.41,111.22-111.23-.06,113.77h40.82Z"/>
+      <g fill="#fff">
+        <path d="M210.88,340.26h40.37c-6.47,41.13-42.28,69.7-87.22,69.7-53.7,0-94.45-40.75-94.45-94.07s40.75-94.07,94.45-94.07c44.94,0,80.74,28.56,87.22,69.7h-40.37c-4.95-20.18-22.85-33.9-46.85-33.9-33.13,0-54.84,25.9-54.84,58.27s21.71,58.27,54.84,58.27c23.99,0,41.89-13.71,46.85-33.9Z"/>
+        <path d="M386.44,222.57v37.32c-28.56,1.14-50.27,11.81-66.27,32.75v112.73h-39.61v-179h39.61v24.37c16.38-17.9,38.85-28.18,66.27-28.18Z"/>
+        <path d="M706.36,302.93v102.45h-39.23v-102.45c0-31.61-16.76-45.32-42.27-45.32-17.52,0-34.28,6.47-47.61,24.37,1.14,5.71,1.52,12.19,1.52,18.66v104.74h-39.23v-104.74c0-31.61-16.76-43.04-39.99-43.04-18.66,0-35.42,7.62-48.37,25.52v122.26h-39.61v-179h39.61v15.23c13.33-12.19,29.33-19.8,52.94-19.8,25.52,0,46.08,8.76,59.41,25.9,17.52-17.14,37.7-25.9,63.98-25.9,46.85,0,78.84,28.18,78.84,81.12Z"/>
+        <path d="M928,315.5c0,52.56-40.75,94.45-91.02,94.45-22.85,0-42.27-6.85-57.13-18.66v14.09h-39.61V134.98h39.61v105.12c14.85-11.43,34.28-18.28,57.13-18.28,50.27,0,91.02,41.89,91.02,93.69ZM888.39,315.5c0-31.61-23.99-57.89-57.13-57.89-19.8,0-38.09,6.47-51.42,25.14v65.89c13.33,18.66,31.61,25.52,51.42,25.52,33.13,0,57.13-26.66,57.13-58.65Z"/>
+        <path d="M1140.51,315.88c0,54.84-39.61,94.07-95.21,94.07s-95.21-39.23-95.21-94.07,39.61-94.07,95.21-94.07,95.21,39.23,95.21,94.07ZM1100.9,315.88c0-33.9-23.23-58.27-55.6-58.27s-55.61,24.37-55.61,58.27,23.23,58.27,55.61,58.27,55.6-24.75,55.6-58.27Z"/>
+        <path d="M1341.97,305.6v99.78h-39.61v-97.5c0-32.75-17.52-50.27-46.46-50.27-17.14,0-35.8,9.52-49.89,27.04v120.73h-39.61v-179h39.61v16c15.61-13.33,35.04-20.57,57.89-20.57,46.46,0,78.07,31.99,78.07,83.79Z"/>
+        <path d="M1546.1,226.38v179h-39.23v-17.52c-15.61,14.09-35.04,22.09-58.27,22.09-46.46,0-77.69-33.13-77.69-84.55v-99.02h39.23v96.74c0,32.75,17.9,51.03,46.46,51.03,17.52,0,35.8-9.9,50.27-28.18v-119.59h39.23Z"/>
+        <path d="M1656.54,377.58c23.23,0,39.23-7.62,39.23-21.71,0-10.67-8.76-18.28-23.99-20.95l-39.61-6.86c-27.42-4.57-52.94-18.28-52.94-50.65,0-34.66,30.09-55.99,74.65-55.99,34.66,0,74.65,11.81,78.46,58.65h-36.56c-1.91-19.42-19.04-27.04-41.89-27.04s-35.42,8.38-35.42,20.95c0,9.52,6.86,18.66,27.8,22.09l33.52,5.33c27.04,4.95,53.7,16.76,53.7,51.42,0,37.7-33.13,57.13-78.07,57.13-42.27,0-78.46-16.76-83.03-63.98l36.56.38c4.19,22.09,20.56,31.23,47.61,31.23Z"/>
+      </g>
+    </svg>
+    <div><div class="bsub" style="margin-top:2px">Hub de Parceiros</div></div>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="sw('cadastro')">Parceiros</button>
@@ -867,6 +888,8 @@ function matchPol(raw){
 }
 
 let eid=null,dadosApuracao=null;
+// Ordenação das tabelas de comissão
+const sortState={b:{col:null,dir:1},bt:{col:null,dir:1}};
 
 function brl(v){if(!v||v===0)return'—';return'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function sm(a){return a.reduce((s,v)=>s+(Number(v)||0),0);}
@@ -1070,13 +1093,35 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
 // ADIM_DETAIL: parceiro -> mes -> [{cliente, cnpj, val, comissao}]
 const ADIM_DETAIL={};
 
+function sortIcon(tableKey,col){
+  const st=sortState[tableKey];
+  if(st.col!==col)return'<span style="opacity:0.3;font-size:9px;margin-left:3px">⇅</span>';
+  return st.dir===1?'<span style="font-size:9px;margin-left:3px">▲</span>':'<span style="font-size:9px;margin-left:3px">▼</span>';
+}
+function toggleSort(tableKey,col,renderFn){
+  const st=sortState[tableKey];
+  if(st.col===col)st.dir*=-1;else{st.col=col;st.dir=1;}
+  renderFn();
+}
+
 function rComTable(dados,q,tbId,statsId,label){
+  const tableKey=tbId==='tb-b'?'b':'bt';
   const f=dados.filter(c=>!q||c.nome.toLowerCase().includes(q));
   const tb=document.getElementById(tbId);
   if(!f.length){tb.innerHTML='<tr><td colspan="16"><div class="em">Nenhum dado</div></td></tr>';return;}
   const isBiz=(tbId==='tb-b');
   const MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  const rows=f.map(c=>{
+
+  // Aplica ordenação
+  const st=sortState[tableKey];
+  const sorted=[...f];
+  if(st.col==='nome')sorted.sort((a,b)=>st.dir*a.nome.localeCompare(b.nome,'pt-BR'));
+  else if(st.col==='total')sorted.sort((a,b)=>st.dir*(sm(a.vals)-sm(b.vals)));
+
+  const renderFn=isBiz?rB:rBonusTech;
+  const thStyle='cursor:pointer;user-select:none;white-space:nowrap;';
+
+  const rows=sorted.map(c=>{
     const t=sm(c.vals);
     const cells=c.vals.map((v,mi)=>{
       if(v<=0)return`<td style="text-align:right;font-size:11px"><span style="color:var(--n100)">—</span></td>`;
@@ -1101,6 +1146,17 @@ function rComTable(dados,q,tbId,statsId,label){
     return`<tr>${nomeCell}<td style="font-size:10px;color:var(--n300)">${c.pol}</td>${cells}<td style="text-align:right;font-weight:700;color:var(--od)">${brl(t)}</td></tr>`;
   });
   const tots=M.map((_,i)=>sm(f.map(c=>c.vals[i]||0)));
+
+  // Monta thead com colunas clicáveis
+  const thNome=`<th style="${thStyle}" onclick="toggleSort('${tableKey}','nome',${isBiz?'rB':'rBonusTech'})">Parceiro${sortIcon(tableKey,'nome')}</th>`;
+  const thPol=`<th>Política</th>`;
+  const thMeses=MESES.map(m=>`<th>${m}</th>`).join('');
+  const thTotal=`<th style="${thStyle}" onclick="toggleSort('${tableKey}','total',${isBiz?'rB':'rBonusTech'})">Total${sortIcon(tableKey,'total')}</th>`;
+
+  // Injeta thead diretamente no table pai
+  const table=tb.closest('table');
+  if(table){const thead=table.querySelector('thead');if(thead)thead.innerHTML=`<tr>${thNome}${thPol}${thMeses}${thTotal}</tr>`;}
+
   tb.innerHTML=rows.join('')+`<tr class="sum-row"><td colspan="2">Total</td>${tots.map(v=>`<td style="text-align:right;font-size:11px">${v>0?'R$'+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}</td>`).join('')}<td style="text-align:right">${brl(sm(tots))}</td></tr>`;
   const tot=sm(f.flatMap(c=>c.vals)),ativ=f.filter(c=>sm(c.vals)>0).length;
   document.getElementById(statsId).innerHTML=`
@@ -1865,15 +1921,26 @@ function rBonusTech(){
   const src=(document.getElementById('src-bt').value||'').toLowerCase();
   const pol=document.getElementById('ft-bt-pol').value;
   const rows=ano==='2025'?CT25:CT26;
-  const filtered=rows.filter(r=>{
+  let filtered=rows.filter(r=>{
     if(src&&!r.nome.toLowerCase().includes(src))return false;
     if(pol&&!(r.pol||'').includes(pol))return false;
     return true;
   });
   const brl=(v)=>v>0?'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+
+  // Aplica ordenação
+  const st=sortState['bt'];
+  const sorted=[...filtered];
+  if(st.col==='nome')sorted.sort((a,b)=>st.dir*a.nome.localeCompare(b.nome,'pt-BR'));
+  else if(st.col==='total')sorted.sort((a,b)=>st.dir*(a.vals.reduce((s,v)=>s+(v||0),0)-b.vals.reduce((s,v)=>s+(v||0),0)));
+
+  const thStyle='cursor:pointer;user-select:none;white-space:nowrap;';
+  const sortNome=sortIcon('bt','nome');
+  const sortTot=sortIcon('bt','total');
+
   let html='';
   const totals=Array(12).fill(0);
-  filtered.forEach(r=>{
+  sorted.forEach(r=>{
     const tot=r.vals.reduce((s,v)=>s+(v||0),0);
     r.vals.forEach((v,i)=>totals[i]+=(v||0));
     html+=`<tr><td style="font-weight:600">${r.nome}</td><td style="color:var(--n300);font-size:11px">${r.pol}</td>`;
@@ -1889,6 +1956,19 @@ function rBonusTech(){
   const grandTotal=totals.reduce((s,v)=>s+v,0);
   html+=`<tr class="sum-row"><td>Total</td><td></td>${totals.map(v=>v>0?`<td>${brl(v)}</td>`:'<td>—</td>').join('')}<td>${brl(grandTotal)}</td></tr>`;
   document.getElementById('tb-bonus-tech').innerHTML=html||`<tr><td colspan="15"><div class="em">Nenhum dado encontrado</div></td></tr>`;
+
+  // Atualiza thead com ícones de ordenação
+  const table=document.getElementById('tb-bonus-tech').closest('table');
+  if(table){
+    const thead=table.querySelector('thead');
+    if(thead)thead.innerHTML=`<tr>
+      <th style="${thStyle}" onclick="toggleSort('bt','nome',rBonusTech)">Parceiro${sortNome}</th>
+      <th>Política</th>
+      <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th>
+      <th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th>
+      <th style="${thStyle}" onclick="toggleSort('bt','total',rBonusTech)">Total${sortTot}</th>
+    </tr>`;
+  }
 }
 
 function openUploadModal(){document.getElementById('modal-upload').classList.add('open');}
