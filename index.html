@@ -1183,8 +1183,12 @@ function abrirDetalheAdim(parceiro, mesIdx){
   document.getElementById('biz-det-title').textContent=parceiro+' — '+MESES_LABEL[mesIdx];
   document.getElementById('biz-det-sub').textContent=itens.length+' cliente'+(itens.length!==1?'s encontrados':'encontrado')+' no relatório de adimplência';
   document.getElementById('biz-det-total').textContent=brl(totalCom);
-  document.getElementById('biz-det-thead').innerHTML='<tr><th>Empresa</th><th>CNPJ</th><th style="text-align:right">Valor Pago</th><th style="text-align:right">Comissão</th></tr>';
+  document.getElementById('biz-det-total-base').textContent=brl(totalBase);
+  document.getElementById('biz-det-base-wrap').style.display='block';
   document.getElementById('biz-det-export-btn').style.display='none';
+  document.getElementById('biz-det-export-adim-btn').style.display='inline-flex';
+  document.getElementById('biz-det-thead').innerHTML='<tr><th>Empresa</th><th>CNPJ</th><th style="text-align:right">Valor Pago</th><th style="text-align:right">Comissão</th></tr>';
+  window._adimDetAtual={parceiro,mesIdx,itens};
   document.getElementById('biz-det-tbody').innerHTML=itens.map(i=>`<tr>
     <td><strong style="color:var(--n900)">${i.cliente}</strong></td>
     <td style="font-size:11px;color:var(--n500);font-family:monospace">${fmtCNPJ(i.cnpj)}</td>
@@ -2431,6 +2435,8 @@ async function abrirTechDet(parceiro, mesIdx){
   document.getElementById('biz-det-tbody').innerHTML='';
   document.getElementById('biz-det-thead').innerHTML='<tr><th>Loja</th><th style="text-align:center">Qtd Bônus</th><th style="text-align:right">Comissão</th></tr>';
   document.getElementById('modal-biz-det').style.display='flex';
+  document.getElementById('biz-det-base-wrap').style.display='none';
+  document.getElementById('biz-det-export-adim-btn').style.display='none';
   _techDetSort={col:null,dir:1};
 
   // Usa cache se já carregou
@@ -2518,7 +2524,23 @@ function exportTechDet(){
   XLSX.utils.book_append_sheet(wb,ws,parceiro.slice(0,31));
   XLSX.writeFile(wb,parceiro+'_'+MESES[mesIdx]+'.xlsx');
 }
-function toggleTechDetSort(col,parceiro,mesIdx){
+function exportAdimDet(){
+  if(!window._adimDetAtual)return;
+  var parceiro=window._adimDetAtual.parceiro;
+  var mesIdx=window._adimDetAtual.mesIdx;
+  var itens=window._adimDetAtual.itens;
+  var totalBase=itens.reduce(function(s,i){return s+(i.val||0);},0);
+  var totalCom=itens.reduce(function(s,i){return s+(i.comissao||0);},0);
+  var data=[['Empresa','CNPJ','Valor Pago (R$)','Comissão (R$)']];
+  itens.forEach(function(i){data.push([i.cliente,fmtCNPJ(i.cnpj),Number(i.val.toFixed(2)),Number(i.comissao.toFixed(2))]);});
+  data.push(['Total','',Number(totalBase.toFixed(2)),Number(totalCom.toFixed(2))]);
+  var ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:42},{wch:22},{wch:16},{wch:16}];
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,parceiro.slice(0,31));
+  var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  XLSX.writeFile(wb,parceiro+'_'+MESES[mesIdx]+'.xlsx');
+}
   if(_techDetSort.col===col) _techDetSort.dir*=-1;
   else {_techDetSort.col=col;_techDetSort.dir=1;}
   var key=parceiro+'__'+mesIdx;
@@ -2754,7 +2776,12 @@ async function registrarTech(){
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <button id="biz-det-export-btn" class="btn btn-g" style="display:none;font-size:11px;padding:7px 14px" onclick="exportTechDet()">↓ Excel</button>
+        <button id="biz-det-export-adim-btn" class="btn btn-g" style="display:none;font-size:11px;padding:7px 14px" onclick="exportAdimDet()">↓ Excel</button>
         <div style="text-align:right">
+          <div id="biz-det-base-wrap" style="display:none;margin-bottom:4px">
+            <div style="font-size:10px;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;font-weight:600">Valor Pago</div>
+            <div style="font-size:14px;font-weight:700;color:var(--n700)" id="biz-det-total-base"></div>
+          </div>
           <div style="font-size:10px;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;font-weight:600">Comissão</div>
           <div style="font-size:20px;font-weight:700;color:var(--od)" id="biz-det-total"></div>
         </div>
