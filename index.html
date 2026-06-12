@@ -2562,10 +2562,20 @@ async function carregarDetalhesBusinessSupabase(){
   }catch(e){console.warn('Supabase detalhe biz:',e.message);}
 }
 
+function atualizarCorChk(){
+  var email=document.getElementById('chk-email').checked;
+  var nf=document.getElementById('chk-nf').checked;
+  var corEmail=email&&!nf?'#dc2626':email&&nf?'#16a34a':'var(--orange)';
+  var corNf=nf&&email?'#16a34a':'var(--orange)';
+  document.getElementById('chk-email').style.accentColor=corEmail;
+  document.getElementById('chk-nf').style.accentColor=corNf;
+}
+
 // Inicializa: carrega parceiros do Supabase ao abrir o app
 window.addEventListener('DOMContentLoaded', function(){
   document.getElementById('chk-email').checked = localStorage.getItem('chk-email')==='true';
   document.getElementById('chk-nf').checked = localStorage.getItem('chk-nf')==='true';
+  atualizarCorChk();
   rC();
   carregarParceirosSupabase().then(function(){buildTechMap();buildPolBiz();});
   migrarHistoricoSupabase();
@@ -2809,11 +2819,11 @@ async function registrarTech(){
     </div>
     <div style="display:flex;gap:24px;margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr)">
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--n700)">
-        <input type="checkbox" id="chk-email" style="width:16px;height:16px;accent-color:var(--orange);cursor:pointer" onchange="localStorage.setItem('chk-email',this.checked)">
+        <input type="checkbox" id="chk-email" style="width:16px;height:16px;accent-color:var(--orange);cursor:pointer" onchange="localStorage.setItem('chk-email',this.checked);atualizarCorChk()">
         E-mail enviado
       </label>
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--n700)">
-        <input type="checkbox" id="chk-nf" style="width:16px;height:16px;accent-color:var(--orange);cursor:pointer" onchange="localStorage.setItem('chk-nf',this.checked)">
+        <input type="checkbox" id="chk-nf" style="width:16px;height:16px;accent-color:var(--orange);cursor:pointer" onchange="localStorage.setItem('chk-nf',this.checked);atualizarCorChk()">
         Nota fiscal recebida
       </label>
     </div>
