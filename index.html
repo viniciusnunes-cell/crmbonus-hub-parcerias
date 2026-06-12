@@ -1200,8 +1200,6 @@ function abrirDetalheAdim(parceiro, mesIdx){
     <td style="text-align:right;font-weight:700;color:var(--od)">${brl(totalCom)}</td>
   </tr>`;
   document.getElementById('modal-biz-det').style.display='flex';
-  document.getElementById('chk-email').checked=false;
-  document.getElementById('chk-nf').checked=false;
 }
 
 function abrirClientesIndicados(parceiro, evt){
@@ -1215,8 +1213,6 @@ function abrirClientesIndicados(parceiro, evt){
     <td style="font-size:11px;color:var(--n500);font-family:monospace" colspan="3">${i.cnpjCli||'—'}</td>
   </tr>`).join('');
   document.getElementById('modal-biz-det').style.display='flex';
-  document.getElementById('chk-email').checked=false;
-  document.getElementById('chk-nf').checked=false;
 }
 
 function rB(){
@@ -2445,8 +2441,6 @@ async function abrirTechDet(parceiro, mesIdx){
   document.getElementById('modal-biz-det').style.display='flex';
   document.getElementById('biz-det-base-wrap').style.display='none';
   document.getElementById('biz-det-export-adim-btn').style.display='none';
-  document.getElementById('chk-email').checked=false;
-  document.getElementById('chk-nf').checked=false;
   _techDetSort={col:null,dir:1};
 
   // Usa cache se já carregou
