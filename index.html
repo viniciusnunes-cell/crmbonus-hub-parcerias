@@ -2135,6 +2135,10 @@ function buildPolBiz(){
     var key=p.nome.toLowerCase().trim();
     var pct=(p.biz.pct||10)/100; // pct armazenado como 10 = 10%
     POL_BIZ[key]={pol:Math.round(pct*100)+'% receita',pct:pct,fn:function(pctV){return function(b){return b*pctV;};}(pct)};
+    if(p.nome.toLowerCase().includes('dama')){
+      POL_BIZ['dama33']={pol:Math.round(pct*100)+'% receita',pct:pct,fn:function(pctV){return function(b){return b*pctV;};}(pct)};
+      POL_BIZ['dama 33']={pol:Math.round(pct*100)+'% receita',pct:pct,fn:function(pctV){return function(b){return b*pctV;};}(pct)};
+    }
     if(p.nome.toLowerCase().includes('retail manager')){
       POL_BIZ['alexandre cintra']={pol:Math.round(pct*100)+'% receita',pct:pct,fn:function(pctV){return function(b){return b*pctV;};}(pct)};
     }
