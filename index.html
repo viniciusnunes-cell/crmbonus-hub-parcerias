@@ -2462,9 +2462,17 @@ function renderTechDet(parceiro,mesIdx,itens){
     ' · '+totalBonus.toLocaleString('pt-BR')+' bônus';
   document.getElementById('biz-det-total').textContent='R$ '+total.toLocaleString('pt-BR',{minimumFractionDigits:2});
 
+  // Guarda referência para export
+  window._techDetAtual={parceiro:parceiro,mesIdx:mesIdx,itens:itens};
+
+  // Botão Excel
+  var btnEl=document.getElementById('biz-det-export-btn');
+  if(btnEl)btnEl.style.display='inline-flex';
+
   // Ordena
   var sorted=itens.slice();
   if(_techDetSort.col==='loja') sorted.sort(function(a,b){return _techDetSort.dir*a.loja.localeCompare(b.loja,'pt-BR');});
+  else if(_techDetSort.col==='cnpj') sorted.sort(function(a,b){return _techDetSort.dir*(a.cnpj||'').localeCompare(b.cnpj||'','pt-BR');});
   else if(_techDetSort.col==='qtd') sorted.sort(function(a,b){return _techDetSort.dir*((a.qtd||0)-(b.qtd||0));});
   else if(_techDetSort.col==='com') sorted.sort(function(a,b){return _techDetSort.dir*((a.comissao||0)-(b.comissao||0));});
 
@@ -2478,10 +2486,32 @@ function renderTechDet(parceiro,mesIdx,itens){
   }
 
   document.getElementById('biz-det-thead').innerHTML=
-    '<tr>'+th('loja','Loja',null)+th('qtd','Qtd Bônus','center')+th('com','Comissão','right')+'</tr>';
+    '<tr>'+th('loja','Loja',null)+th('cnpj','CNPJ',null)+th('qtd','Qtd Bônus','center')+th('com','Comissão','right')+'</tr>';
   document.getElementById('biz-det-tbody').innerHTML=sorted.map(function(i){
-    return '<tr><td style="font-weight:600">'+i.loja+(i.cnpj?'<span style="font-weight:400;color:var(--n300);font-size:11px;margin-left:8px;font-family:monospace">'+i.cnpj+'</span>':'')+'</td><td style="text-align:center">'+i.qtd.toLocaleString('pt-BR')+'</td><td style="text-align:right;font-weight:700;color:var(--od)">R$ '+Number(i.comissao).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td></tr>';
+    return '<tr>'
+      +'<td style="font-weight:600">'+i.loja+'</td>'
+      +'<td style="font-size:11px;color:var(--n500);font-family:monospace;white-space:nowrap">'+(i.cnpj||'—')+'</td>'
+      +'<td style="text-align:center">'+i.qtd.toLocaleString('pt-BR')+'</td>'
+      +'<td style="text-align:right;font-weight:700;color:var(--od)">R$ '+Number(i.comissao).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td>'
+      +'</tr>';
   }).join('');
+}
+function exportTechDet(){
+  if(!window._techDetAtual)return;
+  var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var parceiro=window._techDetAtual.parceiro;
+  var mesIdx=window._techDetAtual.mesIdx;
+  var itens=window._techDetAtual.itens;
+  var totalBonus=itens.reduce(function(s,i){return s+(i.qtd||0);},0);
+  var totalCom=itens.reduce(function(s,i){return s+(i.comissao||0);},0);
+  var data=[['Loja','CNPJ','Qtd Bônus','Comissão (R$)']];
+  itens.forEach(function(i){data.push([i.loja,i.cnpj||'',i.qtd,Number(i.comissao.toFixed(2))]);});
+  data.push(['','','Total bônus: '+totalBonus,'Total: R$ '+totalCom.toLocaleString('pt-BR',{minimumFractionDigits:2})]);
+  var ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:40},{wch:22},{wch:14},{wch:16}];
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,parceiro.slice(0,31));
+  XLSX.writeFile(wb,parceiro+'_'+MESES[mesIdx]+'.xlsx');
 }
 function toggleTechDetSort(col,parceiro,mesIdx){
   if(_techDetSort.col===col) _techDetSort.dir*=-1;
@@ -2620,12 +2650,14 @@ function calcTech(rows,arq){
   var cQtd=cols.find(function(c){return /quantidade|qtd/i.test(c);});
   var cData=cols.find(function(c){return /^data$/i.test(c.trim());});
   var cLoja=cols.find(function(c){return /^loja$/i.test(c.trim());});
+  var cCNPJ=cols.find(function(c){return /cnpj/i.test(c);});
   buildTechMap(); // reconstrói mapa com parceiros atuais do banco
   var amostraDatas=rows.slice(0,5).map(function(r){return cData?r[cData]:'sem-col';});
   document.getElementById('tech-fn').textContent+=' | Datas: '+JSON.stringify(amostraDatas);
   if(!cInteg||!cQtd){document.getElementById('tech-fn').textContent+=' — Colunas Integração/Quantidade não encontradas';return;}
 
   var porParc={};
+  var lojaCNPJ={}; // mapa loja -> cnpj
   var detalhe={};
   rows.forEach(function(r){
     var integ=(r[cInteg]||'').trim().toLowerCase();
@@ -2640,11 +2672,15 @@ function calcTech(rows,arq){
     var qtd=parseInt(r[cQtd])||0;
     if(qtd<=0)return;
     var loja=cLoja?String(r[cLoja]||''):'';
+    var cnpj=cCNPJ?String(r[cCNPJ]||'').trim():'';
+    if(loja&&cnpj)lojaCNPJ[loja]=cnpj;
     var k=nomeParceiro+'__'+(dt.mes-1)+'__'+dt.ano;
     if(!porParc[k])porParc[k]={parceiro:nomeParceiro,mes:dt.mes,ano:dt.ano,qtd:0,techVal:techVal,lojas:{}};
     porParc[k].qtd+=qtd;
     porParc[k].lojas[loja]=(porParc[k].lojas[loja]||0)+qtd;
   });
+  // Anexa lojaCNPJ ao resultado para uso em registrarTech
+  Object.values(porParc).forEach(function(r){r.lojaCNPJ=lojaCNPJ;});
 
   var resultado=Object.values(porParc);
   if(!resultado.length){document.getElementById('tech-fn').textContent+=' — Nenhum parceiro identificado';return;}
@@ -2680,10 +2716,11 @@ async function registrarTech(){
     inserts.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,total:total,politica:'R$'+techVal.toFixed(2)+'/bônus',qtd_bonus:r.qtd,base_receita:0,arquivo:arq});
     Object.keys(r.lojas).forEach(function(loja){
       var q=r.lojas[loja];
-      detalhes.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,arquivo:arq,cliente:loja,cnpj:'',base_receita:0,comissao:q*techVal});
+      var cnpj=(r.lojaCNPJ&&r.lojaCNPJ[loja])||'';
+      detalhes.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,arquivo:arq,cliente:loja,cnpj:cnpj,base_receita:0,comissao:q*techVal});
       var key=r.parceiro+'__'+(r.mes-1);
       if(!TECH_DETAIL[key])TECH_DETAIL[key]=[];
-      TECH_DETAIL[key].push({loja:loja,cnpj:r.cnpj||'',comissao:q*techVal,qtd:q});
+      TECH_DETAIL[key].push({loja:loja,cnpj:cnpj,comissao:q*techVal,qtd:q});
     });
     var target=r.ano===2026?CT26:CT25;
     var entry=target.find(function(c){return c.nome.toLowerCase()===r.parceiro.toLowerCase();});
@@ -2704,13 +2741,14 @@ async function registrarTech(){
 }
 </script>
 <div id="modal-biz-det" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)document.getElementById('modal-biz-det').style.display='none'">
-  <div style="background:#fff;border-radius:12px;padding:24px;width:100%;max-width:700px;border-top:4px solid var(--orange);max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
+  <div style="background:#fff;border-radius:12px;padding:24px;width:100%;max-width:820px;border-top:4px solid var(--orange);max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
     <div class="mh">
       <div>
         <div class="mt" id="biz-det-title"></div>
         <div style="font-size:11px;color:var(--n500);margin-top:3px" id="biz-det-sub"></div>
       </div>
-      <div style="display:flex;align-items:center;gap:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button id="biz-det-export-btn" class="btn btn-g" style="display:none;font-size:11px;padding:7px 14px" onclick="exportTechDet()">↓ Excel</button>
         <div style="text-align:right">
           <div style="font-size:10px;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;font-weight:600">Comissão</div>
           <div style="font-size:20px;font-weight:700;color:var(--od)" id="biz-det-total"></div>
