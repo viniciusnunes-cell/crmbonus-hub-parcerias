@@ -2443,7 +2443,7 @@ async function abrirTechDet(parceiro, mesIdx){
       .select('*').eq('tipo','tech').eq('parceiro',parceiro).eq('mes',mesIdx+1)
       .range(from,from+pageSize-1);
     if(error||!data||!data.length)break;
-    itens=itens.concat(data.map(function(r){return{loja:r.cliente||'',comissao:r.comissao||0,qtd:r.comissao>0?Math.round(r.comissao/0.05):0};}));
+    itens=itens.concat(data.map(function(r){return{loja:r.cliente||'',cnpj:r.cnpj||'',comissao:r.comissao||0,qtd:r.comissao>0?Math.round(r.comissao/0.05):0};}));
     if(data.length<pageSize)break;
     from+=pageSize;
   }
@@ -2480,7 +2480,7 @@ function renderTechDet(parceiro,mesIdx,itens){
   document.getElementById('biz-det-thead').innerHTML=
     '<tr>'+th('loja','Loja',null)+th('qtd','Qtd Bônus','center')+th('com','Comissão','right')+'</tr>';
   document.getElementById('biz-det-tbody').innerHTML=sorted.map(function(i){
-    return '<tr><td style="font-weight:600">'+i.loja+'</td><td style="text-align:center">'+i.qtd.toLocaleString('pt-BR')+'</td><td style="text-align:right;font-weight:700;color:var(--od)">R$ '+Number(i.comissao).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td></tr>';
+    return '<tr><td style="font-weight:600">'+i.loja+(i.cnpj?'<span style="font-weight:400;color:var(--n300);font-size:11px;margin-left:8px;font-family:monospace">'+i.cnpj+'</span>':'')+'</td><td style="text-align:center">'+i.qtd.toLocaleString('pt-BR')+'</td><td style="text-align:right;font-weight:700;color:var(--od)">R$ '+Number(i.comissao).toLocaleString('pt-BR',{minimumFractionDigits:2})+'</td></tr>';
   }).join('');
 }
 function toggleTechDetSort(col,parceiro,mesIdx){
@@ -2683,7 +2683,7 @@ async function registrarTech(){
       detalhes.push({parceiro:r.parceiro,tipo:'tech',mes:r.mes,ano:r.ano,arquivo:arq,cliente:loja,cnpj:'',base_receita:0,comissao:q*techVal});
       var key=r.parceiro+'__'+(r.mes-1);
       if(!TECH_DETAIL[key])TECH_DETAIL[key]=[];
-      TECH_DETAIL[key].push({loja:loja,comissao:q*techVal,qtd:q});
+      TECH_DETAIL[key].push({loja:loja,cnpj:r.cnpj||'',comissao:q*techVal,qtd:q});
     });
     var target=r.ano===2026?CT26:CT25;
     var entry=target.find(function(c){return c.nome.toLowerCase()===r.parceiro.toLowerCase();});
