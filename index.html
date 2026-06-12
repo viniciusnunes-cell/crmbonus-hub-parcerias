@@ -1110,7 +1110,7 @@ function rComTable(dados,q,tbId,statsId,label){
       const valFmt='R$'+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
       if(isBiz){
         const key=c.nome+'__'+mi;
-        const chk=getBizDetChk(c.nome+'__'+mi+'__biz')?'<span style="color:#22a722;font-size:11px;margin-left:4px">✓</span>':'';
+        const chk=chkIcon(c.nome+'__'+mi+'__biz');
         const temDetalhe=ADIM_DETAIL[key]&&ADIM_DETAIL[key].length>0;
         if(temDetalhe){
           return`<td style="text-align:right;font-size:11px"><span class="com-link" style="color:var(--od);font-weight:700;cursor:pointer" onclick="abrirDetalheAdim('${c.nome.replace(/'/g,"\'")}',${mi})">${valFmt}</span>${chk}</td>`;
@@ -1166,6 +1166,10 @@ function abrirDetalheAdim(parceiro, mesIdx){
   document.getElementById('biz-det-thead').innerHTML='<tr><th>Empresa</th><th>CNPJ</th><th style="text-align:right">Valor Pago</th><th style="text-align:right">Comissão</th></tr>';
   window._adimDetAtual={parceiro,mesIdx,itens};
   _bizDetKey=parceiro+'__'+mesIdx+'__biz';
+  var _chkValBiz=getBizDetChk(_bizDetKey);
+  document.getElementById('chk-email').checked=(_chkValBiz===true||_chkValBiz==='email');
+  document.getElementById('chk-nf').checked=(_chkValBiz===true);
+  atualizarCorChk();
   document.getElementById('biz-det-tbody').innerHTML=itens.map(i=>`<tr>
     <td><strong style="color:var(--n900)">${i.cliente}</strong></td>
     <td style="font-size:11px;color:var(--n500);font-family:monospace">${fmtCNPJ(i.cnpj)}</td>
@@ -1937,7 +1941,7 @@ function rBonusTech(){
     html+=`<tr><td style="font-weight:600">${r.nome}</td><td style="color:var(--n300);font-size:11px">${r.pol}</td>`;
     r.vals.forEach((v,i)=>{
       if(v>0){
-        const chk=getBizDetChk(r.nome+'__'+i+'__tech')?'<span style="color:#22a722;font-size:11px;margin-left:4px">✓</span>':'';
+        const chk=chkIcon(r.nome+'__'+i+'__tech');
         html+=`<td><span style="cursor:pointer;color:var(--od);font-weight:600;text-decoration:underline dotted" onclick="abrirTechDet('${r.nome}',${i})">${brl(v)}</span>${chk}</td>`;
       } else {
         html+=`<td>${brl(v)}</td>`;
@@ -2420,6 +2424,10 @@ async function abrirTechDet(parceiro, mesIdx){
   document.getElementById('biz-det-base-wrap').style.display='none';
   document.getElementById('biz-det-export-adim-btn').style.display='none';
   _bizDetKey=parceiro+'__'+mesIdx+'__tech';
+  var _chkVal=getBizDetChk(_bizDetKey);
+  document.getElementById('chk-email').checked=(_chkVal===true||_chkVal==='email');
+  document.getElementById('chk-nf').checked=(_chkVal===true);
+  atualizarCorChk();
   _techDetSort={col:null,dir:1};
 
   // Usa cache se já carregou
@@ -2448,9 +2456,10 @@ async function abrirTechDet(parceiro, mesIdx){
 var _bizDetKey=null; // parceiro__mesIdx__tipo do popup aberto
 function fecharBizDet(){
   if(_bizDetKey){
-    var ambos=document.getElementById('chk-email').checked&&document.getElementById('chk-nf').checked;
+    var email=document.getElementById('chk-email').checked;
+    var nf=document.getElementById('chk-nf').checked;
     var stored=JSON.parse(localStorage.getItem('bizDetChk')||'{}');
-    stored[_bizDetKey]=ambos;
+    stored[_bizDetKey]=(email&&nf)?true:email?'email':false;
     localStorage.setItem('bizDetChk',JSON.stringify(stored));
     _bizDetKey=null;
     // Re-renderiza tabelas para mostrar/esconder ✓
@@ -2460,7 +2469,13 @@ function fecharBizDet(){
 }
 function getBizDetChk(key){
   var stored=JSON.parse(localStorage.getItem('bizDetChk')||'{}');
-  return stored[key]===true;
+  return stored[key]||false; // true = ambos, 'email' = só email, false = nenhum
+}
+function chkIcon(key){
+  var v=getBizDetChk(key);
+  if(v===true) return '<span style="color:#16a34a;font-size:11px;margin-left:4px">✓</span>';
+  if(v==='email') return '<span style="color:#dc2626;font-size:11px;margin-left:4px">✓</span>';
+  return '';
 }
 function renderTechDet(parceiro,mesIdx,itens){
   var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
