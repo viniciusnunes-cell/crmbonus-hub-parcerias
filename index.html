@@ -2308,8 +2308,9 @@ function registrarAdim(){
       var key=r.parceiro+'__'+mesIdx;
       if(!ADIM_DETAIL[key])ADIM_DETAIL[key]=[];
       var pct=base>0?comissao/base:0;
-      Object.values(porMes[chave].cnpjs).forEach(function(c){
-        ADIM_DETAIL[key].push({cliente:c.nome,cnpj:c.cnpj||'',val:c.val,comissao:c.val*pct});
+      Object.keys(porMes[chave].cnpjs).forEach(function(cnpj){
+        var c=porMes[chave].cnpjs[cnpj];
+        ADIM_DETAIL[key].push({cliente:c.nome,cnpj:cnpj,val:c.val,comissao:c.val*pct});
       });
     });
 
@@ -2351,8 +2352,9 @@ function registrarAdim(){
           var pct=base>0?comissao/base:0;
           inserts.push({parceiro:r.parceiro,tipo:'business',mes:mesIdx+1,ano:ano,total:comissao,politica:polBizR.pol,qtd_bonus:0,base_receita:base,arquivo:arq});
           // Detalhe por loja
-          Object.values(porMes[chave].cnpjs).forEach(function(c){
-            detalhes.push({parceiro:r.parceiro,tipo:'business',mes:mesIdx+1,ano:ano,arquivo:arq,cliente:c.nome,cnpj:'',base_receita:c.val,comissao:c.val*pct});
+          Object.keys(porMes[chave].cnpjs).forEach(function(cnpj){
+            var c=porMes[chave].cnpjs[cnpj];
+            detalhes.push({parceiro:r.parceiro,tipo:'business',mes:mesIdx+1,ano:ano,arquivo:arq,cliente:c.nome,cnpj:cnpj,base_receita:c.val,comissao:c.val*pct});
           });
         });
       });
