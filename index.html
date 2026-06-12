@@ -1136,10 +1136,12 @@ function rComTable(dados,q,tbId,statsId,label){
       const valFmt='R$'+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
       if(isBiz){
         const key=c.nome+'__'+mi;
+        const chk=getBizDetChk(c.nome+'__'+mi+'__biz')?'<span style="color:#22a722;font-size:11px;margin-left:4px">✓</span>':'';
         const temDetalhe=ADIM_DETAIL[key]&&ADIM_DETAIL[key].length>0;
         if(temDetalhe){
-          return`<td style="text-align:right;font-size:11px"><span class="com-link" style="color:var(--od);font-weight:700;cursor:pointer" onclick="abrirDetalheAdim('${c.nome.replace(/'/g,"\'")}',${mi})">${valFmt}</span></td>`;
+          return`<td style="text-align:right;font-size:11px"><span class="com-link" style="color:var(--od);font-weight:700;cursor:pointer" onclick="abrirDetalheAdim('${c.nome.replace(/'/g,"\'")}',${mi})">${valFmt}</span>${chk}</td>`;
         }
+        return`<td style="text-align:right;font-size:11px">${valFmt}${chk}</td>`;
       }
       return`<td style="text-align:right;font-size:11px">${valFmt}</td>`;
     }).join('');
@@ -1189,6 +1191,7 @@ function abrirDetalheAdim(parceiro, mesIdx){
   document.getElementById('biz-det-export-adim-btn').style.display='inline-flex';
   document.getElementById('biz-det-thead').innerHTML='<tr><th>Empresa</th><th>CNPJ</th><th style="text-align:right">Valor Pago</th><th style="text-align:right">Comissão</th></tr>';
   window._adimDetAtual={parceiro,mesIdx,itens};
+  _bizDetKey=parceiro+'__'+mesIdx+'__biz';
   document.getElementById('biz-det-tbody').innerHTML=itens.map(i=>`<tr>
     <td><strong style="color:var(--n900)">${i.cliente}</strong></td>
     <td style="font-size:11px;color:var(--n500);font-family:monospace">${fmtCNPJ(i.cnpj)}</td>
@@ -1960,7 +1963,8 @@ function rBonusTech(){
     html+=`<tr><td style="font-weight:600">${r.nome}</td><td style="color:var(--n300);font-size:11px">${r.pol}</td>`;
     r.vals.forEach((v,i)=>{
       if(v>0){
-        html+=`<td><span style="cursor:pointer;color:var(--od);font-weight:600;text-decoration:underline dotted" onclick="abrirTechDet('${r.nome}',${i})">${brl(v)}</span></td>`;
+        const chk=getBizDetChk(r.nome+'__'+i+'__tech')?'<span style="color:#22a722;font-size:11px;margin-left:4px">✓</span>':'';
+        html+=`<td><span style="cursor:pointer;color:var(--od);font-weight:600;text-decoration:underline dotted" onclick="abrirTechDet('${r.nome}',${i})">${brl(v)}</span>${chk}</td>`;
       } else {
         html+=`<td>${brl(v)}</td>`;
       }
@@ -2441,6 +2445,7 @@ async function abrirTechDet(parceiro, mesIdx){
   document.getElementById('modal-biz-det').style.display='flex';
   document.getElementById('biz-det-base-wrap').style.display='none';
   document.getElementById('biz-det-export-adim-btn').style.display='none';
+  _bizDetKey=parceiro+'__'+mesIdx+'__tech';
   _techDetSort={col:null,dir:1};
 
   // Usa cache se já carregou
@@ -2466,7 +2471,23 @@ async function abrirTechDet(parceiro, mesIdx){
   renderTechDet(parceiro,mesIdx,itens);
 }
 
-var _techDetSort={col:null,dir:1};
+var _bizDetKey=null; // parceiro__mesIdx__tipo do popup aberto
+function fecharBizDet(){
+  if(_bizDetKey){
+    var ambos=document.getElementById('chk-email').checked&&document.getElementById('chk-nf').checked;
+    var stored=JSON.parse(localStorage.getItem('bizDetChk')||'{}');
+    stored[_bizDetKey]=ambos;
+    localStorage.setItem('bizDetChk',JSON.stringify(stored));
+    _bizDetKey=null;
+    // Re-renderiza tabelas para mostrar/esconder ✓
+    rB(); rBonusTech();
+  }
+  document.getElementById('modal-biz-det').style.display='none';
+}
+function getBizDetChk(key){
+  var stored=JSON.parse(localStorage.getItem('bizDetChk')||'{}');
+  return stored[key]===true;
+}
 function renderTechDet(parceiro,mesIdx,itens){
   var MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   var total=itens.reduce(function(s,i){return s+(i.comissao||0);},0);
@@ -2774,7 +2795,7 @@ async function registrarTech(){
   closeTechUploadModal();
 }
 </script>
-<div id="modal-biz-det" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)document.getElementById('modal-biz-det').style.display='none'">
+<div id="modal-biz-det" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto" onclick="if(event.target===this)fecharBizDet()">
   <div style="background:#fff;border-radius:12px;padding:24px;width:100%;max-width:820px;border-top:4px solid var(--orange);max-height:85vh;overflow-y:auto" onclick="event.stopPropagation()">
     <div class="mh">
       <div>
@@ -2792,7 +2813,7 @@ async function registrarTech(){
           <div style="font-size:10px;color:var(--n500);text-transform:uppercase;letter-spacing:0.8px;font-weight:600">Comissão</div>
           <div style="font-size:20px;font-weight:700;color:var(--od)" id="biz-det-total"></div>
         </div>
-        <button class="xb" onclick="document.getElementById('modal-biz-det').style.display='none'">&#215;</button>
+        <button class="xb" onclick="fecharBizDet()">&#215;</button>
       </div>
     </div>
     <div class="tw" style="margin-top:16px">
